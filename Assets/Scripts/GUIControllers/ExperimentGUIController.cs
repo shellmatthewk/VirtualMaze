@@ -28,6 +28,7 @@ public class ExperimentGUIController : DataGUIController {
     public Toggle restartOnTrialFailToggle;
     public Toggle resetPositionOnTrialToggle;
     public Toggle faceRandomDirectionOnStartToggle;
+    public Toggle multipleWaypointsToggle;
 
     public Button startStopButton;
     public Button pauseButton;
@@ -56,6 +57,7 @@ public class ExperimentGUIController : DataGUIController {
         restartOnTrialFailToggle.onValueChanged.AddListener(toggleRestartOnTrialFail);
         resetPositionOnTrialToggle.onValueChanged.AddListener(toggleResetPosition);
         faceRandomDirectionOnStartToggle.onValueChanged.AddListener(toggleFaceRandomDirectionOnStart);
+        multipleWaypointsToggle.onValueChanged.AddListener(toggleMultipleWaypoints);
     }
 
     private void toggleRestartOnTrialFail(bool isOn) {
@@ -66,9 +68,12 @@ public class ExperimentGUIController : DataGUIController {
         experimentController.resetPositionOnTrial = isOn;
     }
 
-    private void toggleFaceRandomDirectionOnStart(bool isOn)
-    {
+    private void toggleFaceRandomDirectionOnStart(bool isOn) {
         experimentController.faceRandomDirectionOnStart = isOn;
+    }
+
+    private void toggleMultipleWaypoints(bool isOn) {
+        experimentController.multipleWaypoints = isOn;
     }
 
     private void OnPauseButtonClicked() {
@@ -203,6 +208,7 @@ public class ExperimentGUIController : DataGUIController {
         resetPositionOnTrialToggle.isOn = experimentController.resetPositionOnTrial;
         restartOnTrialFailToggle.isOn = experimentController.restartOnTrialFail;
         faceRandomDirectionOnStartToggle.isOn = experimentController.faceRandomDirectionOnStart;
+        multipleWaypointsToggle.isOn = experimentController.multipleWaypoints;
         IsValidSaveLocation(experimentController.SaveLocation);
         sessionIntermissionValid.isOn = IsValidDuration(experimentController.SessionIntermissionDuration);
         timeoutDurationValid.isOn = IsValidDuration(Session.trialTimeLimit);

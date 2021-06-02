@@ -50,7 +50,8 @@ public class LevelController : MonoBehaviour {
     /// </summary>
     public bool restartOnTaskFail = true;
     public bool resetRobotPositionDuringInterTrial = true;
-    public bool faceRandomDirectionOnStart = true;
+    public bool faceRandomDirectionOnStart = false;
+    public bool multipleWaypoints = false;
     protected int numTrials { get; private set; } = 0;
 
     /// <summary>
@@ -151,7 +152,8 @@ public class LevelController : MonoBehaviour {
         }
 
         rewards = RewardArea.GetAllRewardsFromScene();
-        startWaypoint = FindObjectOfType<StartWaypoint>().transform;
+        //startWaypoint = FindObjectOfType<StartWaypoint>().transform;
+        startWaypoint = StartWaypoint.GetWaypoint(multipleWaypoints);
 
         logicProvider = session.MazeLogic;
         numTrials = session.numTrials;

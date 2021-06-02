@@ -155,10 +155,11 @@ public class RobotMovement : ConfigurableComponent {
 
         int y_rotation = Random.Range(0, 360);
         Quaternion startrot = transform.rotation;
-        startrot.y = waypoint.rotation.y;
+        startrot = waypoint.rotation;
         transform.rotation = startrot;
-        Vector3 v = transform.rotation.eulerAngles;
-        transform.rotation = Quaternion.Euler(v.x, y_rotation, v.z);
+        //Vector3 v = transform.rotation.eulerAngles;
+        //transform.rotation = Quaternion.Euler(v.x, y_rotation, v.z);
+        transform.Rotate(0.0f, y_rotation, 0.0f, Space.Self);
 
         OnRobotMoved?.Invoke(transform);
     }
@@ -177,7 +178,7 @@ public class RobotMovement : ConfigurableComponent {
         transform.position = startpos;
 
         Quaternion startrot = transform.rotation;
-        startrot.y = waypoint.rotation.y;
+        startrot = waypoint.rotation;
         transform.rotation = startrot;
 
         OnRobotMoved?.Invoke(transform);

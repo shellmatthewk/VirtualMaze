@@ -9,6 +9,7 @@ public class ExperimentController : ConfigurableComponent {
         public bool restartOnTrialFail;
         public bool resetPositionOnTrial;
         public bool faceRandomDirectionOnStart;
+        public bool multipleWaypoints;
 
         public int fixedTrialIntermissionDuration;
         public int maxTrialIntermissionDuration;
@@ -23,6 +24,8 @@ public class ExperimentController : ConfigurableComponent {
             bool isTrialIntermissionFixed,
             bool restartOnTrialFail,
             bool resetPositionOnTrial,
+            bool faceRandomDirectionOnStart,
+            bool multipleWaypoints,
             int fixedTrialIntermissionDuration,
             int maxTrialIntermissionDuration,
             int minTrialIntermissionDuration,
@@ -35,6 +38,7 @@ public class ExperimentController : ConfigurableComponent {
             this.restartOnTrialFail = restartOnTrialFail;
             this.resetPositionOnTrial = resetPositionOnTrial;
             this.faceRandomDirectionOnStart = faceRandomDirectionOnStart;
+            this.multipleWaypoints = multipleWaypoints;
             this.saveLocation = saveLocation;
 
             this.fixedTrialIntermissionDuration = fixedTrialIntermissionDuration;
@@ -49,6 +53,7 @@ public class ExperimentController : ConfigurableComponent {
     public bool restartOnTrialFail;
     public bool resetPositionOnTrial;
     public bool faceRandomDirectionOnStart;
+    public bool multipleWaypoints;
     public string SaveLocation { get; set; }
     public int SessionIntermissionDuration { get; set; }
 
@@ -172,6 +177,7 @@ public class ExperimentController : ConfigurableComponent {
             lvlController.resetRobotPositionDuringInterTrial = resetPositionOnTrial;
             lvlController.restartOnTaskFail = restartOnTrialFail;
             lvlController.faceRandomDirectionOnStart = faceRandomDirectionOnStart;
+            lvlController.multipleWaypoints = multipleWaypoints;
         }
     }
 
@@ -229,12 +235,12 @@ public class ExperimentController : ConfigurableComponent {
     }
 
     public override ComponentSettings GetDefaultSettings() {
-        return new Settings(false, true, true, -1, -1, -1, -1, -1, -1, "");
+        return new Settings(false, true, true, false, false, -1, -1, -1, -1, -1, -1, "");
     }
 
     public override ComponentSettings GetCurrentSettings() {
         return new Settings(Session.isTrailIntermissionRandom, restartOnTrialFail,
-            resetPositionOnTrial,
+            resetPositionOnTrial, faceRandomDirectionOnStart, multipleWaypoints,
             Session.fixedTrialIntermissionDuration, Session.maxTrialIntermissionDuration,
             Session.minTrialIntermissionDuration, SessionIntermissionDuration,
             Session.timeoutDuration, Session.trialTimeLimit, SaveLocation);
@@ -247,6 +253,7 @@ public class ExperimentController : ConfigurableComponent {
         restartOnTrialFail = settings.restartOnTrialFail;
         resetPositionOnTrial = settings.resetPositionOnTrial;
         faceRandomDirectionOnStart = settings.faceRandomDirectionOnStart;
+        multipleWaypoints = settings.multipleWaypoints;
         Session.fixedTrialIntermissionDuration = settings.fixedTrialIntermissionDuration;
         Session.maxTrialIntermissionDuration = settings.maxTrialIntermissionDuration;
         Session.minTrialIntermissionDuration = settings.minTrialIntermissionDuration;
