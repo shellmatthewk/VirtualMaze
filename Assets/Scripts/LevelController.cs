@@ -286,6 +286,7 @@ public class LevelController : MonoBehaviour {
         if (success) {
             targetIndex = logicProvider.GetNextTarget(targetIndex, rewards);
             cueController.SetTargetImage(logicProvider.GetTargetImage(rewards, targetIndex));
+            startWaypoint = StartWaypoint.GetWaypoint(multipleWaypoints);
         }
 
         rewards[targetIndex].IsActivated = true; // enable reward
