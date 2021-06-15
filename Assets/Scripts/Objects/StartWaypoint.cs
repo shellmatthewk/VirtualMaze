@@ -4,8 +4,10 @@ using System.Collections.Generic;
 
 public class StartWaypoint : MonoBehaviour
 {
-    public static List<GameObject> waypointList_mod = new List<GameObject>();
-    public static GameObject single_waypoint = null;
+    private static List<GameObject> waypointList_mod = new List<GameObject>();
+    private static GameObject single_waypoint = null;
+    private static int waypoint_idx = 0;
+    private static int previous_waypoint_idx = 0;
 
     public static Transform GetWaypoint(bool multipleWaypoint) {
         GameObject[] waypointList = GameObject.FindGameObjectsWithTag(Tags.Waypoint);
@@ -22,7 +24,10 @@ public class StartWaypoint : MonoBehaviour
         }
         if (multipleWaypoint && waypointList.Length > 1) {
             //int waypoint_idx = Random.Range(1, waypointList.Length);
-            int waypoint_idx = Random.Range(0, waypointList_mod.Count);
+            do {
+                waypoint_idx = Random.Range(0, waypointList_mod.Count);
+            } while (waypoint_idx == previous_waypoint_idx);
+            previous_waypoint_idx = waypoint_idx;
             //return waypointList[waypoint_idx].transform;
             return waypointList_mod[waypoint_idx].transform;
         }

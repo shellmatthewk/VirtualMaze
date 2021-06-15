@@ -29,6 +29,8 @@ public class ExperimentGUIController : DataGUIController {
     public Toggle resetPositionOnTrialToggle;
     public Toggle faceRandomDirectionOnStartToggle;
     public Toggle multipleWaypointsToggle;
+    public Toggle disableInterSessionBlackoutToggle;
+    public Toggle resetPositionOnSessionToggle;
 
     public Button startStopButton;
     public Button pauseButton;
@@ -58,6 +60,8 @@ public class ExperimentGUIController : DataGUIController {
         resetPositionOnTrialToggle.onValueChanged.AddListener(toggleResetPosition);
         faceRandomDirectionOnStartToggle.onValueChanged.AddListener(toggleFaceRandomDirectionOnStart);
         multipleWaypointsToggle.onValueChanged.AddListener(toggleMultipleWaypoints);
+        disableInterSessionBlackoutToggle.onValueChanged.AddListener(toggleDisableInterSessionBlackout);
+        resetPositionOnSessionToggle.onValueChanged.AddListener(toggleResetPositionOnSession);
     }
 
     private void toggleRestartOnTrialFail(bool isOn) {
@@ -76,6 +80,16 @@ public class ExperimentGUIController : DataGUIController {
         experimentController.multipleWaypoints = isOn;
     }
 
+    private void toggleDisableInterSessionBlackout(bool isOn)
+    {
+        experimentController.disableInterSessionBlackout = isOn;
+    }
+    
+    private void toggleResetPositionOnSession(bool isOn)
+    {
+        experimentController.resetPositionOnSession = isOn;
+    }
+    
     private void OnPauseButtonClicked() {
         willPauseAtNextTrialToggle.isOn = experimentController.TogglePause();
     }
@@ -209,6 +223,8 @@ public class ExperimentGUIController : DataGUIController {
         restartOnTrialFailToggle.isOn = experimentController.restartOnTrialFail;
         faceRandomDirectionOnStartToggle.isOn = experimentController.faceRandomDirectionOnStart;
         multipleWaypointsToggle.isOn = experimentController.multipleWaypoints;
+        disableInterSessionBlackoutToggle.isOn = experimentController.disableInterSessionBlackout;
+        resetPositionOnSessionToggle.isOn = experimentController.resetPositionOnSession;
         IsValidSaveLocation(experimentController.SaveLocation);
         sessionIntermissionValid.isOn = IsValidDuration(experimentController.SessionIntermissionDuration);
         timeoutDurationValid.isOn = IsValidDuration(Session.trialTimeLimit);

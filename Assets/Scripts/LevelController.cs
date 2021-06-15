@@ -52,6 +52,8 @@ public class LevelController : MonoBehaviour {
     public bool resetRobotPositionDuringInterTrial = true;
     public bool faceRandomDirectionOnStart = false;
     public bool multipleWaypoints = false;
+    public bool disableInterSessionBlackout = false;
+    public bool resetPositionOnSession = false;
     protected int numTrials { get; private set; } = 0;
 
     /// <summary>
@@ -72,6 +74,9 @@ public class LevelController : MonoBehaviour {
 
     [SerializeField]
     private RewardsController rewardsCtrl = null;
+
+    [SerializeField]
+    private SessionController sessionController = null;
 
     // cache waitForUnpause for efficiency
     private WaitUntil waitIfPaused;
@@ -139,7 +144,10 @@ public class LevelController : MonoBehaviour {
         logicProvider?.Cleanup(rewards);
         cueController.HideAll();
         RewardArea.OnRewardTriggered -= OnRewardTriggered;
-        FadeCanvas.fadeCanvas.AutoFadeOut();
+        if (!disableInterSessionBlackout)
+        {
+            FadeCanvas.fadeCanvas.AutoFadeOut();
+        }
         StopAllCoroutines();
     }
 
@@ -256,7 +264,11 @@ public class LevelController : MonoBehaviour {
         }
 
         yield return new WaitForSecondsRealtime(2f);
-        yield return FadeCanvas.fadeCanvas.AutoFadeOut();
+
+        if (!disableInterSessionBlackout)
+        {
+            yield return FadeCanvas.fadeCanvas.AutoFadeOut();
+        }
 
         //double check
         while (FadeCanvas.fadeCanvas.isTransiting) {
@@ -267,15 +279,19 @@ public class LevelController : MonoBehaviour {
 
     private IEnumerator FadeInAndStartSession() {
         onSessionTrigger.Invoke(SessionTrigger.ExperimentVersionTrigger, GameController.versionNum);
+        int sessionIndex = sessionController.index;
+        Debug.Log(sessionIndex);
 
-        if (faceRandomDirectionOnStart) {
-            robotMovement.RandomiseWaypointDirection(startWaypoint);
-        } else {
+        if (resetPositionOnSession || sessionIndex == 1) {
             robotMovement.MoveToWaypoint(startWaypoint);
+        }
+        if (faceRandomDirectionOnStart) {
+            robotMovement.RandomiseDirection(startWaypoint);
         }
 
         //fade in and wait for fadein to complete
         yield return FadeCanvas.fadeCanvas.FadeToScreen();
+
     }
 
     /// <summary>
@@ -337,13 +353,14 @@ public class LevelController : MonoBehaviour {
 
     protected virtual IEnumerator InterTrial() {
         yield return new WaitForSecondsRealtime(2f);
+        cueController.HideHint();
         if (resetRobotPositionDuringInterTrial) {
             //fadeout and wait for fade out to finish.
             yield return FadeCanvas.fadeCanvas.AutoFadeOut();
-            if (faceRandomDirectionOnStart) {
-                robotMovement.RandomiseWaypointDirection(startWaypoint);
-            } else {
-                robotMovement.MoveToWaypoint(startWaypoint);
+            robotMovement.MoveToWaypoint(startWaypoint);
+            if (faceRandomDirectionOnStart)
+            {
+                robotMovement.RandomiseDirection(startWaypoint);
             }
         }
 

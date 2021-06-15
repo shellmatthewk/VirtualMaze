@@ -10,6 +10,8 @@ public class ExperimentController : ConfigurableComponent {
         public bool resetPositionOnTrial;
         public bool faceRandomDirectionOnStart;
         public bool multipleWaypoints;
+        public bool disableInterSessionBlackout;
+        public bool resetPositionOnSession;
 
         public int fixedTrialIntermissionDuration;
         public int maxTrialIntermissionDuration;
@@ -26,6 +28,8 @@ public class ExperimentController : ConfigurableComponent {
             bool resetPositionOnTrial,
             bool faceRandomDirectionOnStart,
             bool multipleWaypoints,
+            bool disableInterSessionBlackout,
+            bool resetPositionOnSession,
             int fixedTrialIntermissionDuration,
             int maxTrialIntermissionDuration,
             int minTrialIntermissionDuration,
@@ -39,6 +43,8 @@ public class ExperimentController : ConfigurableComponent {
             this.resetPositionOnTrial = resetPositionOnTrial;
             this.faceRandomDirectionOnStart = faceRandomDirectionOnStart;
             this.multipleWaypoints = multipleWaypoints;
+            this.disableInterSessionBlackout = disableInterSessionBlackout;
+            this.resetPositionOnSession = resetPositionOnSession;
             this.saveLocation = saveLocation;
 
             this.fixedTrialIntermissionDuration = fixedTrialIntermissionDuration;
@@ -54,6 +60,8 @@ public class ExperimentController : ConfigurableComponent {
     public bool resetPositionOnTrial;
     public bool faceRandomDirectionOnStart;
     public bool multipleWaypoints;
+    public bool disableInterSessionBlackout;
+    public bool resetPositionOnSession;
     public string SaveLocation { get; set; }
     public int SessionIntermissionDuration { get; set; }
 
@@ -178,6 +186,8 @@ public class ExperimentController : ConfigurableComponent {
             lvlController.restartOnTaskFail = restartOnTrialFail;
             lvlController.faceRandomDirectionOnStart = faceRandomDirectionOnStart;
             lvlController.multipleWaypoints = multipleWaypoints;
+            lvlController.disableInterSessionBlackout = disableInterSessionBlackout;
+            lvlController.resetPositionOnSession = resetPositionOnSession;
         }
     }
 
@@ -235,12 +245,12 @@ public class ExperimentController : ConfigurableComponent {
     }
 
     public override ComponentSettings GetDefaultSettings() {
-        return new Settings(false, true, true, false, false, -1, -1, -1, -1, -1, -1, "");
+        return new Settings(false, true, true, false, false, false, true, -1, -1, -1, -1, -1, -1, "");
     }
 
     public override ComponentSettings GetCurrentSettings() {
         return new Settings(Session.isTrailIntermissionRandom, restartOnTrialFail,
-            resetPositionOnTrial, faceRandomDirectionOnStart, multipleWaypoints,
+            resetPositionOnTrial, faceRandomDirectionOnStart, multipleWaypoints, disableInterSessionBlackout, resetPositionOnSession,
             Session.fixedTrialIntermissionDuration, Session.maxTrialIntermissionDuration,
             Session.minTrialIntermissionDuration, SessionIntermissionDuration,
             Session.timeoutDuration, Session.trialTimeLimit, SaveLocation);
@@ -254,6 +264,8 @@ public class ExperimentController : ConfigurableComponent {
         resetPositionOnTrial = settings.resetPositionOnTrial;
         faceRandomDirectionOnStart = settings.faceRandomDirectionOnStart;
         multipleWaypoints = settings.multipleWaypoints;
+        disableInterSessionBlackout = settings.disableInterSessionBlackout;
+        resetPositionOnSession = settings.resetPositionOnSession;
         Session.fixedTrialIntermissionDuration = settings.fixedTrialIntermissionDuration;
         Session.maxTrialIntermissionDuration = settings.maxTrialIntermissionDuration;
         Session.minTrialIntermissionDuration = settings.minTrialIntermissionDuration;
