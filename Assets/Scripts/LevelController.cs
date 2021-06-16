@@ -144,7 +144,7 @@ public class LevelController : MonoBehaviour {
         logicProvider?.Cleanup(rewards);
         cueController.HideAll();
         RewardArea.OnRewardTriggered -= OnRewardTriggered;
-        if (!disableInterSessionBlackout)
+        if (!disableInterSessionBlackout || sessionController.index == sessionController.sessions.Count)
         {
             FadeCanvas.fadeCanvas.AutoFadeOut();
         }
@@ -290,7 +290,7 @@ public class LevelController : MonoBehaviour {
         }
 
         //fade in and wait for fadein to complete
-        yield return FadeCanvas.fadeCanvas.FadeToScreen();
+        yield return FadeCanvas.fadeCanvas.AutoFadeIn();
 
     }
 
@@ -373,7 +373,7 @@ public class LevelController : MonoBehaviour {
 
 
         //fade in and wait for fade in to finish
-        yield return FadeCanvas.fadeCanvas.FadeToScreen();
+        yield return FadeCanvas.fadeCanvas.AutoFadeIn();
 
     }
 

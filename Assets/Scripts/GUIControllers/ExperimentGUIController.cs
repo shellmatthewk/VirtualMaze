@@ -107,6 +107,7 @@ public class ExperimentGUIController : DataGUIController {
         else {
             Console.Write("Experiment Stopped");
             startStopBtnTxt.text = "Start Experiment";
+            FadeCanvas.fadeCanvas.AutoFadeOut();
             experimentController.StopExperiment();
         }
     }
