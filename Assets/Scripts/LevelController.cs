@@ -197,6 +197,7 @@ public class LevelController : MonoBehaviour {
                 cueController.ShowHint();
             }
 
+            yield return new WaitForSecondsRealtime(2f); // Wait time after hint is shown
             robotMovement.SetMovementActive(true); // enable robot
             yield return TrialTimer();
 
@@ -263,7 +264,7 @@ public class LevelController : MonoBehaviour {
             success = false; //reset the success
         }
 
-        yield return new WaitForSecondsRealtime(2f);
+        yield return new WaitForSecondsRealtime(2f); // Wait time at the end of trial
 
         if (!disableInterSessionBlackout)
         {
@@ -325,7 +326,7 @@ public class LevelController : MonoBehaviour {
         cueController.ShowCue();
         onSessionTrigger.Invoke(SessionTrigger.TrialStartedTrigger, targetIndex);
 
-        yield return new WaitForSecondsRealtime(2f); //Original Cue Timing: 1f (1 second)
+        yield return new WaitForSecondsRealtime(2f); // Wait time for showing cue before minimising
 
         cueController.HideCue();
         cueController.ShowHint();
@@ -352,7 +353,7 @@ public class LevelController : MonoBehaviour {
     }
 
     protected virtual IEnumerator InterTrial() {
-        yield return new WaitForSecondsRealtime(2f);
+        yield return new WaitForSecondsRealtime(2f); // Wait time in-between trials
         cueController.HideHint();
         if (resetRobotPositionDuringInterTrial) {
             //fadeout and wait for fade out to finish.
