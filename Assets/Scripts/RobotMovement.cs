@@ -217,6 +217,11 @@ public class RobotMovement : ConfigurableComponent {
 
         robot.SetPositionAndRotation(pos, newrot);
     }
+
+    public Transform getRobotTransform()
+    {
+        return transform;
+    }
 }
 
 

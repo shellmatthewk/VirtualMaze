@@ -194,11 +194,11 @@ public class RewardArea : MonoBehaviour {
         }
 
         float distance = Vector3.Magnitude(direction);
-        Debug.Log($"dist:{distance} / {s_proximityDistance}");
-        Debug.Log($"angle:{angle} / {s_requiredViewAngle}");
+        // Debug.Log($"dist:{distance} / {s_proximityDistance}");
+        // Debug.Log($"angle:{angle} / {s_requiredViewAngle}");
         if (distance <= s_proximityDistance) {
             OnProximityTriggered?.Invoke(this);
-            Debug.Log("RewardProx");
+            // Debug.Log("RewardProx");
         }
 
         //check if in view angle

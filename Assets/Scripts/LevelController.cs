@@ -55,6 +55,7 @@ public class LevelController : MonoBehaviour {
     public bool disableInterSessionBlackout = false;
     public bool resetPositionOnSession = false;
     protected int numTrials { get; private set; } = 0;
+    public int trialCounter = 0;
 
     /// <summary>
     /// Gameobjects tagged as "RewardArea" in the scene will be populated in here.
@@ -77,12 +78,12 @@ public class LevelController : MonoBehaviour {
 
     [SerializeField]
     private SessionController sessionController = null;
-
+    
     // cache waitForUnpause for efficiency
     private WaitUntil waitIfPaused;
 
-    private int targetIndex;
-    private bool success = false;
+    public int targetIndex;
+    public bool success = false;
 
     //Strings
     private const string Format_NoRewardAreaComponentFound = "{0} does not have a RewardAreaComponent";
@@ -140,6 +141,7 @@ public class LevelController : MonoBehaviour {
         numTrials = 0;
         success = false;
         sessionStarted = false;
+        trialCounter = 0;
         targetIndex = MazeLogic.NullRewardIndex;
         logicProvider?.Cleanup(rewards);
         cueController.HideAll();
@@ -174,8 +176,6 @@ public class LevelController : MonoBehaviour {
     }
 
     IEnumerator MainLoop() {
-        int trialCounter = 0;
-
         targetIndex = MazeLogic.NullRewardIndex;//reset targetindex for MazeLogic
 
         /* If this is true, it means that this session has multiple tasks and should restart fully */
@@ -281,7 +281,7 @@ public class LevelController : MonoBehaviour {
     private IEnumerator FadeInAndStartSession() {
         onSessionTrigger.Invoke(SessionTrigger.ExperimentVersionTrigger, GameController.versionNum);
         int sessionIndex = sessionController.index;
-        Debug.Log(sessionIndex);
+        Debug.Log("Session Index: " + sessionIndex);
 
         if (resetPositionOnSession || sessionIndex == 1) {
             robotMovement.MoveToWaypoint(startWaypoint);

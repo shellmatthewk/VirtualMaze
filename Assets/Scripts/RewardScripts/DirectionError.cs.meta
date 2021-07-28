@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: bdbad3f900a235d499b4df761534ff6a
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - errorClip: {fileID: 8300000, guid: 9867167ea89524c9cb9a1c5d11cbfd3f, type: 3}
+  - robotMovement: {instanceID: 0}
+  - cueController: {instanceID: 0}
+  - parallelPort: {instanceID: 0}
+  - rewardsCtrl: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
