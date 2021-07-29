@@ -107,20 +107,34 @@ public class DirectionError : MonoBehaviour
 
             if (!hasBeenExecutedDuringThisTrial && !lvlController.success) { // Execute at start of each trial
                 currentTargetIndex = lvlController.targetIndex;
+<<<<<<< HEAD
                 // Debug.Log("Current Index:" + currentTargetIndex);
                 previousTrial = internalTrialCounter;
                 hasBeenExecutedDuringThisTrial = true;
                 // Debug.Log("hasBeenExecutedDuringThisTrial");
+=======
+                Debug.Log("Current Index:" + currentTargetIndex);
+                previousTrial = internalTrialCounter;
+                hasBeenExecutedDuringThisTrial = true;
+                Debug.Log("hasBeenExecutedDuringThisTrial");
+>>>>>>> 2975472ebd30f3ed229d96209f6b6b23d2f233c9
             }
 
             if (internalTrialCounter > 0) { // Ignore first trial
 
                 // Debug.Log("success? " + lvlController.success);
                 if ((previousTrial != internalTrialCounter) && !lvlController.success) { // Change in trial number
+<<<<<<< HEAD
                     // Debug.Log("Current Trial: " + internalTrialCounter);
                     // Debug.Log("Previous Trial: " + previousTrial);
                     previousTargetIndex = currentTargetIndex; // Store current target index as previous index
                     // Debug.Log("previousTargetIndex: " + previousTargetIndex);
+=======
+                    Debug.Log("Current Trial: " + internalTrialCounter);
+                    Debug.Log("Previous Trial: " + previousTrial);
+                    previousTargetIndex = currentTargetIndex; // Store current target index as previous index
+                    Debug.Log("previousTargetIndex: " + previousTargetIndex);
+>>>>>>> 2975472ebd30f3ed229d96209f6b6b23d2f233c9
                     previousReward = rewards[previousTargetIndex];
                     hasBeenExecutedDuringThisTrial = false;
                     isSoundTriggered = false;

@@ -8306,14 +8306,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1885170500}
   m_Enabled: 1
   m_EditorHideFlags: 0
+<<<<<<< HEAD
   m_Script: {fileID: 11500000, guid: bdbad3f900a235d499b4df761534ff6a, type: 3}
+=======
+  m_Script: {fileID: 11500000, guid: 8e91d0eecfef845309db15a0835ee91d, type: 3}
+>>>>>>> 2975472ebd30f3ed229d96209f6b6b23d2f233c9
   m_Name: 
   m_EditorClassIdentifier: 
   errorClip: {fileID: 8300000, guid: 9867167ea89524c9cb9a1c5d11cbfd3f, type: 3}
   robotMovement: {fileID: 2078359491}
   cueController: {fileID: 1160995684}
   lvlController: {fileID: 226892008}
+<<<<<<< HEAD
   enableDirectionError: 0
+=======
+  enableDirectionError: 1
+>>>>>>> 2975472ebd30f3ed229d96209f6b6b23d2f233c9
   internalTrialCounter: 0
 --- !u!114 &2000892818 stripped
 MonoBehaviour:

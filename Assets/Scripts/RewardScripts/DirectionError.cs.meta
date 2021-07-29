@@ -1,4 +1,5 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: bdbad3f900a235d499b4df761534ff6a
 MonoImporter:
   externalObjects: {}
@@ -9,6 +10,13 @@ MonoImporter:
   - cueController: {instanceID: 0}
   - parallelPort: {instanceID: 0}
   - rewardsCtrl: {instanceID: 0}
+=======
+guid: 8e91d0eecfef845309db15a0835ee91d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+>>>>>>> 2975472ebd30f3ed229d96209f6b6b23d2f233c9
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
