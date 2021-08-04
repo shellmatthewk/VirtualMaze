@@ -27,7 +27,7 @@
 5. You should have VirtualMaze ready for development now.
 
 ##### Note:
-A good place to start understanding the project will be to look into *LevelController.cs* and *ExperimentController.cs*. These 2 files are where most of the logic regarding the experiment process is held.
+A good place to start understanding the project will be to look into *BasicLevelController.cs* and *ExperimentController.cs*. These 2 files are where most of the logic regarding the experiment process is held.
 
 # SR Research Eyelink SDK
 
