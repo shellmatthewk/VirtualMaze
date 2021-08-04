@@ -8,11 +8,14 @@ public class DirectionError : MonoBehaviour
     public RobotMovement robotMovement;
     public CueController cueController;
     public LevelController lvlController;
+    public CheckPoster checkPoster;
 
     public RewardArea[] rewards { get; private set; }
     protected IMazeLogicProvider logicProvider;
     private int currentTargetIndex = MazeLogic.NullRewardIndex;
     private int previousTargetIndex = MazeLogic.NullRewardIndex;
+    private int actualCurrentTargetIndex = MazeLogic.NullRewardIndex;
+    private int actualPreviousTargetIndex = MazeLogic.NullRewardIndex;
 
     public bool enableDirectionError = false;
     private bool isSoundTriggered = false;
@@ -27,6 +30,7 @@ public class DirectionError : MonoBehaviour
     private RewardArea previousReward;
 
     private int[,] correctTurnSign;
+    private int actualTargetIndex;
 
     [Range(0, 25)]
     private static float s_distanceRange = 3f;
@@ -106,8 +110,31 @@ public class DirectionError : MonoBehaviour
             // Debug.Log("tempPreviousTrial: " + tempPreviousTrial);
 
             if (!hasBeenExecutedDuringThisTrial && !lvlController.success) { // Execute at start of each trial
+                switch (CueImage.cueImage) { // Matching is hardcoded for scenes which have some reward areas disabled
+                    case "cat":
+                        actualTargetIndex = 0;
+                        break;
+                    case "camel":
+                        actualTargetIndex = 1;
+                        break;
+                    case "rabbit":
+                        actualTargetIndex = 2;
+                        break;
+                    case "donkey":
+                        actualTargetIndex = 3;
+                        break;
+                    case "crocodile":
+                        actualTargetIndex = 4;
+                        break;
+                    case "pig":
+                        actualTargetIndex = 5;
+                        break;
+                }
+
                 currentTargetIndex = lvlController.targetIndex;
+                actualCurrentTargetIndex = actualTargetIndex; // Get target index from switch-case
                 // Debug.Log("Current Index:" + currentTargetIndex);
+                // Debug.Log("Actual Current Index:" + actualCurrentTargetIndex);
                 previousTrial = internalTrialCounter;
                 hasBeenExecutedDuringThisTrial = true;
                 // Debug.Log("hasBeenExecutedDuringThisTrial");
@@ -120,7 +147,9 @@ public class DirectionError : MonoBehaviour
                     // Debug.Log("Current Trial: " + internalTrialCounter);
                     // Debug.Log("Previous Trial: " + previousTrial);
                     previousTargetIndex = currentTargetIndex; // Store current target index as previous index
+                    actualPreviousTargetIndex = actualCurrentTargetIndex;
                     // Debug.Log("previousTargetIndex: " + previousTargetIndex);
+                    // Debug.Log("actualPreviousTargetIndex: " + actualPreviousTargetIndex);
                     previousReward = rewards[previousTargetIndex];
                     hasBeenExecutedDuringThisTrial = false;
                     isSoundTriggered = false;
@@ -129,7 +158,7 @@ public class DirectionError : MonoBehaviour
                 var currentPos = robotMovement.getRobotTransform().position;
                 // Debug.Log("Current Position: " + currentPos);
                 // Debug.Log("Reward Area Position: " + previousReward.transform.position);
-                if (previousTargetIndex == 1 || previousTargetIndex == 2) {
+                if (actualPreviousTargetIndex == 1 || actualPreviousTargetIndex == 2) { // Use actual
                     distanceDiff = previousReward.transform.position.z - currentPos.z;
                 }
                 else {
@@ -139,7 +168,7 @@ public class DirectionError : MonoBehaviour
                 // Debug.Log("distanceDiff: " + distanceDiff);
 
                 if (Math.Abs(distanceDiff) > distanceRange && !isSoundTriggered) { // Chechk if distance is larger than set distance range
-                    if (Math.Sign(distanceDiff) != correctTurnSign[previousTargetIndex, currentTargetIndex] && correctTurnSign[previousTargetIndex, currentTargetIndex] != 0) { // Wrong direction
+                    if (Math.Sign(distanceDiff) != correctTurnSign[actualPreviousTargetIndex, actualCurrentTargetIndex] && correctTurnSign[actualPreviousTargetIndex, actualCurrentTargetIndex] != 0) { // Wrong direction, use actual
                         WrongDirectionSound();
                     }
                     isSoundTriggered = true;
