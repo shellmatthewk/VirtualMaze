@@ -197,11 +197,8 @@ public class LevelController : MonoBehaviour {
                 cueController.ShowHint();
             }
 
-<<<<<<< HEAD
             yield return new WaitForSecondsRealtime(2f); // Wait time after hint is shown
-=======
-            yield return new WaitForSecondsRealtime(0f); // Wait time after hint is shown
->>>>>>> 2975472ebd30f3ed229d96209f6b6b23d2f233c9
+
             robotMovement.SetMovementActive(true); // enable robot
             yield return TrialTimer();
 
