@@ -1,7 +1,11 @@
 # User Guide
 * [Session Logs](#Session-Logs)
+* [Adding new maze scenes](#Adding-new-maze-scenes)
+* [Adding/Editing GUI](#Adding/Editing-GUI)
+* [Adding new posters](#Adding-new-posters)
+* [Modify scene lighting](#Modify-scene-lighting)
 
-# Session Logs
+## Session Logs
 The session logs contains data describing setup of the session and the location of the robot in VirtualMaze.
 
 The data in the file is formatted as follows:
@@ -77,3 +81,24 @@ TranslationSpeed: 5.218029
 JoystickDeadzone: 0.3033634
 RewardViewCriteria: 1
 ~~~~
+
+## Adding new maze scenes
+1. Create new maze scene
+2. Create new asset file for that maze in ScriptableObjects
+3. In ScriptableObjects > Masterlist, increase the size and assign the new maze to the latest element
+4. In File > Build Settings > Scenes in Build, ensure that the new maze is selected and click 'Add Open Scenes'
+
+## Adding/Editing GUI
+1. In Start Scene > Persist > ExperimentControlCanvas, open the prefab menu, and add/edit/remove GUI elements
+2. Exit the prefab menu, and set the size, position, and text of the GUI element (left, right, Pos Y, Height)
+3. In the respective GUI Controller script, add the new GUI element in all the necessary places (Tip: copy-paste the existing GUI elements and change the variable/function names according)
+4. In the respective Controller script, add the new variable in the Settings class
+5. From the respective Controller script, the equivalent variable used in another script can be linked to the variable in this script (for convenience, link the variables in *private void PrepareLevelController()* function as it is called only once at the start of each session)
+
+## Adding new posters
+1. Add new poster images to Assets > Sprites
+2. In Assets > Sprites > Materials, create/duplicate a material object and set the albedo in Inspector to the correct sprite
+
+## Modify scene lighting
+1. In Hierarchy of maze scene, add/move/remove CeilingLamps, CeilingLampBuffer, and Light Probe Group
+2. In Window > Rendering > Lighting Settings, modify the settings (if necessary) and click Generate Lighting (note: VirtualMaze uses Baked Lightmaps instead of Realtime Lightmaps)
