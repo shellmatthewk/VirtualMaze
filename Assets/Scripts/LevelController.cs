@@ -43,6 +43,7 @@ public class LevelController : MonoBehaviour {
 
     //drag and drop from Unity Editor
     public Transform startWaypoint;
+    public DirectionError directionError;
 
     /// <summary>
     /// Flag to decide if the trail should be restarted if the subject failed
@@ -146,6 +147,7 @@ public class LevelController : MonoBehaviour {
         logicProvider?.Cleanup(rewards);
         cueController.HideAll();
         RewardArea.OnRewardTriggered -= OnRewardTriggered;
+        directionError.ResetRewards();
         if (!disableInterSessionBlackout || sessionController.index == sessionController.sessions.Count)
         {
             FadeCanvas.fadeCanvas.AutoFadeOut();

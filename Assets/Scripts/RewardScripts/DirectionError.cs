@@ -72,17 +72,19 @@ public class DirectionError : MonoBehaviour
     void Update()
     {
         // Checks if a session is currently running
-        if (LevelController.sessionStarted && (enableDirectionError) && !(lvlController.resetRobotPositionDuringInterTrial)) {
+        if (LevelController.sessionStarted && enableDirectionError && !(lvlController.resetRobotPositionDuringInterTrial)) {
             if (!isRewardsGet) {
                 rewards = lvlController.rewards;
+                logicProvider?.Setup(rewards);
+                // Debug.Log("Get Rewards");
                 isRewardsGet = true;
             }
+
             CheckDirection();
             HintBlink();
         }
         else {
             // Reset();
-            isRewardsGet = false;
         }
 
         // Check if robot is going in the correct direction
@@ -142,7 +144,7 @@ public class DirectionError : MonoBehaviour
 
             if (internalTrialCounter > 0) { // Ignore first trial
 
-                // Debug.Log("success? " + lvlController.success);
+                Debug.Log("success? " + lvlController.success);
                 if ((previousTrial != internalTrialCounter) && !lvlController.success) { // Change in trial number
                     // Debug.Log("Current Trial: " + internalTrialCounter);
                     // Debug.Log("Previous Trial: " + previousTrial);
@@ -151,6 +153,7 @@ public class DirectionError : MonoBehaviour
                     // Debug.Log("previousTargetIndex: " + previousTargetIndex);
                     // Debug.Log("actualPreviousTargetIndex: " + actualPreviousTargetIndex);
                     previousReward = rewards[previousTargetIndex];
+                    // Debug.Log("previousReward: " + previousReward);
                     hasBeenExecutedDuringThisTrial = false;
                     isSoundTriggered = false;
                 }
@@ -158,6 +161,7 @@ public class DirectionError : MonoBehaviour
                 var currentPos = robotMovement.getRobotTransform().position;
                 // Debug.Log("Current Position: " + currentPos);
                 // Debug.Log("Reward Area Position: " + previousReward.transform.position);
+
                 if (actualPreviousTargetIndex == 1 || actualPreviousTargetIndex == 2) { // Use actual
                     distanceDiff = previousReward.transform.position.z - currentPos.z;
                 }
@@ -202,6 +206,14 @@ public class DirectionError : MonoBehaviour
         }
     }
 
+    public void ResetRewards()
+    {
+        logicProvider?.Cleanup(rewards);
+        previousReward = null;
+        isRewardsGet = false;
+        // Debug.Log("Reset Rewards");
+    }
+
     public void Reset()
     {
         timer = 1000f;
@@ -212,8 +224,12 @@ public class DirectionError : MonoBehaviour
         internalTrialCounter = 0;
         currentTargetIndex = MazeLogic.NullRewardIndex;
         previousTargetIndex = MazeLogic.NullRewardIndex;
+        actualCurrentTargetIndex = MazeLogic.NullRewardIndex;
+        actualPreviousTargetIndex = MazeLogic.NullRewardIndex;
         previousTrial = 0;
         tempPreviousTrial = 0;
         logicProvider?.Cleanup(rewards);
+        previousReward = null;
+        // Debug.Log("Reset");
     }
 }
