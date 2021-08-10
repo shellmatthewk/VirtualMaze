@@ -32,6 +32,7 @@ public class ExperimentGUIController : DataGUIController {
     public Toggle disableInterSessionBlackoutToggle;
     public Toggle resetPositionOnSessionToggle;
     public Toggle enableDirectionErrorToggle;
+    public Toggle disableHintToggle;
 
     public Button startStopButton;
     public Button pauseButton;
@@ -64,6 +65,7 @@ public class ExperimentGUIController : DataGUIController {
         disableInterSessionBlackoutToggle.onValueChanged.AddListener(toggleDisableInterSessionBlackout);
         resetPositionOnSessionToggle.onValueChanged.AddListener(toggleResetPositionOnSession);
         enableDirectionErrorToggle.onValueChanged.AddListener(toggleEnableDirectionError);
+        disableHintToggle.onValueChanged.AddListener(toggleDisableHint);
     }
 
     private void toggleRestartOnTrialFail(bool isOn) {
@@ -96,7 +98,12 @@ public class ExperimentGUIController : DataGUIController {
     {
         experimentController.enableDirectionError = isOn;
     }
-    
+
+    private void toggleDisableHint(bool isOn)
+    {
+        experimentController.disableHint = isOn;
+    }
+
     private void OnPauseButtonClicked() {
         willPauseAtNextTrialToggle.isOn = experimentController.TogglePause();
     }
@@ -234,6 +241,7 @@ public class ExperimentGUIController : DataGUIController {
         disableInterSessionBlackoutToggle.isOn = experimentController.disableInterSessionBlackout;
         resetPositionOnSessionToggle.isOn = experimentController.resetPositionOnSession;
         enableDirectionErrorToggle.isOn = experimentController.enableDirectionError;
+        disableHintToggle.isOn = experimentController.disableHint;
         IsValidSaveLocation(experimentController.SaveLocation);
         sessionIntermissionValid.isOn = IsValidDuration(experimentController.SessionIntermissionDuration);
         timeoutDurationValid.isOn = IsValidDuration(Session.trialTimeLimit);

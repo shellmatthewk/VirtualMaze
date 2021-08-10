@@ -55,6 +55,7 @@ public class LevelController : MonoBehaviour {
     public bool multipleWaypoints = false;
     public bool disableInterSessionBlackout = false;
     public bool resetPositionOnSession = false;
+    public bool disableHint = false;
     protected int numTrials { get; private set; } = 0;
     public int trialCounter = 0;
 
@@ -196,7 +197,9 @@ public class LevelController : MonoBehaviour {
                 yield return ShowCues();
             }
             else {
-                cueController.ShowHint();
+                if (!disableHint) {
+                    cueController.ShowHint();
+                }
             }
 
             yield return new WaitForSecondsRealtime(2f); // Wait time after hint is shown
@@ -331,7 +334,9 @@ public class LevelController : MonoBehaviour {
         yield return new WaitForSecondsRealtime(2f); // Wait time for showing cue before minimising
 
         cueController.HideCue();
-        cueController.ShowHint();
+        if (!disableHint) {
+            cueController.ShowHint();
+        }
 
         // kw edit direct call to parallelport, extracted from listener
         Debug.Log("direct blank cue offset call");
