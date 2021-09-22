@@ -2406,6 +2406,11 @@ PrefabInstance:
       propertyPath: directionError
       value: 
       objectReference: {fileID: 1885170501}
+    - target: {fileID: 1603643600068921108, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
+        type: 3}
+      propertyPath: disableHint
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1605227715928710415, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -8428,7 +8433,7 @@ MonoBehaviour:
   robotMovement: {fileID: 2078359491}
   cueController: {fileID: 1160995684}
   lvlController: {fileID: 226892008}
-  checkPoster: {fileID: 0}
+  checkPoster: {fileID: 970793812}
   enableDirectionError: 0
   internalTrialCounter: 0
 --- !u!114 &2000892818 stripped

@@ -201,7 +201,7 @@ public class ExperimentController : ConfigurableComponent {
             lvlController.disableHint = disableHint;
 
             directionError.enableDirectionError = enableDirectionError;
-            wrongRewardAreaError.disableHint = disableHint;
+            directionError.disableHint = disableHint;
         }
     }
 

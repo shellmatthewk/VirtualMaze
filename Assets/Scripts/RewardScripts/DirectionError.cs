@@ -18,6 +18,7 @@ public class DirectionError : MonoBehaviour
     private int actualPreviousTargetIndex = MazeLogic.NullRewardIndex;
 
     public bool enableDirectionError = false;
+    public bool disableHint = false;
     private bool isSoundTriggered = false;
     private bool isRewardsGet = false;
     private bool hasBeenExecutedDuringThisTrial = false;
@@ -80,8 +81,17 @@ public class DirectionError : MonoBehaviour
                 isRewardsGet = true;
             }
 
+            Debug.Log("enableDirectionError " + enableDirectionError); 
+            Debug.Log("disableHint " + disableHint);
             CheckDirection();
-            HintBlink();
+            if (!disableHint)
+            {
+                HintBlink();
+            } else
+            {
+                HintBlink2();
+            }
+                
         }
         else {
             // Reset();
@@ -144,7 +154,7 @@ public class DirectionError : MonoBehaviour
 
             if (internalTrialCounter > 0) { // Ignore first trial
 
-                Debug.Log("success? " + lvlController.success);
+                // Debug.Log("success? " + lvlController.success);
                 if ((previousTrial != internalTrialCounter) && !lvlController.success) { // Change in trial number
                     // Debug.Log("Current Trial: " + internalTrialCounter);
                     // Debug.Log("Previous Trial: " + previousTrial);
@@ -202,6 +212,21 @@ public class DirectionError : MonoBehaviour
             if (timer >= (((2 * i) + 1) * overallBlinkDuration / 2) && timer < ((i + 1) * overallBlinkDuration))
             {
                 cueController.ShowHint();
+            }
+        }
+    }
+
+    private void HintBlink2()
+    {
+        for (int i = 0; i < numBlinks; i++)
+        {
+            if (timer >= (i * overallBlinkDuration) && timer < (((2 * i) + 1) * overallBlinkDuration / 2))
+            {
+                cueController.ShowHint();
+            }
+            if (timer >= (((2 * i) + 1) * overallBlinkDuration / 2) && timer < ((i + 1) * overallBlinkDuration))
+            {
+                cueController.HideHint();
             }
         }
     }

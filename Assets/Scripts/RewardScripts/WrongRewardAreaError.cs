@@ -6,8 +6,8 @@ public class WrongRewardAreaError : MonoBehaviour
     public AudioClip errorClip;
     public RewardArea rewardArea;
     private static CueController cueController;
+    private static ExperimentController experimentController;
     private float timer = 1000f;
-    public bool disableHint = false;
     private bool isSoundTriggered = false;
 
     // Number and duration of blinks
@@ -17,6 +17,7 @@ public class WrongRewardAreaError : MonoBehaviour
     void Start()
     {
         cueController = GameObject.FindObjectOfType(typeof(CueController)) as CueController;
+        experimentController = GameObject.FindObjectOfType(typeof(ExperimentController)) as ExperimentController;
     }
 
     private void Update()
@@ -49,7 +50,8 @@ public class WrongRewardAreaError : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (LevelController.sessionStarted && disableHint && !isSoundTriggered)
+        // Debug.Log("Disable Hint: " + experimentController.disableHint);
+        if (LevelController.sessionStarted && experimentController.disableHint && !isSoundTriggered)
         {
             string areaPosterImage = rewardArea.cueImage.name;
             string cueImage = CueImage.cueImage;

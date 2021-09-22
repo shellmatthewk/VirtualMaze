@@ -846,6 +846,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   errorClip: {fileID: 8300000, guid: 9867167ea89524c9cb9a1c5d11cbfd3f, type: 3}
   rewardArea: {fileID: 293240970}
+  disableHint: 1
 --- !u!1 &329401035
 GameObject:
   m_ObjectHideFlags: 0
@@ -2105,6 +2106,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   errorClip: {fileID: 8300000, guid: 9867167ea89524c9cb9a1c5d11cbfd3f, type: 3}
   rewardArea: {fileID: 613689081}
+  disableHint: 1
 --- !u!1 &719896848
 GameObject:
   m_ObjectHideFlags: 0
@@ -4073,6 +4075,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   errorClip: {fileID: 8300000, guid: 9867167ea89524c9cb9a1c5d11cbfd3f, type: 3}
   rewardArea: {fileID: 1325035150}
+  disableHint: 1
 --- !u!1 &1329128475
 GameObject:
   m_ObjectHideFlags: 0
@@ -5120,6 +5123,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   errorClip: {fileID: 8300000, guid: 9867167ea89524c9cb9a1c5d11cbfd3f, type: 3}
   rewardArea: {fileID: 1591579541}
+  disableHint: 1
 --- !u!1 &1597718907
 GameObject:
   m_ObjectHideFlags: 0
@@ -6032,6 +6036,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   errorClip: {fileID: 8300000, guid: 9867167ea89524c9cb9a1c5d11cbfd3f, type: 3}
   rewardArea: {fileID: 1890611755}
+  disableHint: 1
 --- !u!1 &1912202116
 GameObject:
   m_ObjectHideFlags: 0
@@ -6248,6 +6253,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   errorClip: {fileID: 8300000, guid: 9867167ea89524c9cb9a1c5d11cbfd3f, type: 3}
   rewardArea: {fileID: 1926017371}
+  disableHint: 1
 --- !u!1 &1945898830
 GameObject:
   m_ObjectHideFlags: 0
