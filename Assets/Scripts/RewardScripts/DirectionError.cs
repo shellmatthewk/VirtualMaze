@@ -81,8 +81,8 @@ public class DirectionError : MonoBehaviour
                 isRewardsGet = true;
             }
 
-            Debug.Log("enableDirectionError " + enableDirectionError); 
-            Debug.Log("disableHint " + disableHint);
+            // Debug.Log("enableDirectionError " + enableDirectionError); 
+            // Debug.Log("disableHint " + disableHint);
             CheckDirection();
             if (!disableHint)
             {
