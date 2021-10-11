@@ -202,7 +202,7 @@ public class LevelController : MonoBehaviour {
                 }
             }
 
-            yield return new WaitForSecondsRealtime(2f); // Wait time after hint is shown
+            yield return new WaitForSecondsRealtime(0f); // Wait time after hint is shown
             robotMovement.SetMovementActive(true); // enable robot
             yield return TrialTimer();
 
