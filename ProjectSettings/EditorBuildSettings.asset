@@ -65,4 +65,22 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/OpenMaze.unity
     guid: c59ac06088a61644bbe347ad374b28f3
+  - enabled: 1
+    path: Assets/Scenes/Double Tee Cam.unity
+    guid: f05aa9b74da8e4de8988d45c6a17ea27
+  - enabled: 1
+    path: Assets/Scenes/Double Tee Cat.unity
+    guid: f048d062ea44b46ff821ceae80772700
+  - enabled: 1
+    path: Assets/Scenes/Double Tee Croc.unity
+    guid: 77bb8f4f811d741409116c1c055171b5
+  - enabled: 1
+    path: Assets/Scenes/Double Tee Donk.unity
+    guid: 8dcb425b8dd444d049fdb017d553baa7
+  - enabled: 1
+    path: Assets/Scenes/Double Tee Pig.unity
+    guid: aaceaf0c66c01418f91cf78947b593d1
+  - enabled: 1
+    path: Assets/Scenes/Double Tee Rab.unity
+    guid: 1896e77a0e2ff4630ae6de7ca25c097b
   m_configObjects: {}
