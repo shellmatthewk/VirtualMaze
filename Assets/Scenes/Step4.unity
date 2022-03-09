@@ -2734,7 +2734,7 @@ GameObject:
   - component: {fileID: 832149899}
   m_Layer: 0
   m_Name: waypoint_start
-  m_TagString: Untagged
+  m_TagString: Waypoint
   m_Icon: {fileID: 5228209130450103505, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
