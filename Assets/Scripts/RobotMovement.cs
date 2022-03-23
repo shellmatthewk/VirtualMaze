@@ -12,12 +12,16 @@ public class RobotMovement : ConfigurableComponent {
     //delegate to broadcast current movement position of Robot
     public delegate void RobotMovementEvent(Transform transform);
 
+    public float theta;
+
     /// <summary>
     /// Wrapper class for RobotMovement settings
     /// </summary>
     [System.Serializable]
     public class Settings : ComponentSettings {
         public float rotationSpeed;
+        public float deadzoneAmount = 0;
+        public float angleRestrictionAmount = 0;
         public float movementSpeed;
 
         public bool isJoystickEnabled;
@@ -67,6 +71,8 @@ public class RobotMovement : ConfigurableComponent {
     public bool IsReverseEnabled { get => settings.isReverseEnabled; set => settings.isReverseEnabled = value; }
     public bool IsXInverted { get => settings.isXInverted; internal set => settings.isXInverted = value; }
     public bool IsYInverted { get => settings.isYInverted; internal set => settings.isYInverted = value; }
+    public float AngleRestrictionAmount { get => settings.angleRestrictionAmount; set => settings.angleRestrictionAmount = value; }
+    public float DeadzoneAmount { get => settings.deadzoneAmount; set => settings.deadzoneAmount = value; }
 
     //movement broadcaster
     public event RobotMovementEvent OnRobotMoved;
@@ -101,6 +107,28 @@ public class RobotMovement : ConfigurableComponent {
             vertical *= -1;
         }
 
+        // apply deadzone
+        horizontal = ApplyDeadzone(horizontal);
+        vertical = ApplyDeadzone(vertical);
+
+        // apply angle restriction
+        if (horizontal != 0 || vertical != 0)
+        {
+            // Finds the angle between the x axis and the input
+            theta = (float)Math.Atan(Math.Abs(vertical / horizontal)) * 180 / (float)Math.PI;
+            Debug.Log(theta);
+
+
+            if (theta > 0)          // If not at rest
+            {
+                if (theta < settings.angleRestrictionAmount || theta > (90 - settings.angleRestrictionAmount))      // compares to see if the angle of the input falls between the range of the restriction
+                {
+                    horizontal = 0;
+                    vertical = 0;
+                }
+            }
+        }
+
         if (ShouldRotate(horizontal)) {
             Quaternion rotateBy = Quaternion.Euler(0, horizontal * RotationSpeed * Time.deltaTime, 0);
             transform.rotation = (transform.rotation * rotateBy);
@@ -117,6 +145,16 @@ public class RobotMovement : ConfigurableComponent {
     private void LateUpdate() {
         //broadcast movement if there are listeners
         OnRobotMoved?.Invoke(transform);
+    }
+
+    // applies deadzone if the input value is within the range of deadzone
+    private float ApplyDeadzone(float value)
+    {
+        if (Math.Abs(value) > settings.deadzoneAmount)
+        {
+            return value;
+        }
+        return 0;
     }
 
     /// <summary>

@@ -12,7 +12,6 @@ public class JoystickController : ConfigurableComponent {
     public class Settings : ComponentSettings {
         [Range(0, 1)]
         public float deadzoneAmount = 0;
-        public float angleRestrictionAmount = 0;
         public string portNum = "";
     }
 
@@ -28,9 +27,7 @@ public class JoystickController : ConfigurableComponent {
 
     [SerializeField]
     private Settings settings;
-
     public float DeadzoneAmount { get => settings.deadzoneAmount; set => settings.deadzoneAmount = value; }
-    public float AngleRestrictionAmount { get => settings.angleRestrictionAmount; set => settings.angleRestrictionAmount = value;}
     public string PortNum { get => settings.portNum; set => settings.portNum = value; }
 
     public bool isOpen { get; private set; }
@@ -127,29 +124,7 @@ public class JoystickController : ConfigurableComponent {
             // get joystick axis readings
             horizontal = ((sbyte)buffer[0]) / 128f;
             vertical = ((sbyte)buffer[1]) / 128f;
-
-            //apply deadzone
-            horizontal = ApplyDeadzone(horizontal);
-            vertical = ApplyDeadzone(vertical);
-
-            //apply angle restriction
-            if (horizontal != 0 && vertical != 0)
-            {
-                theta = (float)Math.Atan(Math.Abs(vertical / horizontal)) * (float)Math.PI / 180;
-                if (theta > settings.angleRestrictionAmount && theta < (90 - settings.angleRestrictionAmount))
-                {
-                    horizontal = 0;
-                    vertical = 0;
-                }
-            }
         }
-    }
-
-    private float ApplyDeadzone(float value) {
-        if (Math.Abs(value) > settings.deadzoneAmount) {
-            return value;
-        }
-        return 0;
     }
 
     public override ComponentSettings GetCurrentSettings() {

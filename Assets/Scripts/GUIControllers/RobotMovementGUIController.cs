@@ -7,6 +7,8 @@ public class RobotMovementGUIController : DataGUIController {
 
     public DescriptiveSlider movementSpeedSlider;
     public DescriptiveSlider rotationSpeedSlider;
+    public DescriptiveSlider angleRestrictionSlider;
+    public DescriptiveSlider deadzoneSlider;
 
     public Toggle isJoystickEnabledToggle;
     public Toggle isForwardEnabledToggle;
@@ -23,6 +25,8 @@ public class RobotMovementGUIController : DataGUIController {
     private void Awake() {
         rotationSpeedSlider.onValueChanged.AddListener(OnRotationSpeedChanged);
         movementSpeedSlider.onValueChanged.AddListener(OnMovementSpeedChanged);
+        angleRestrictionSlider.onValueChanged.AddListener(onAngleRestrictionValueChanged);
+        deadzoneSlider.onValueChanged.AddListener(onDeadzoneValueChanged);
 
         //robotMovement.OnConfigChanged.AddListener(UpdateSettingsGUI);
     }
@@ -39,11 +43,23 @@ public class RobotMovementGUIController : DataGUIController {
 
         isXInverted.isOn = robotMovement.IsXInverted;
         isYInverted.isOn = robotMovement.IsYInverted;
+        angleRestrictionSlider.value = robotMovement.AngleRestrictionAmount;
+        deadzoneSlider.value = robotMovement.DeadzoneAmount;
     }
 
     //listeners for UI GameObjects, drag and drop in respective Child UI Components
     public void OnRotationSpeedChanged(float value) {
         robotMovement.RotationSpeed = value;
+    }
+
+    public void onAngleRestrictionValueChanged(float value)
+    {
+        robotMovement.AngleRestrictionAmount = value;
+    }
+
+    public void onDeadzoneValueChanged(float value)
+    {
+        robotMovement.DeadzoneAmount = value;
     }
 
     public void OnMovementSpeedChanged(float value) {
