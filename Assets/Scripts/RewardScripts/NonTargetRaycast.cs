@@ -56,7 +56,8 @@ public class NonTargetRaycast : MonoBehaviour
         }*/
 
         // Checks if a session is currently running
-        if (LevelController.sessionStarted && !disableHint)
+        if (LevelController.sessionStarted) // Removed "&& !disableHint" condition from if statement.
+                                            // I believe this conidtion is supposed to be meant for disableHint option from GUI but it is not linked to that.
         {
             Shoot();
             HintBlink();

@@ -116,7 +116,7 @@ public class RobotMovement : ConfigurableComponent {
         {
             // Finds the angle between the x axis and the input
             theta = (float)Math.Atan(Math.Abs(vertical / horizontal)) * 180 / (float)Math.PI;
-            Debug.Log(theta);
+            // Debug.Log(theta);
 
 
             if (theta > 0)          // If not at rest
