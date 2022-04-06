@@ -156,9 +156,6 @@ public class RewardArea : MonoBehaviour {
             blinkLight.material.DisableKeyword(emissionKeyword);
             blinkState = false;
         }
-        s_requiredDistance = 1.2f;
-        s_requiredViewAngle = 45f;
-        s_proximityDistance = 1.2f;
     }
 
     /* only checks for proximity when the subject enters the collider */
@@ -199,6 +196,7 @@ public class RewardArea : MonoBehaviour {
             Debug.DrawRay(robot.position, direction.normalized * RequiredDistance, Color.cyan);
         }
 
+
         float distance = Vector3.Magnitude(direction);
         // Debug.Log($"dist:{distance} / {s_proximityDistance}");
         // Debug.Log($"angle:{angle} / {s_requiredViewAngle}");
@@ -206,6 +204,7 @@ public class RewardArea : MonoBehaviour {
             OnProximityTriggered?.Invoke(this);
             // Debug.Log("RewardProx");
         }
+
 
         //check if in view angle
         if (angle < s_requiredViewAngle * 0.5f) {
