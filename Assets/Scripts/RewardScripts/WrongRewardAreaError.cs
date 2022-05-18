@@ -31,7 +31,7 @@ public class WrongRewardAreaError : MonoBehaviour
         }
     }
 
-    /*
+    
     private void OnTriggerEnter(Collider other)
     {
         if (LevelController.sessionStarted)
@@ -46,7 +46,7 @@ public class WrongRewardAreaError : MonoBehaviour
                 timer = 0f;
             }
         }
-    }*/
+    }
 
     private void OnTriggerStay(Collider other)
     {
