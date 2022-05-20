@@ -40,7 +40,7 @@ public class WrongRewardAreaError : MonoBehaviour
             //Debug.Log(areaPosterImage);
             string cueImage = CueImage.cueImage;
             //Debug.Log(cueImage);
-            if (areaPosterImage != cueImage)
+            if (areaPosterImage != cueImage && experimentController.enableRewardAreaError)
             {
                 PlayerAudio.instance.PlayErrorClip();
                 timer = 0f;

@@ -33,6 +33,7 @@ public class ExperimentGUIController : DataGUIController {
     public Toggle resetPositionOnSessionToggle;
     public Toggle enableDirectionErrorToggle;
     public Toggle disableHintToggle;
+    public Toggle rewardAreaErrorToggle; // this
 
     public Button startStopButton;
     public Button pauseButton;
@@ -66,6 +67,8 @@ public class ExperimentGUIController : DataGUIController {
         resetPositionOnSessionToggle.onValueChanged.AddListener(toggleResetPositionOnSession);
         enableDirectionErrorToggle.onValueChanged.AddListener(toggleEnableDirectionError);
         disableHintToggle.onValueChanged.AddListener(toggleDisableHint);
+        rewardAreaErrorToggle.onValueChanged.AddListener(toggleRewardAreaError); // this
+
     }
 
     private void toggleRestartOnTrialFail(bool isOn) {
@@ -103,6 +106,12 @@ public class ExperimentGUIController : DataGUIController {
     {
         experimentController.disableHint = isOn;
     }
+
+    private void toggleRewardAreaError(bool isOn)
+    {
+        experimentController.enableRewardAreaError = isOn;
+    }
+
 
     private void OnPauseButtonClicked() {
         willPauseAtNextTrialToggle.isOn = experimentController.TogglePause();
@@ -246,5 +255,6 @@ public class ExperimentGUIController : DataGUIController {
         sessionIntermissionValid.isOn = IsValidDuration(experimentController.SessionIntermissionDuration);
         timeoutDurationValid.isOn = IsValidDuration(Session.trialTimeLimit);
         timeLimitValid.isOn = IsValidDuration(Session.trialTimeLimit);
+        rewardAreaErrorToggle.isOn = experimentController.enableRewardAreaError;
     }
 }
