@@ -19,6 +19,7 @@ public class ExperimentController : ConfigurableComponent {
         public int fixedTrialIntermissionDuration;
         public int maxTrialIntermissionDuration;
         public int minTrialIntermissionDuration;
+        public int rewardAreaErrorTime;
 
         public string saveLocation;
         public int sessionIntermissionDuration;
@@ -39,6 +40,7 @@ public class ExperimentController : ConfigurableComponent {
             int fixedTrialIntermissionDuration,
             int maxTrialIntermissionDuration,
             int minTrialIntermissionDuration,
+            int rewardAreaErrorTime,
             int sessionIntermissionDuration,
             int timeoutDuration,
             int timeLimitDuration,
@@ -59,6 +61,7 @@ public class ExperimentController : ConfigurableComponent {
             this.fixedTrialIntermissionDuration = fixedTrialIntermissionDuration;
             this.maxTrialIntermissionDuration = maxTrialIntermissionDuration;
             this.minTrialIntermissionDuration = minTrialIntermissionDuration;
+            this.rewardAreaErrorTime = rewardAreaErrorTime;
             this.sessionIntermissionDuration = sessionIntermissionDuration;
             this.timeoutDuration = timeoutDuration;
             this.timeLimitDuration = timeLimitDuration;
@@ -76,6 +79,7 @@ public class ExperimentController : ConfigurableComponent {
     public bool enableRewardAreaError;
     public string SaveLocation { get; set; }
     public int SessionIntermissionDuration { get; set; }
+    public int rewardAreaErrorTime { get; set; }
 
     public bool started { get; private set; } = false;
     private ExperimentLogger logger = new ExperimentLogger();
@@ -264,14 +268,14 @@ public class ExperimentController : ConfigurableComponent {
     }
 
     public override ComponentSettings GetDefaultSettings() {
-        return new Settings(false, true, true, false, false, false, true, false, false, false, -1, -1, -1, -1, -1, -1, "");
+        return new Settings(false, true, true, false, false, false, true, false, false, false, -1, -1, -1, -1, -1, -1, -1, "");
     }
 
     public override ComponentSettings GetCurrentSettings() {
         return new Settings(Session.isTrailIntermissionRandom, restartOnTrialFail, resetPositionOnTrial, faceRandomDirectionOnStart,
             multipleWaypoints, disableInterSessionBlackout, resetPositionOnSession, enableDirectionError, disableHint, enableRewardAreaError,
             Session.fixedTrialIntermissionDuration, Session.maxTrialIntermissionDuration,
-            Session.minTrialIntermissionDuration, SessionIntermissionDuration,
+            Session.minTrialIntermissionDuration, rewardAreaErrorTime, SessionIntermissionDuration,
             Session.timeoutDuration, Session.trialTimeLimit, SaveLocation);
     }
 
@@ -290,6 +294,7 @@ public class ExperimentController : ConfigurableComponent {
         Session.fixedTrialIntermissionDuration = settings.fixedTrialIntermissionDuration;
         Session.maxTrialIntermissionDuration = settings.maxTrialIntermissionDuration;
         Session.minTrialIntermissionDuration = settings.minTrialIntermissionDuration;
+        rewardAreaErrorTime = settings.rewardAreaErrorTime;
         SessionIntermissionDuration = settings.sessionIntermissionDuration;
         Session.timeoutDuration = settings.timeoutDuration;
         Session.trialTimeLimit = settings.timeLimitDuration;
