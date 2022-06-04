@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class NonTargetRaycast : MonoBehaviour
@@ -737,7 +737,7 @@ public class NonTargetRaycast : MonoBehaviour
     }
 
     // Number and duration of blinks
-    int numBlinks = 4;
+    int numBlinks = 2;
     float overallBlinkDuration = 0.5f;
     
     private void HintBlink()

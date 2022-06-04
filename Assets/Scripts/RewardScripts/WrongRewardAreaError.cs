@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class WrongRewardAreaError : MonoBehaviour
 {
@@ -12,7 +12,7 @@ public class WrongRewardAreaError : MonoBehaviour
     private bool isSoundTriggered = false;
 
     // Number and duration of blinks
-    int numBlinks = 4;
+    int numBlinks = 2;
     private float overallBlinkDuration = 0.5f;
 
     void Start()
