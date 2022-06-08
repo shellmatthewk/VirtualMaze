@@ -756,6 +756,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  theta: 0
   charController: {fileID: 6621672594382564681}
 --- !u!143 &6621672594382564681
 CharacterController:
@@ -4953,6 +4954,8 @@ MonoBehaviour:
   robotMovement: {fileID: 11463724}
   movementSpeedSlider: {fileID: 4751553167924731417}
   rotationSpeedSlider: {fileID: 7153499518290585269}
+  angleRestrictionSlider: {fileID: 0}
+  deadzoneSlider: {fileID: 0}
   isJoystickEnabledToggle: {fileID: 4297647305692186137}
   isForwardEnabledToggle: {fileID: 541768828182743323}
   isReverseEnabledToggle: {fileID: 5120509099642573194}
@@ -7236,26 +7239,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &6922839349907841111
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2040324145662319566}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreLayout: 0
-  m_MinWidth: -1
-  m_MinHeight: -1
-  m_PreferredWidth: 100
-  m_PreferredHeight: -1
-  m_FlexibleWidth: -1
-  m_FlexibleHeight: -1
-  m_LayoutPriority: 1
 --- !u!1 &2083847756865194807
 GameObject:
   m_ObjectHideFlags: 0
@@ -13275,7 +13258,6 @@ RectTransform:
   m_Children:
   - {fileID: 5861599176582415357}
   - {fileID: 2225083100281680928}
-  - {fileID: 5656690702328383625}
   m_Father: {fileID: 8390657205254253416}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -13296,7 +13278,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fd74b4c77cef104fa529a31add72d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deadzoneSlider: {fileID: 2594165788102872504}
   serialStateToggle: {fileID: 7773987430743241268}
   serialStateText: {fileID: 5899619864618736075}
   joystickPortField: {fileID: 7977714797590274911}
@@ -13329,7 +13310,6 @@ MonoBehaviour:
         m_CallState: 2
   baudRate: 115200
   settings:
-    deadzoneAmount: 0
     portNum: 
 --- !u!222 &2772038610712446021
 CanvasRenderer:
@@ -18535,9 +18515,9 @@ MonoBehaviour:
   sessionIntermissionDurationField: {fileID: 5095475543280425806}
   timeoutDurationField: {fileID: 7630315630753743351}
   timeLimitField: {fileID: 1978390779417855476}
+  rewardAreaErrorField: {fileID: 0}
   fixedTrailIntermissionToggle: {fileID: 3631216304927161329}
   randomTrailIntermissionToggle: {fileID: 7666399268208318683}
-  posterEnableValid: {fileID: 5136742468583069665}
   sessionIntermissionValid: {fileID: 7316546406777330985}
   timeoutDurationValid: {fileID: 7605106792515074551}
   timeLimitValid: {fileID: 5161771335161061251}
@@ -18550,6 +18530,7 @@ MonoBehaviour:
   resetPositionOnSessionToggle: {fileID: 0}
   enableDirectionErrorToggle: {fileID: 0}
   disableHintToggle: {fileID: 0}
+  rewardAreaErrorToggle: {fileID: 0}
   startStopButton: {fileID: 6160849005181878518}
   pauseButton: {fileID: 6344834859315396684}
   experimentController: {fileID: 6903074266376674234}
@@ -18587,6 +18568,7 @@ MonoBehaviour:
   resetPositionOnSession: 0
   enableDirectionError: 0
   disableHint: 0
+  enableRewardAreaError: 0
   sessionController: {fileID: 2902091985051668965}
   lvlController: {fileID: 0}
   directionError: {fileID: 0}
@@ -24236,7 +24218,7 @@ PrefabInstance:
     - target: {fileID: 814602153708827362, guid: 79287dedb761e9349a1263a313a44cb9,
         type: 3}
       propertyPath: defaultPath
-      value: C:/Users/Royston Long/Documents/GitHub/VirtualMaze/Assets
+      value: /Users/liuyuanwei/Documents/GitHub/VirtualMaze/Assets
       objectReference: {fileID: 0}
     - target: {fileID: 2402914763293435722, guid: 79287dedb761e9349a1263a313a44cb9,
         type: 3}
@@ -24919,12 +24901,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9447736c21d391a4e84bcc9a0d5694b8, type: 3}
---- !u!224 &6336083673822237657 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5682357589725747998, guid: 9447736c21d391a4e84bcc9a0d5694b8,
-    type: 3}
-  m_PrefabInstance: {fileID: 1816499411061737671}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &5120509099642573194 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6789795955388668237, guid: 9447736c21d391a4e84bcc9a0d5694b8,
@@ -24937,6 +24913,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &6336083673822237657 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5682357589725747998, guid: 9447736c21d391a4e84bcc9a0d5694b8,
+    type: 3}
+  m_PrefabInstance: {fileID: 1816499411061737671}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1833901272506158764
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25066,6 +25048,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9447736c21d391a4e84bcc9a0d5694b8, type: 3}
+--- !u!224 &6316467126702233010 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5682357589725747998, guid: 9447736c21d391a4e84bcc9a0d5694b8,
+    type: 3}
+  m_PrefabInstance: {fileID: 1833901272506158764}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &5136742468583069665 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6789795955388668237, guid: 9447736c21d391a4e84bcc9a0d5694b8,
@@ -25078,12 +25066,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &6316467126702233010 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5682357589725747998, guid: 9447736c21d391a4e84bcc9a0d5694b8,
-    type: 3}
-  m_PrefabInstance: {fileID: 1833901272506158764}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2544103503118763976
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25099,7 +25081,7 @@ PrefabInstance:
     - target: {fileID: 814602153708827362, guid: 79287dedb761e9349a1263a313a44cb9,
         type: 3}
       propertyPath: defaultPath
-      value: C:/Users/Royston Long/Documents/GitHub/VirtualMaze/Assets
+      value: /Users/liuyuanwei/Documents/GitHub/VirtualMaze/Assets
       objectReference: {fileID: 0}
     - target: {fileID: 2402914763293435722, guid: 79287dedb761e9349a1263a313a44cb9,
         type: 3}
@@ -26004,12 +25986,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9447736c21d391a4e84bcc9a0d5694b8, type: 3}
---- !u!224 &917562602629515303 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5682357589725747998, guid: 9447736c21d391a4e84bcc9a0d5694b8,
-    type: 3}
-  m_PrefabInstance: {fileID: 4782853918263825209}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &2042997327938980468 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6789795955388668237, guid: 9447736c21d391a4e84bcc9a0d5694b8,
@@ -26022,6 +25998,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &917562602629515303 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5682357589725747998, guid: 9447736c21d391a4e84bcc9a0d5694b8,
+    type: 3}
+  m_PrefabInstance: {fileID: 4782853918263825209}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4847917356908961191
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26388,15 +26370,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d623a1aec8a1fb43b3c1774d85c4a59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &3671066326868990492 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8649543009259551352, guid: e6ac70a079f3f554986ce59e119814f7,
-    type: 3}
-  m_PrefabInstance: {fileID: 5403025246994063460}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &2869100431786581965 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7866224432824680361, guid: e6ac70a079f3f554986ce59e119814f7,
+    type: 3}
+  m_PrefabInstance: {fileID: 5403025246994063460}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3671066326868990492 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8649543009259551352, guid: e6ac70a079f3f554986ce59e119814f7,
     type: 3}
   m_PrefabInstance: {fileID: 5403025246994063460}
   m_PrefabAsset: {fileID: 0}
@@ -26415,7 +26397,7 @@ PrefabInstance:
     - target: {fileID: 814602153708827362, guid: 79287dedb761e9349a1263a313a44cb9,
         type: 3}
       propertyPath: defaultPath
-      value: C:/Users/Royston Long/Documents/GitHub/VirtualMaze/Assets
+      value: /Users/liuyuanwei/Documents/GitHub/VirtualMaze/Assets
       objectReference: {fileID: 0}
     - target: {fileID: 2402914763293435722, guid: 79287dedb761e9349a1263a313a44cb9,
         type: 3}
@@ -26770,7 +26752,7 @@ PrefabInstance:
     - target: {fileID: 814602153708827362, guid: 79287dedb761e9349a1263a313a44cb9,
         type: 3}
       propertyPath: defaultPath
-      value: C:/Users/Royston Long/Documents/GitHub/VirtualMaze/Assets
+      value: /Users/liuyuanwei/Documents/GitHub/VirtualMaze/Assets
       objectReference: {fileID: 0}
     - target: {fileID: 2402914763293435722, guid: 79287dedb761e9349a1263a313a44cb9,
         type: 3}
@@ -26929,12 +26911,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 79287dedb761e9349a1263a313a44cb9, type: 3}
---- !u!224 &9087608691374375569 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 3264194545463167981, guid: 79287dedb761e9349a1263a313a44cb9,
-    type: 3}
-  m_PrefabInstance: {fileID: 6003602120329578876}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6349820414437620638 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 814602153708827362, guid: 79287dedb761e9349a1263a313a44cb9,
@@ -26947,6 +26923,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c6cee4ed955cf4489251b4151a1db52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &9087608691374375569 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3264194545463167981, guid: 79287dedb761e9349a1263a313a44cb9,
+    type: 3}
+  m_PrefabInstance: {fileID: 6003602120329578876}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6179283726730790280
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -27775,12 +27757,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ee4b64493e2e40c0b1b852904531a46, type: 3}
---- !u!224 &22472662 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 7380630212920135006, guid: 3ee4b64493e2e40c0b1b852904531a46,
-    type: 3}
-  m_PrefabInstance: {fileID: 7380630212906068616}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &11478274 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7380630212899704714, guid: 3ee4b64493e2e40c0b1b852904531a46,
@@ -27793,6 +27769,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c67ab50d2f628408f8f2457c52761356, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &22472662 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 7380630212920135006, guid: 3ee4b64493e2e40c0b1b852904531a46,
+    type: 3}
+  m_PrefabInstance: {fileID: 7380630212906068616}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7906133341963474197
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -27922,12 +27904,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9447736c21d391a4e84bcc9a0d5694b8, type: 3}
---- !u!224 &2550146236984577547 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5682357589725747998, guid: 9447736c21d391a4e84bcc9a0d5694b8,
-    type: 3}
-  m_PrefabInstance: {fileID: 7906133341963474197}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3711539008317787224 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6789795955388668237, guid: 9447736c21d391a4e84bcc9a0d5694b8,
@@ -27940,169 +27916,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1001 &8018349645892049124
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 3365930376711413885}
-    m_Modifications:
-    - target: {fileID: 2433769796422045805, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2433769796422045805, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2433769796422045805, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2433769796422045805, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2433769796422045805, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2433769796422045805, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2433769796422045805, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2433769796422045805, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2433769796422045805, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2433769796422045805, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2433769796422045805, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2433769796422045805, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2433769796422045805, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -107.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2433769796422045805, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2433769796422045805, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 45
-      objectReference: {fileID: 0}
-    - target: {fileID: 2433769796422045805, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2433769796422045805, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2433769796422045805, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2433769796422045805, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2433769796422045805, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_Pivot.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2433769796422045805, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_Pivot.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5424219129136649564, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_MaxValue
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7711297611647533982, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_Text
-      value: Joystick Deadzone
-      objectReference: {fileID: 0}
-    - target: {fileID: 7837488835151225213, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8292910893090243370, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_Name
-      value: DeadzoneSlider
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981799871138871206, guid: c500736632bc7854691e9974e71fc7fc,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: c500736632bc7854691e9974e71fc7fc, type: 3}
---- !u!224 &5656690702328383625 stripped
+--- !u!224 &2550146236984577547 stripped
 RectTransform:
-  m_CorrespondingSourceObject: {fileID: 2433769796422045805, guid: c500736632bc7854691e9974e71fc7fc,
+  m_CorrespondingSourceObject: {fileID: 5682357589725747998, guid: 9447736c21d391a4e84bcc9a0d5694b8,
     type: 3}
-  m_PrefabInstance: {fileID: 8018349645892049124}
+  m_PrefabInstance: {fileID: 7906133341963474197}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &2040324145662319566 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8292910893090243370, guid: c500736632bc7854691e9974e71fc7fc,
-    type: 3}
-  m_PrefabInstance: {fileID: 8018349645892049124}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2594165788102872504 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5424219129136649564, guid: c500736632bc7854691e9974e71fc7fc,
-    type: 3}
-  m_PrefabInstance: {fileID: 8018349645892049124}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2040324145662319566}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69a847016937c7c488470eb2bd1d06cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &8156688880975399483
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28118,7 +27937,7 @@ PrefabInstance:
     - target: {fileID: 814602153708827362, guid: 79287dedb761e9349a1263a313a44cb9,
         type: 3}
       propertyPath: defaultPath
-      value: C:/Users/Royston Long/Documents/GitHub/VirtualMaze/Assets
+      value: /Users/liuyuanwei/Documents/GitHub/VirtualMaze/Assets
       objectReference: {fileID: 0}
     - target: {fileID: 2402914763293435722, guid: 79287dedb761e9349a1263a313a44cb9,
         type: 3}
@@ -28290,7 +28109,7 @@ PrefabInstance:
     - target: {fileID: 814602153708827362, guid: 79287dedb761e9349a1263a313a44cb9,
         type: 3}
       propertyPath: defaultPath
-      value: C:/Users/Royston Long/Documents/GitHub/VirtualMaze/Assets
+      value: /Users/liuyuanwei/Documents/GitHub/VirtualMaze/Assets
       objectReference: {fileID: 0}
     - target: {fileID: 2402914763293435722, guid: 79287dedb761e9349a1263a313a44cb9,
         type: 3}
@@ -28419,12 +28238,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 79287dedb761e9349a1263a313a44cb9, type: 3}
---- !u!224 &6474716338842106944 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 3264194545463167981, guid: 79287dedb761e9349a1263a313a44cb9,
-    type: 3}
-  m_PrefabInstance: {fileID: 8401024826386446253}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &9212222741637580111 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 814602153708827362, guid: 79287dedb761e9349a1263a313a44cb9,
@@ -28437,6 +28250,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c6cee4ed955cf4489251b4151a1db52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &6474716338842106944 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3264194545463167981, guid: 79287dedb761e9349a1263a313a44cb9,
+    type: 3}
+  m_PrefabInstance: {fileID: 8401024826386446253}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8900506402353338302
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28452,7 +28271,7 @@ PrefabInstance:
     - target: {fileID: 814602153708827362, guid: 79287dedb761e9349a1263a313a44cb9,
         type: 3}
       propertyPath: defaultPath
-      value: C:/Users/Royston Long/Documents/GitHub/VirtualMaze/Assets
+      value: /Users/liuyuanwei/Documents/GitHub/VirtualMaze/Assets
       objectReference: {fileID: 0}
     - target: {fileID: 2402914763293435722, guid: 79287dedb761e9349a1263a313a44cb9,
         type: 3}

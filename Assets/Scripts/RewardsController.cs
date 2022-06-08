@@ -14,7 +14,13 @@ public class RewardsController : ConfigurableComponent {
         public float directionErrorDistance;
 
 
-        public Settings(string portNum, int rewardDurationMilliSecs, float requiredViewAngle, float requiredDistance, float proximityDistance, float directionErrorDistance) {
+        public Settings(string portNum,
+            int rewardDurationMilliSecs,
+            float requiredViewAngle,
+            float requiredDistance,
+            float proximityDistance,
+            float directionErrorDistance)
+        {
             this.proximityDistance = proximityDistance;
             this.portNum = portNum;
             this.rewardDurationMilliSecs = rewardDurationMilliSecs;

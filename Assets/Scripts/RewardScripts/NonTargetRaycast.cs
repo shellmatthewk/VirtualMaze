@@ -731,7 +731,7 @@ public class NonTargetRaycast : MonoBehaviour
 
     private void WrongPoster()
     {
-        // Debug.Log("Raycast Ping");
+        Debug.Log("Raycast Ping");
         PlayerAudio.instance.PlayErrorClip();
         timer = 0f; // For resetting the blinking timer
     }

@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class JoystickGUIController : DataGUIController {
     //Drag in from Unity Editor
-    public DescriptiveSlider deadzoneSlider;
     public Button serialStateToggle;
     public Text serialStateText;
     public InputField joystickPortField;
@@ -13,7 +12,6 @@ public class JoystickGUIController : DataGUIController {
 
     private void Awake() {
         joystickPortField.onEndEdit.AddListener(onPortFieldEditEnd);
-        deadzoneSlider.onValueChanged.AddListener(onSliderValueChanged);
         serialStateToggle.onClick.AddListener(onSerialStateButtonClicked);
     }
 
@@ -23,11 +21,6 @@ public class JoystickGUIController : DataGUIController {
         joystickPortField.image.color = Color.white;
         joystickController.JoystickClose();
         serialStateText.text = "Open";
-    }
-
-    private void onSliderValueChanged(float value)
-    {
-        joystickController.DeadzoneAmount = value;
     }
 
     private void onPortFieldEditEnd(string port) {

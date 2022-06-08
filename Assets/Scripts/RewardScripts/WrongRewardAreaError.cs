@@ -7,7 +7,7 @@ public class WrongRewardAreaError : MonoBehaviour
     public RewardArea rewardArea;
     private static CueController cueController;
     private static ExperimentController experimentController;
-    public NonTargetRaycast nonTargetRaycast;
+    private static NonTargetRaycast nonTargetRaycast;
     private float timer = 1000f;
     private bool isSoundTriggered = false;
 
@@ -47,9 +47,16 @@ public class WrongRewardAreaError : MonoBehaviour
             if (areaPosterImage != cueImage && experimentController.enableRewardAreaError && nonTargetRaycast.errorFlag.ToString() == "True")
             // global variable nonTargetRaycast.errorFlag does not directly interact with scripts unless used as string
             {
-                Debug.Log("TriggerEnter Ping");
-                PlayerAudio.instance.PlayErrorClip();
-                timer = 0f;
+                Vector3 direction = rewardArea.transform.position - other.transform.position;
+                direction.y = 0;
+                float angle = Vector3.Angle(direction, other.transform.forward);
+                float distance = Vector3.Magnitude(direction);
+                if (angle < RewardArea.RequiredViewAngle * 0.5f)
+                {
+                    Debug.Log("TriggerEnter Ping");
+                    PlayerAudio.instance.PlayErrorClip();
+                    timer = 0f;
+                }
             }
         }
     }

@@ -1,4 +1,4 @@
-Version: 20171221 Taxi Continuous v4
+Version: 20171221 Taxi Continuous/Discontinuous
 Trigger: v4
 TaskType: Continuous
 PosterLocations: P1(-5,1.5,-7.55) P2(-7.55,1.5,5) P3(7.55,1.5,-5) P4(5,1.5,7.55) P5(5,1.5,2.45) P6(-5,1.5,-2.45)
