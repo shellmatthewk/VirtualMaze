@@ -7,7 +7,6 @@ public class NonTargetRaycast : MonoBehaviour
     //public CheckPoster checkPoster;
     public AudioClip errorClip;
     public CueController cueController;
-    private static ExperimentController experimentController;
     private bool isSoundTriggered = false;
     private bool isPosterInView = false;
     private bool isCorrectPoster = false;
@@ -34,7 +33,7 @@ public class NonTargetRaycast : MonoBehaviour
     private bool Flag17;
     private bool Flag18;
     private float timer = 1000f;
-    public bool errorFlag = false;
+    public bool disableHint = true;
     //public static string cueImage { get; private set; }
 
     [SerializeField]
@@ -42,11 +41,6 @@ public class NonTargetRaycast : MonoBehaviour
 
     [SerializeField]
     private float maxDist = 2;
-
-    void Start()
-    {
-        experimentController = GameObject.FindObjectOfType(typeof(ExperimentController)) as ExperimentController;
-    }
 
     void Update()
     {
@@ -63,6 +57,7 @@ public class NonTargetRaycast : MonoBehaviour
 
         // Checks if a session is currently running
         if (LevelController.sessionStarted) // Removed "&& !disableHint" condition from if statement.
+                                            // I believe this conidtion is supposed to be meant for disableHint option from GUI but it is not linked to that.
         {
             Shoot();
             HintBlink();
@@ -71,15 +66,6 @@ public class NonTargetRaycast : MonoBehaviour
         {
             Reset();
         }
-        
-        if (timer >= experimentController.rewardAreaErrorTime)
-        {
-            errorFlag = true; // duration between error sounds long enough
-        }
-        else { errorFlag = false; } // duration between error sounds not long enough
-        // Debug.Log(errorFlag);
-        // Debug.Log(timer);
-
 
         // Raycasts to check whether rays are colliding with poster
         void Shoot()
@@ -731,7 +717,6 @@ public class NonTargetRaycast : MonoBehaviour
 
     private void WrongPoster()
     {
-        // Debug.Log("Raycast Ping");
         PlayerAudio.instance.PlayErrorClip();
         timer = 0f; // For resetting the blinking timer
     }
@@ -746,17 +731,13 @@ public class NonTargetRaycast : MonoBehaviour
         {
             if (timer >= (i * overallBlinkDuration)  && timer < (((2 * i) + 1) * overallBlinkDuration / 2))
             {
-                if (experimentController.disableHint) { cueController.ShowHint(); }
-                else if (!experimentController.disableHint) { cueController.HideHint(); }
+                cueController.HideHint();
             }
             if (timer >= (((2 * i) + 1) * overallBlinkDuration / 2) && timer < ((i + 1) * overallBlinkDuration))
             {
-                if (experimentController.disableHint) { cueController.HideHint(); } // if disableHint is true, end with hide hint
-                else if (!experimentController.disableHint) { cueController.ShowHint(); } // if disableHint is false, end with show hint
-
+                cueController.ShowHint();
             }
         }
-        // if (experimentController.disableHint) { cueController.HideHint(); }
     }
 
     private void Reset()

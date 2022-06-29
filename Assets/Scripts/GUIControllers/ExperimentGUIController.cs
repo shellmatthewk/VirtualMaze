@@ -15,11 +15,11 @@ public class ExperimentGUIController : DataGUIController {
     public InputField sessionIntermissionDurationField;
     public InputField timeoutDurationField;
     public InputField timeLimitField;
-    public InputField rewardAreaErrorField;
 
     public Toggle fixedTrailIntermissionToggle;
     public Toggle randomTrailIntermissionToggle;
 
+    public Toggle posterEnableValid;
     public Toggle sessionIntermissionValid;
     public Toggle timeoutDurationValid;
     public Toggle timeLimitValid;
@@ -33,7 +33,7 @@ public class ExperimentGUIController : DataGUIController {
     public Toggle resetPositionOnSessionToggle;
     public Toggle enableDirectionErrorToggle;
     public Toggle disableHintToggle;
-    public Toggle rewardAreaErrorToggle;
+    public Toggle rewardAreaErrorToggle; // this
 
     public Button startStopButton;
     public Button pauseButton;
@@ -51,7 +51,6 @@ public class ExperimentGUIController : DataGUIController {
         sessionIntermissionDurationField.onEndEdit.AddListener(OnSessionIntermissionFieldEndEdit);
         timeoutDurationField.onEndEdit.AddListener(OnTimeoutDurationFieldEndEdit);
         timeLimitField.onEndEdit.AddListener(OnTimeLimitFieldEndEdit);
-        rewardAreaErrorField.onEndEdit.AddListener(OnRewardAreaErrorFieldEndEdit);
 
         fixedTrailIntermissionToggle.onValueChanged.AddListener(OnFixedTrialIntermissionToggleChanged);
         randomTrailIntermissionToggle.onValueChanged.AddListener(OnRandomTrialIntermissionToggleChanged);
@@ -68,7 +67,7 @@ public class ExperimentGUIController : DataGUIController {
         resetPositionOnSessionToggle.onValueChanged.AddListener(toggleResetPositionOnSession);
         enableDirectionErrorToggle.onValueChanged.AddListener(toggleEnableDirectionError);
         disableHintToggle.onValueChanged.AddListener(toggleDisableHint);
-        rewardAreaErrorToggle.onValueChanged.AddListener(toggleRewardAreaError);
+        rewardAreaErrorToggle.onValueChanged.AddListener(toggleRewardAreaError); // this
 
     }
 
@@ -142,21 +141,7 @@ public class ExperimentGUIController : DataGUIController {
     private void OnRandomTrialIntermissionToggleChanged(bool value) {
         Session.isTrailIntermissionRandom = value;
     }
-    
-    private void OnRewardAreaErrorFieldEndEdit(string text)
-    {
-        if (IsValidDuration(text, out int duration))
-        {
-            experimentController.rewardAreaErrorTime = duration;
-        }
-        else
-        {
-            text = experimentController.rewardAreaErrorTime.ToString();
-            Console.WriteError("Invalid Value");
-        }
 
-    }
-    
     private void OnTimeLimitFieldEndEdit(string text) {
         if (IsValidDuration(text, out int duration)) {
             Session.trialTimeLimit = duration;
@@ -249,7 +234,6 @@ public class ExperimentGUIController : DataGUIController {
         sessionIntermissionDurationField.text = experimentController.SessionIntermissionDuration.ToString();
         timeoutDurationField.text = Session.timeoutDuration.ToString();
         timeLimitField.text = Session.trialTimeLimit.ToString();
-        rewardAreaErrorField.text = experimentController.rewardAreaErrorTime.ToString();
 
         //to bypass ToggleGroup bug
         if (Session.isTrailIntermissionRandom) {
