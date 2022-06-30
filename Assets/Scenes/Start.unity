@@ -305,6 +305,7 @@ MonoBehaviour:
   cam: {fileID: 1750901562}
   errorClip: {fileID: 8300000, guid: 9867167ea89524c9cb9a1c5d11cbfd3f, type: 3}
   cueController: {fileID: 1160995684}
+  disableHint: 1
   errorFlag: 0
   maxDist: 2
 --- !u!114 &158159961
@@ -486,6 +487,7 @@ MonoBehaviour:
   cam: {fileID: 0}
   errorClip: {fileID: 0}
   cueController: {fileID: 0}
+  disableHint: 1
   errorFlag: 0
   maxDist: 2
 --- !u!114 &362525637

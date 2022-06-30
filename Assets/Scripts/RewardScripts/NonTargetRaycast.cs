@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class NonTargetRaycast : MonoBehaviour
@@ -18,16 +18,11 @@ public class NonTargetRaycast : MonoBehaviour
     private bool FlagRight;
     private bool FlagStraight;
     private float timer = 1000f;
-    public bool errorFlag = false;
+    public bool disableHint = true;
     //public static string cueImage { get; private set; }
 
     [SerializeField]
     private float maxDist = 1;
-
-    void Start()
-    {
-        experimentController = GameObject.FindObjectOfType(typeof(ExperimentController)) as ExperimentController;
-    }
 
     void Update()
     {
@@ -244,7 +239,7 @@ public class NonTargetRaycast : MonoBehaviour
     }
 
     // Number and duration of blinks
-    int numBlinks = 4;
+    int numBlinks = 2;
     float overallBlinkDuration = 0.5f;
     
     private void HintBlink()
@@ -253,17 +248,13 @@ public class NonTargetRaycast : MonoBehaviour
         {
             if (timer >= (i * overallBlinkDuration)  && timer < (((2 * i) + 1) * overallBlinkDuration / 2))
             {
-                if (experimentController.disableHint) { cueController.ShowHint(); }
-                else if (!experimentController.disableHint) { cueController.HideHint(); }
+                cueController.HideHint();
             }
             if (timer >= (((2 * i) + 1) * overallBlinkDuration / 2) && timer < ((i + 1) * overallBlinkDuration))
             {
-                if (experimentController.disableHint) { cueController.HideHint(); } // if disableHint is true, end with hide hint
-                else if (!experimentController.disableHint) { cueController.ShowHint(); } // if disableHint is false, end with show hint
-
+                cueController.ShowHint();
             }
         }
-        // if (experimentController.disableHint) { cueController.HideHint(); }
     }
 
     private void Reset()

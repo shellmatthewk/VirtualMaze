@@ -269,7 +269,7 @@ public class LevelController : MonoBehaviour {
             success = false; //reset the success
         }
 
-        yield return new WaitForSecondsRealtime(2f); // Wait time at the end of trial
+        yield return new WaitForSecondsRealtime(1f); // Wait time at the end of trial
 
         if (!disableInterSessionBlackout)
         {
@@ -331,7 +331,7 @@ public class LevelController : MonoBehaviour {
         cueController.ShowCue();
         onSessionTrigger.Invoke(SessionTrigger.TrialStartedTrigger, targetIndex);
 
-        yield return new WaitForSecondsRealtime(2f); // Wait time for showing cue before minimising
+        yield return new WaitForSecondsRealtime(1f); // Wait time for showing cue before minimising
 
         cueController.HideCue();
         if (!disableHint) {
@@ -360,7 +360,7 @@ public class LevelController : MonoBehaviour {
     }
 
     protected virtual IEnumerator InterTrial() {
-        yield return new WaitForSecondsRealtime(2f); // Wait time in-between trials
+        yield return new WaitForSecondsRealtime(1f); // Wait time in-between trials
         cueController.HideHint();
         if (resetRobotPositionDuringInterTrial) {
             //fadeout and wait for fade out to finish.
