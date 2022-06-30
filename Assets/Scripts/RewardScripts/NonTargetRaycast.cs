@@ -59,7 +59,7 @@ public class NonTargetRaycast : MonoBehaviour
             errorFlag = true; // duration between error sounds long enough
         }
         else { errorFlag = false; } // duration between error sounds not long enough
-        Debug.Log(errorFlag);
+        // Debug.Log(errorFlag);
         // Debug.Log(timer);
 
         if (FlagLeft || FlagRight || FlagStraight || flag)

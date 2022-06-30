@@ -15,37 +15,36 @@ public class SessionContext {
     public string taskType;
     public List<PosterLocation> posterLocations = new List<PosterLocation>();
     public string trialName;
-    public int rewardsNumber; //number of trials
-    public int completionWindow;
-    public int timeoutDuration;
-    public int intersessionInterval;
-    public int rewardTime;
-    public int rewardDistance;
-    public float rewardViewCriteria;
-    public float rotationSpeed;
-    public float movementSpeed;
-    public float joystickDeadzone;
-    public float angleRestrictionAmount;
-    public float requiredDistance;
-    public float proximityDistance;
-    public float directionErrorDistance;
-    public bool isJoystickEnabled;
-    public bool isReverseEnabled;
-    public bool isForwardEnabled;
-    public bool isRightEnabled;
-    public bool isLeftEnabled;
-    public bool isYInverted;
-    public bool isXInverted;
-    public bool restartOnTrialFail;
-    public bool resetPositionOnTrial;
-    public bool faceRandomDirectionOnStart;
-    public bool multipleWaypoints;
-    public bool disableInterSessionBlackout;
-    public bool resetPositionOnSession;
-    public bool enableDirectionError;
-    public bool disableHint;
-    public bool enableRewardAreaError;
-    public int rewardAreaErrorTime;
+    public string rewardsNumber; //number of trials
+    public string completionWindow;
+    public string timeoutDuration;
+    public string intersessionInterval;
+    public string rewardTime;
+    public string rewardViewCriteria;
+    public string rotationSpeed;
+    public string movementSpeed;
+    public string joystickDeadzone;
+    public string angleRestrictionAmount;
+    public string requiredDistance;
+    public string proximityDistance;
+    public string directionErrorDistance;
+    public string isJoystickEnabled;
+    public string isReverseEnabled;
+    public string isForwardEnabled;
+    public string isRightEnabled;
+    public string isLeftEnabled;
+    public string isYInverted;
+    public string isXInverted;
+    public string restartOnTrialFail;
+    public string resetPositionOnTrial;
+    public string faceRandomDirectionOnStart;
+    public string multipleWaypoints;
+    public string disableInterSessionBlackout;
+    public string resetPositionOnSession;
+    public string enableDirectionError;
+    public string disableHint;
+    public string enableRewardAreaError;
+    public string rewardAreaErrorTime;
 
 
     //regex to extract information from string
@@ -58,7 +57,7 @@ public class SessionContext {
         triggerVersion = GameController.pportInfo;
         GetExperimentSettings(settings);
 
-        if (!resetPositionOnTrial) {
+        if (resetPositionOnTrial == "False") {
             taskType = "Continuous";
         }
         else {
@@ -66,7 +65,7 @@ public class SessionContext {
         }
 
         trialName = session.maze.MazeName;
-        rewardsNumber = session.numTrials;
+        rewardsNumber = session.numTrials.ToString();
 
         foreach (RewardArea reward in rewards) {
             if (reward.target != null) {
@@ -87,7 +86,7 @@ public class SessionContext {
     public SessionContext(string currentLine, StreamReader reader) {
         string line = currentLine;
         version = GetValue(line);
-
+        /*
         line = reader.ReadLine();
         triggerVersion = GetValue(line);
 
@@ -128,6 +127,7 @@ public class SessionContext {
 
         line = reader.ReadLine();
         rewardViewCriteria = float.Parse(GetValue(line));
+        */
     }
 
     private bool ProcessPosterLocations(List<PosterLocation> posterLocations, string line) {
@@ -156,11 +156,36 @@ public class SessionContext {
     }
 
     public string ToJsonString() {
-        return JsonUtility.ToJson(this, true);
-    }
+        /// This function splits keys and values from the header string's into a collection and recontructs a new header
+        string header;
+        string newHeader = "";
+        string temp;
+        bool keyFlag = true;
+        header = JsonUtility.ToJson(this, true);
+        var reg = new Regex("\".*?\"");
+        var matches = reg.Matches(header);
+        foreach (var item in matches)
+        {
+            temp = item.ToString(); // converts Match to string, but contains "" in string
+            if (keyFlag) // checks if the item is supposed to be a key
+            {
+                newHeader += temp.Substring(1, temp.Length - 2) + ": "; // removes "" from the string and add separator to newHeader
+                keyFlag = false;
+            }
+            else
+            {
+                newHeader += temp.Substring(1, temp.Length - 2) + "\n"; // removes "" from the string and add new line to newHeader
+                keyFlag = true;
+            }
 
-    public string ToJsonString(bool prettyPrint) {
-        return JsonUtility.ToJson(this, prettyPrint);
+            if (temp == "\"posterLocations\"")
+            {
+                newHeader += "\n\n";
+                keyFlag = true; // sets keyFlag to true again as posterLocation has an entire list as its value.
+            }
+            
+        }
+        return newHeader;
     }
 
     //helper methods to log required settings
@@ -176,18 +201,17 @@ public class SessionContext {
 
     private void GetRobotMovementSettings(ExperimentSettings settings) {
         if (settings.TryGetComponentSetting(out RobotMovement.Settings movementSettings)) {
-            rotationSpeed = movementSettings.rotationSpeed;
-            movementSpeed = movementSettings.movementSpeed;
-            joystickDeadzone = movementSettings.deadzoneAmount;
-            angleRestrictionAmount = movementSettings.angleRestrictionAmount;
-
-            isJoystickEnabled = movementSettings.isJoystickEnabled;
-            isReverseEnabled = movementSettings.isReverseEnabled;
-            isForwardEnabled = movementSettings.isForwardEnabled;
-            isRightEnabled = movementSettings.isRightEnabled;
-            isLeftEnabled = movementSettings.isLeftEnabled;
-            isYInverted = movementSettings.isYInverted;
-            isXInverted = movementSettings.isXInverted;
+            rotationSpeed = movementSettings.rotationSpeed.ToString();
+            movementSpeed = movementSettings.movementSpeed.ToString();
+            joystickDeadzone = movementSettings.deadzoneAmount.ToString();
+            angleRestrictionAmount = movementSettings.angleRestrictionAmount.ToString();
+            isJoystickEnabled = movementSettings.isJoystickEnabled.ToString();
+            isReverseEnabled = movementSettings.isReverseEnabled.ToString();
+            isForwardEnabled = movementSettings.isForwardEnabled.ToString();
+            isRightEnabled = movementSettings.isRightEnabled.ToString();
+            isLeftEnabled = movementSettings.isLeftEnabled.ToString();
+            isYInverted = movementSettings.isYInverted.ToString();
+            isXInverted = movementSettings.isXInverted.ToString();
         }
         else {
             //this values are a must to be logged. Therefore an exception is thrown.
@@ -197,11 +221,11 @@ public class SessionContext {
 
     private void GetRewardSettings(ExperimentSettings settings) {
         if (settings.TryGetComponentSetting(out RewardsController.Settings rewardSettings)) {
-            rewardTime = rewardSettings.rewardDurationMilliSecs;
-            rewardViewCriteria = rewardSettings.requiredViewAngle;
-            requiredDistance = rewardSettings.requiredDistance;
-            proximityDistance = rewardSettings.proximityDistance;
-            directionErrorDistance = rewardSettings.directionErrorDistance;
+            rewardTime = rewardSettings.rewardDurationMilliSecs.ToString();
+            rewardViewCriteria = rewardSettings.requiredViewAngle.ToString();
+            requiredDistance = rewardSettings.requiredDistance.ToString();
+            proximityDistance = rewardSettings.proximityDistance.ToString();
+            directionErrorDistance = rewardSettings.directionErrorDistance.ToString();
         }
         else {
             //this values are a must to be logged. Therefore an exception is thrown.
@@ -211,20 +235,20 @@ public class SessionContext {
 
     private void GetExperimentSettings(ExperimentSettings settings) {
         if (settings.TryGetComponentSetting(out ExperimentController.Settings experimentSettings)) {
-            completionWindow = experimentSettings.timeLimitDuration;
-            timeoutDuration = experimentSettings.timeoutDuration;
-            intersessionInterval = experimentSettings.sessionIntermissionDuration;
+            completionWindow = experimentSettings.timeLimitDuration.ToString();
+            timeoutDuration = experimentSettings.timeoutDuration.ToString();
+            intersessionInterval = experimentSettings.sessionIntermissionDuration.ToString();
 
-            restartOnTrialFail = experimentSettings.restartOnTrialFail;
-            resetPositionOnTrial = experimentSettings.resetPositionOnTrial;
-            faceRandomDirectionOnStart = experimentSettings.faceRandomDirectionOnStart;
-            multipleWaypoints = experimentSettings.multipleWaypoints;
-            disableInterSessionBlackout = experimentSettings.disableInterSessionBlackout;
-            resetPositionOnSession = experimentSettings.resetPositionOnSession;
-            enableDirectionError = experimentSettings.enableDirectionError;
-            disableHint = experimentSettings.disableHint;
-            enableRewardAreaError = experimentSettings.enableRewardAreaError;
-            rewardAreaErrorTime = experimentSettings.rewardAreaErrorTime;
+            restartOnTrialFail = experimentSettings.restartOnTrialFail.ToString();
+            resetPositionOnTrial = experimentSettings.resetPositionOnTrial.ToString();
+            faceRandomDirectionOnStart = experimentSettings.faceRandomDirectionOnStart.ToString();
+            multipleWaypoints = experimentSettings.multipleWaypoints.ToString();
+            disableInterSessionBlackout = experimentSettings.disableInterSessionBlackout.ToString();
+            resetPositionOnSession = experimentSettings.resetPositionOnSession.ToString();
+            enableDirectionError = experimentSettings.enableDirectionError.ToString();
+            disableHint = experimentSettings.disableHint.ToString();
+            enableRewardAreaError = experimentSettings.enableRewardAreaError.ToString();
+            rewardAreaErrorTime = experimentSettings.rewardAreaErrorTime.ToString();
         }
         else {
             //this values are a must to have. Therefore an exception is thrown
@@ -245,14 +269,14 @@ public class SessionContext {
     [Serializable]
     public struct PosterLocation {
         public string name;
-        public Vector3 position;
+        public string posterPosition;
         public PosterLocation(Vector3 position, string name) {
             this.name = name;
-            this.position = position;
+            this.posterPosition = $"({position.x}, {position.y}, {position.z})";
         }
 
         public override string ToString() {
-            return $"{name}, {position}";
+            return $"{name}, {posterPosition}";
         }
     }
 }

@@ -15,10 +15,11 @@ public class ExperimentController : ConfigurableComponent {
         public bool enableDirectionError;
         public bool disableHint;
         public bool enableRewardAreaError;
-        public int rewardAreaErrorTime;
+
         public int fixedTrialIntermissionDuration;
         public int maxTrialIntermissionDuration;
         public int minTrialIntermissionDuration;
+        public int rewardAreaErrorTime;
 
         public string saveLocation;
         public int sessionIntermissionDuration;
@@ -36,10 +37,10 @@ public class ExperimentController : ConfigurableComponent {
             bool enableDirectionError,
             bool disableHint,
             bool enableRewardAreaError,
-            int rewardAreaErrorTime,
             int fixedTrialIntermissionDuration,
             int maxTrialIntermissionDuration,
             int minTrialIntermissionDuration,
+            int rewardAreaErrorTime,
             int sessionIntermissionDuration,
             int timeoutDuration,
             int timeLimitDuration,
@@ -56,10 +57,11 @@ public class ExperimentController : ConfigurableComponent {
             this.disableHint = disableHint;
             this.enableRewardAreaError = enableRewardAreaError;
             this.saveLocation = saveLocation;
-            this.rewardAreaErrorTime = rewardAreaErrorTime;
+
             this.fixedTrialIntermissionDuration = fixedTrialIntermissionDuration;
             this.maxTrialIntermissionDuration = maxTrialIntermissionDuration;
             this.minTrialIntermissionDuration = minTrialIntermissionDuration;
+            this.rewardAreaErrorTime = rewardAreaErrorTime;
             this.sessionIntermissionDuration = sessionIntermissionDuration;
             this.timeoutDuration = timeoutDuration;
             this.timeLimitDuration = timeLimitDuration;
@@ -271,9 +273,9 @@ public class ExperimentController : ConfigurableComponent {
 
     public override ComponentSettings GetCurrentSettings() {
         return new Settings(Session.isTrailIntermissionRandom, restartOnTrialFail, resetPositionOnTrial, faceRandomDirectionOnStart,
-            multipleWaypoints, disableInterSessionBlackout, resetPositionOnSession, enableDirectionError, disableHint, enableRewardAreaError, rewardAreaErrorTime,
-            Session.fixedTrialIntermissionDuration, Session.maxTrialIntermissionDuration,
-            Session.minTrialIntermissionDuration, SessionIntermissionDuration,
+            multipleWaypoints, disableInterSessionBlackout, resetPositionOnSession, enableDirectionError, disableHint,
+            enableRewardAreaError, Session.fixedTrialIntermissionDuration, Session.maxTrialIntermissionDuration,
+            Session.minTrialIntermissionDuration, rewardAreaErrorTime, SessionIntermissionDuration,
             Session.timeoutDuration, Session.trialTimeLimit, SaveLocation);
     }
 
@@ -292,11 +294,11 @@ public class ExperimentController : ConfigurableComponent {
         Session.fixedTrialIntermissionDuration = settings.fixedTrialIntermissionDuration;
         Session.maxTrialIntermissionDuration = settings.maxTrialIntermissionDuration;
         Session.minTrialIntermissionDuration = settings.minTrialIntermissionDuration;
+        rewardAreaErrorTime = settings.rewardAreaErrorTime;
         SessionIntermissionDuration = settings.sessionIntermissionDuration;
         Session.timeoutDuration = settings.timeoutDuration;
         Session.trialTimeLimit = settings.timeLimitDuration;
         SaveLocation = settings.saveLocation;
         enableRewardAreaError = settings.enableRewardAreaError;
-        rewardAreaErrorTime = settings.rewardAreaErrorTime;
     }
 }

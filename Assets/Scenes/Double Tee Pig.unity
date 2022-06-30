@@ -910,7 +910,7 @@ PrefabInstance:
     - target: {fileID: 1936230905976871848, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
       propertyPath: m_Name
-      value: Poster
+      value: RabbitPoster
       objectReference: {fileID: 0}
     - target: {fileID: 2472647010858284900, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
@@ -2270,7 +2270,7 @@ PrefabInstance:
     - target: {fileID: 1936230905976871848, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
       propertyPath: m_Name
-      value: Poster
+      value: CrocPoster
       objectReference: {fileID: 0}
     - target: {fileID: 2472647010858284900, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
@@ -4526,7 +4526,7 @@ PrefabInstance:
     - target: {fileID: 1936230905976871848, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
       propertyPath: m_Name
-      value: Poster
+      value: DonkeyPoster
       objectReference: {fileID: 0}
     - target: {fileID: 2472647010858284900, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
@@ -5578,7 +5578,7 @@ PrefabInstance:
     - target: {fileID: 1936230905976871848, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
       propertyPath: m_Name
-      value: Poster
+      value: CamalPoster
       objectReference: {fileID: 0}
     - target: {fileID: 1936230905976871848, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
@@ -6596,7 +6596,12 @@ PrefabInstance:
     - target: {fileID: 1936230905976871848, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
       propertyPath: m_Name
-      value: Poster
+      value: PigPoster
+      objectReference: {fileID: 0}
+    - target: {fileID: 1936230905976871848, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_TagString
+      value: Reward
       objectReference: {fileID: 0}
     - target: {fileID: 2472647010858284900, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
@@ -6812,7 +6817,7 @@ PrefabInstance:
     - target: {fileID: 1936230905976871848, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
       propertyPath: m_Name
-      value: Poster
+      value: CatPoster
       objectReference: {fileID: 0}
     - target: {fileID: 2472647010858284900, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
