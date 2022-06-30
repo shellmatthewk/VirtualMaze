@@ -40,7 +40,8 @@ public class RobotMovement : ConfigurableComponent {
                         bool isRightEnabled,
                         bool isLeftEnabled,
                         bool isYInverted,
-                        bool isXInverted) {
+                        bool isXInverted)
+        {
             this.rotationSpeed = rotationSpeed;
             this.movementSpeed = movementSpeed;
 

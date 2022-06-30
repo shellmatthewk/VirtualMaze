@@ -25,15 +25,46 @@ public class SessionContext {
     public float rotationSpeed;
     public float movementSpeed;
     public float joystickDeadzone;
+    public float angleRestrictionAmount;
+    public float requiredDistance;
+    public float proximityDistance;
+    public float directionErrorDistance;
+    public bool isJoystickEnabled;
+    public bool isReverseEnabled;
+    public bool isForwardEnabled;
+    public bool isRightEnabled;
+    public bool isLeftEnabled;
+    public bool isYInverted;
+    public bool isXInverted;
+    public bool restartOnTrialFail;
+    public bool resetPositionOnTrial;
+    public bool faceRandomDirectionOnStart;
+    public bool multipleWaypoints;
+    public bool disableInterSessionBlackout;
+    public bool resetPositionOnSession;
+    public bool enableDirectionError;
+    public bool disableHint;
+    public bool enableRewardAreaError;
+    public int rewardAreaErrorTime;
+
 
     //regex to extract information from string
     // any word ( float or int, float or int, float or int )
     private const string posterRegex = @"(\w+)\(([-+]?[0-9]*\.?[0-9]+),([-+]?[0-9]*\.?[0-9]+),([-+]?[0-9]*\.?[0-9]+)\)";
 
+
     public SessionContext(Session session, ExperimentSettings settings, RewardArea[] rewards) {
         version = GameController.versionInfo;
         triggerVersion = GameController.pportInfo;
-        taskType = "Continuous";
+        GetExperimentSettings(settings);
+
+        if (!resetPositionOnTrial) {
+            taskType = "Continuous";
+        }
+        else {
+            taskType = "Discontinuous";
+        }
+
         trialName = session.maze.MazeName;
         rewardsNumber = session.numTrials;
 
@@ -46,7 +77,6 @@ public class SessionContext {
         GetJoystickSettings(settings);
         GetRobotMovementSettings(settings);
         GetRewardSettings(settings);
-        GetExperimentSettings(settings);
     }
 
     /// <summary>
@@ -94,7 +124,7 @@ public class SessionContext {
         movementSpeed = float.Parse(GetValue(line));
 
         line = reader.ReadLine();
-        movementSpeed = float.Parse(GetValue(line));
+        joystickDeadzone = float.Parse(GetValue(line));
 
         line = reader.ReadLine();
         rewardViewCriteria = float.Parse(GetValue(line));
@@ -126,7 +156,7 @@ public class SessionContext {
     }
 
     public string ToJsonString() {
-        return JsonUtility.ToJson(this, false);
+        return JsonUtility.ToJson(this, true);
     }
 
     public string ToJsonString(bool prettyPrint) {
@@ -136,7 +166,7 @@ public class SessionContext {
     //helper methods to log required settings
     private void GetJoystickSettings(ExperimentSettings settings) {
         if (settings.TryGetComponentSetting(out JoystickController.Settings joystickSettings)) {
-            joystickDeadzone = joystickSettings.deadzoneAmount;
+            // Add new joystick variable here.
         }
         else {
             //this values are a must to be logged. Therefore an exception is thrown.
@@ -148,6 +178,16 @@ public class SessionContext {
         if (settings.TryGetComponentSetting(out RobotMovement.Settings movementSettings)) {
             rotationSpeed = movementSettings.rotationSpeed;
             movementSpeed = movementSettings.movementSpeed;
+            joystickDeadzone = movementSettings.deadzoneAmount;
+            angleRestrictionAmount = movementSettings.angleRestrictionAmount;
+
+            isJoystickEnabled = movementSettings.isJoystickEnabled;
+            isReverseEnabled = movementSettings.isReverseEnabled;
+            isForwardEnabled = movementSettings.isForwardEnabled;
+            isRightEnabled = movementSettings.isRightEnabled;
+            isLeftEnabled = movementSettings.isLeftEnabled;
+            isYInverted = movementSettings.isYInverted;
+            isXInverted = movementSettings.isXInverted;
         }
         else {
             //this values are a must to be logged. Therefore an exception is thrown.
@@ -159,6 +199,9 @@ public class SessionContext {
         if (settings.TryGetComponentSetting(out RewardsController.Settings rewardSettings)) {
             rewardTime = rewardSettings.rewardDurationMilliSecs;
             rewardViewCriteria = rewardSettings.requiredViewAngle;
+            requiredDistance = rewardSettings.requiredDistance;
+            proximityDistance = rewardSettings.proximityDistance;
+            directionErrorDistance = rewardSettings.directionErrorDistance;
         }
         else {
             //this values are a must to be logged. Therefore an exception is thrown.
@@ -171,6 +214,17 @@ public class SessionContext {
             completionWindow = experimentSettings.timeLimitDuration;
             timeoutDuration = experimentSettings.timeoutDuration;
             intersessionInterval = experimentSettings.sessionIntermissionDuration;
+
+            restartOnTrialFail = experimentSettings.restartOnTrialFail;
+            resetPositionOnTrial = experimentSettings.resetPositionOnTrial;
+            faceRandomDirectionOnStart = experimentSettings.faceRandomDirectionOnStart;
+            multipleWaypoints = experimentSettings.multipleWaypoints;
+            disableInterSessionBlackout = experimentSettings.disableInterSessionBlackout;
+            resetPositionOnSession = experimentSettings.resetPositionOnSession;
+            enableDirectionError = experimentSettings.enableDirectionError;
+            disableHint = experimentSettings.disableHint;
+            enableRewardAreaError = experimentSettings.enableRewardAreaError;
+            rewardAreaErrorTime = experimentSettings.rewardAreaErrorTime;
         }
         else {
             //this values are a must to have. Therefore an exception is thrown

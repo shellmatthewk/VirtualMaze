@@ -44,7 +44,7 @@ public class RewardArea : MonoBehaviour {
             if (v != value) {
                 Console.Write($"Value Clamped to {v}");
             }
-            Debug.Log(value);
+            // Debug.Log(value);
         }
     }
 
@@ -64,7 +64,7 @@ public class RewardArea : MonoBehaviour {
             if (v != value) {
                 Console.Write($"Value Clamped to {v}");
             }
-            Debug.Log(value);
+            // Debug.Log(value);
         }
     }
 
@@ -100,7 +100,7 @@ public class RewardArea : MonoBehaviour {
             if (v != value) {
                 Console.Write($"Value Clamped to {v}");
             }
-            Debug.Log(value);
+            // Debug.Log(value);
         }
     }
 

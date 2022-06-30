@@ -11,12 +11,10 @@ public class JoystickController : ConfigurableComponent {
     [Serializable]
     public class Settings : ComponentSettings {
         [Range(0, 1)]
-        public float deadzoneAmount = 0;
         public string portNum = "";
     }
 
     public int baudRate = 115200;
-    public float theta = 0;
 
     /// <summary>
     ///  more than 0 is right,
@@ -27,7 +25,6 @@ public class JoystickController : ConfigurableComponent {
 
     [SerializeField]
     private Settings settings;
-    public float DeadzoneAmount { get => settings.deadzoneAmount; set => settings.deadzoneAmount = value; }
     public string PortNum { get => settings.portNum; set => settings.portNum = value; }
 
     public bool isOpen { get; private set; }
