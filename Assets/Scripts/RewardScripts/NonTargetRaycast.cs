@@ -13,16 +13,22 @@ public class NonTargetRaycast : MonoBehaviour
     private bool isPosterInView = false;
     private bool isCorrectPoster = false;
     //private float sweepValue = 0f;
+    public bool errorFlag = false;
     private bool flag;
     private bool FlagLeft;
     private bool FlagRight;
     private bool FlagStraight;
     private float timer = 1000f;
-    public bool disableHint = true;
+
     //public static string cueImage { get; private set; }
 
     [SerializeField]
     private float maxDist = 1;
+
+    void Start()
+    {
+        experimentController = GameObject.FindObjectOfType(typeof(ExperimentController)) as ExperimentController;
+    }
 
     void Update()
     {
@@ -53,7 +59,7 @@ public class NonTargetRaycast : MonoBehaviour
             errorFlag = true; // duration between error sounds long enough
         }
         else { errorFlag = false; } // duration between error sounds not long enough
-        // Debug.Log(errorFlag);
+        Debug.Log(errorFlag);
         // Debug.Log(timer);
 
         if (FlagLeft || FlagRight || FlagStraight || flag)
@@ -248,13 +254,16 @@ public class NonTargetRaycast : MonoBehaviour
         {
             if (timer >= (i * overallBlinkDuration)  && timer < (((2 * i) + 1) * overallBlinkDuration / 2))
             {
-                cueController.HideHint();
+                if (experimentController.disableHint) { cueController.ShowHint(); }
+                else if (!experimentController.disableHint) { cueController.HideHint(); }
             }
             if (timer >= (((2 * i) + 1) * overallBlinkDuration / 2) && timer < ((i + 1) * overallBlinkDuration))
             {
-                cueController.ShowHint();
+                if (experimentController.disableHint) { cueController.HideHint(); } // if disableHint is true, end with hide hint
+                else if (!experimentController.disableHint) { cueController.ShowHint(); } // if disableHint is false, end with show hint
             }
         }
+        // if (experimentController.disableHint) { cueController.HideHint(); }
     }
 
     private void Reset()
@@ -269,6 +278,3 @@ public class NonTargetRaycast : MonoBehaviour
         isCorrectPoster = false;
     }
 }
-
-
-

@@ -19,13 +19,14 @@ public class WrongRewardAreaError : MonoBehaviour
     {
         cueController = GameObject.FindObjectOfType(typeof(CueController)) as CueController;
         experimentController = GameObject.FindObjectOfType(typeof(ExperimentController)) as ExperimentController;
+        nonTargetRaycast = GameObject.FindObjectOfType(typeof(NonTargetRaycast)) as NonTargetRaycast;
     }
 
     private void Update()
     {
         timer += Time.deltaTime;
-        // HintBlink();
-        HintBlink2();
+        HintBlink();
+
         if (!LevelController.sessionStarted)
         {
             Reset();
@@ -35,13 +36,14 @@ public class WrongRewardAreaError : MonoBehaviour
     
     private void OnTriggerEnter(Collider other)
     {
-        if (LevelController.sessionStarted)
+        if (LevelController.sessionStarted && !isSoundTriggered)
         {
             string areaPosterImage = rewardArea.cueImage.name;
             //Debug.Log(areaPosterImage);
             string cueImage = CueImage.cueImage;
             //Debug.Log(cueImage);
-            if (areaPosterImage != cueImage && experimentController.enableRewardAreaError)
+            if (areaPosterImage != cueImage && experimentController.enableRewardAreaError && nonTargetRaycast.errorFlag.ToString() == "True")
+            // global variable nonTargetRaycast.errorFlag does not directly interact with scripts unless used as string
             {
                 Vector3 direction = rewardArea.transform.position - other.transform.position;
                 direction.y = 0;
@@ -49,18 +51,24 @@ public class WrongRewardAreaError : MonoBehaviour
                 float distance = Vector3.Magnitude(direction);
                 if (angle < RewardArea.RequiredViewAngle * 0.5f)
                 {
-                    Debug.Log("TriggerEnter Ping");
-                    PlayerAudio.instance.PlayErrorClip();
-                    timer = 0f;
+                    if (distance <= RewardArea.ProximityDistance)
+                    {
+                        Debug.Log("TriggerEnter Ping");
+                        PlayerAudio.instance.PlayErrorClip();
+                        timer = 0f;
+                        isSoundTriggered = true;
+                    }
+                    
                 }
             }
         }
     }
-
+    /*
     private void OnTriggerStay(Collider other)
     {
         // Debug.Log("Disable Hint: " + experimentController.disableHint);
-        if (LevelController.sessionStarted && experimentController.disableHint && !isSoundTriggered)
+        if (LevelController.sessionStarted && experimentController.disableHint
+        && !isSoundTriggered && !experimentController.enableRewardAreaError)
         {
             string areaPosterImage = rewardArea.cueImage.name;
             string cueImage = CueImage.cueImage;
@@ -75,6 +83,7 @@ public class WrongRewardAreaError : MonoBehaviour
                 {
                     if (distance <= RewardArea.ProximityDistance)
                     {
+                        Debug.Log("TriggerStay Ping");
                         PlayerAudio.instance.PlayErrorClip();
                         timer = 0f;
                         isSoundTriggered = true;
@@ -83,6 +92,7 @@ public class WrongRewardAreaError : MonoBehaviour
             }
         }
     }
+    */
 
     private void OnTriggerExit(Collider other)
     {
@@ -95,28 +105,13 @@ public class WrongRewardAreaError : MonoBehaviour
         {
             if (timer >= (i * overallBlinkDuration) && timer < (((2 * i) + 1) * overallBlinkDuration / 2))
             {
-                cueController.HideHint();
+                if (experimentController.disableHint) { cueController.ShowHint(); }
+                else if (!experimentController.disableHint) { cueController.HideHint(); }
             }
             if (timer >= (((2 * i) + 1) * overallBlinkDuration / 2) && timer < ((i + 1) * overallBlinkDuration))
             {
-                cueController.ShowHint();
-            }
-        }
-    }
-
-    private void HintBlink2()
-    {
-        numBlinks = 1;
-        overallBlinkDuration = 2f;
-        for (int i = 0; i < numBlinks; i++)
-        {
-            if (timer >= (i * overallBlinkDuration) && timer < (((2 * i) + 1) * overallBlinkDuration / 2))
-            {
-                cueController.ShowHint();
-            }
-            if (timer >= (((2 * i) + 1) * overallBlinkDuration / 2) && timer < ((i + 1) * overallBlinkDuration))
-            {
-                cueController.HideHint();
+                if (experimentController.disableHint) { cueController.HideHint(); } // if disableHint is true, end with hide hint
+                else if (!experimentController.disableHint) { cueController.ShowHint(); } // if disableHint is false, end with show hint
             }
         }
     }
