@@ -196,11 +196,15 @@ public class NonTargetRaycast : MonoBehaviour
             else FlagRight = false;
         }
 
-
+        /********************************** 
+        this for loop shoots all the rays from 0 degrees from midline to 100 degrees away from midline
+        in both directions at 10 degrees interval each.
+        **********************************/
         for (float rayAngleDeviation = 0f; rayAngleDeviation < 100f; rayAngleDeviation += 10f)
         {
             ShootRay(rayAngleDeviation, RewardArea.RequiredViewAngle);
             if (flag) break;
+            // the flag is triggered when a poster is in view. prevents extra rays from being created unnecessarily
             ShootRay(-rayAngleDeviation, -RewardArea.RequiredViewAngle);
             if (flag) break;
         }
