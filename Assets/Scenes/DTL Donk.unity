@@ -529,6 +529,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: RabbitRewardSet
       objectReference: {fileID: 0}
+    - target: {fileID: 8713676822357764614, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aa1b4192074926247b9711507173d20f, type: 3}
 --- !u!4 &293240968 stripped
@@ -1609,6 +1614,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8713676822357764614, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aa1b4192074926247b9711507173d20f, type: 3}
@@ -4771,6 +4781,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8713676822357764614, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aa1b4192074926247b9711507173d20f, type: 3}
 --- !u!4 &1591579539 stripped
@@ -5355,6 +5370,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PigRewardSet
       objectReference: {fileID: 0}
+    - target: {fileID: 8713676822357764614, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aa1b4192074926247b9711507173d20f, type: 3}
 --- !u!4 &1890611753 stripped
@@ -5575,6 +5595,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8713676822357764614, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aa1b4192074926247b9711507173d20f, type: 3}
