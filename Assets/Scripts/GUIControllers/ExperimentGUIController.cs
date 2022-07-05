@@ -143,7 +143,7 @@ public class ExperimentGUIController : DataGUIController {
 
     private void OnRewardAreaErrorFieldEndEdit(string text)
     {
-        if (IsValidDuration(text, out int duration))
+        if (IsValidFloatDuration(text, out float duration))
         {
             experimentController.rewardAreaErrorTime = duration;
         }
@@ -231,6 +231,23 @@ public class ExperimentGUIController : DataGUIController {
         }
         duration = result;
         return false;
+    }
+
+    private bool IsValidFloatDuration(string text, out float duration)
+    {
+        float result = -1;
+        if (float.TryParse(text, out result))
+        {
+            duration = result;
+            return IsValidFloatDuration(duration);
+        }
+        duration = result;
+        return false;
+    }
+
+    private bool IsValidFloatDuration(float duration)
+    {
+        return duration >= 0;
     }
 
     private bool IsValidDuration(int duration) {

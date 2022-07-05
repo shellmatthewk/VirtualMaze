@@ -306,7 +306,7 @@ MonoBehaviour:
   errorClip: {fileID: 8300000, guid: 9867167ea89524c9cb9a1c5d11cbfd3f, type: 3}
   cueController: {fileID: 1160995684}
   errorFlag: 0
-  maxDist: 2
+  maxDist: 3
 --- !u!114 &158159961
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -398,7 +398,7 @@ PrefabInstance:
     - target: {fileID: 1264815179275281790, guid: 6c3eae307e3aab64cbd0206dd2776ede,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1264815179275281790, guid: 6c3eae307e3aab64cbd0206dd2776ede,
         type: 3}
@@ -501,7 +501,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   errorClip: {fileID: 8300000, guid: 9867167ea89524c9cb9a1c5d11cbfd3f, type: 3}
-  rewardArea: {fileID: 2118323465}
+  rewardArea: {fileID: 0}
 --- !u!114 &417076678 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 365442454561706103, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
@@ -1089,7 +1089,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 469902, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 484774, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0, type: 3}
       propertyPath: m_RootOrder
@@ -6923,7 +6923,7 @@ PrefabInstance:
         type: 3}
       propertyPath: wrongRewardAreaError
       value: 
-      objectReference: {fileID: 2118323461}
+      objectReference: {fileID: 0}
     - target: {fileID: 6903074266376674234, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
         type: 3}
       propertyPath: enableRaycastError
@@ -9187,95 +9187,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1045885576}
   m_CullTransparentMesh: 0
---- !u!1001 &1104699289
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1936230905976871848, guid: aa1b4192074926247b9711507173d20f,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1936230905976871848, guid: aa1b4192074926247b9711507173d20f,
-        type: 3}
-      propertyPath: m_Name
-      value: FakePoster
-      objectReference: {fileID: 0}
-    - target: {fileID: 2708100266483357146, guid: aa1b4192074926247b9711507173d20f,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.62468374
-      objectReference: {fileID: 0}
-    - target: {fileID: 2708100266483357146, guid: aa1b4192074926247b9711507173d20f,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2708100266483357146, guid: aa1b4192074926247b9711507173d20f,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.011990889
-      objectReference: {fileID: 0}
-    - target: {fileID: 2708100266483357146, guid: aa1b4192074926247b9711507173d20f,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2708100266483357146, guid: aa1b4192074926247b9711507173d20f,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2708100266483357146, guid: aa1b4192074926247b9711507173d20f,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2708100266483357146, guid: aa1b4192074926247b9711507173d20f,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2708100266483357146, guid: aa1b4192074926247b9711507173d20f,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2708100266483357146, guid: aa1b4192074926247b9711507173d20f,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2708100266483357146, guid: aa1b4192074926247b9711507173d20f,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 180
-      objectReference: {fileID: 0}
-    - target: {fileID: 2708100266483357146, guid: aa1b4192074926247b9711507173d20f,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7270209383901763778, guid: aa1b4192074926247b9711507173d20f,
-        type: 3}
-      propertyPath: m_Name
-      value: RewardSet
-      objectReference: {fileID: 0}
-    - target: {fileID: 7270209383901763778, guid: aa1b4192074926247b9711507173d20f,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8713676822357764614, guid: aa1b4192074926247b9711507173d20f,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: aa1b4192074926247b9711507173d20f, type: 3}
 --- !u!114 &1160995684 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7489421944467076256, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
@@ -9667,37 +9578,5 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e85f25dc5df1a7e44a2779e163e261db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!1 &2118323460 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8713676822357764614, guid: aa1b4192074926247b9711507173d20f,
-    type: 3}
-  m_PrefabInstance: {fileID: 1104699289}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2118323461
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2118323460}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9095e5fa69e84e14f9c665016eac8362, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  errorClip: {fileID: 8300000, guid: 9867167ea89524c9cb9a1c5d11cbfd3f, type: 3}
-  rewardArea: {fileID: 2118323465}
---- !u!114 &2118323465 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4019488325760741237, guid: aa1b4192074926247b9711507173d20f,
-    type: 3}
-  m_PrefabInstance: {fileID: 1104699289}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2118323460}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc5c2509b9d97314882ae32e2737721e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

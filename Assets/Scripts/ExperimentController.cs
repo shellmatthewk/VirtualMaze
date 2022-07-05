@@ -19,7 +19,7 @@ public class ExperimentController : ConfigurableComponent {
         public int fixedTrialIntermissionDuration;
         public int maxTrialIntermissionDuration;
         public int minTrialIntermissionDuration;
-        public int rewardAreaErrorTime;
+        public float rewardAreaErrorTime;
 
         public string saveLocation;
         public int sessionIntermissionDuration;
@@ -40,7 +40,7 @@ public class ExperimentController : ConfigurableComponent {
             int fixedTrialIntermissionDuration,
             int maxTrialIntermissionDuration,
             int minTrialIntermissionDuration,
-            int rewardAreaErrorTime,
+            float rewardAreaErrorTime,
             int sessionIntermissionDuration,
             int timeoutDuration,
             int timeLimitDuration,
@@ -79,7 +79,7 @@ public class ExperimentController : ConfigurableComponent {
     public bool enableRewardAreaError;
     public string SaveLocation { get; set; }
     public int SessionIntermissionDuration { get; set; }
-    public int rewardAreaErrorTime { get; set; }
+    public float rewardAreaErrorTime { get; set; }
 
     public bool started { get; private set; } = false;
     private ExperimentLogger logger = new ExperimentLogger();
