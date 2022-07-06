@@ -101,4 +101,22 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Tu Bird.unity
     guid: 48d88e9036d504bf0936bc56367cfc53
+  - enabled: 1
+    path: Assets/Scenes/DTL Cam.unity
+    guid: 9cce406d1043242b08dc112f7e29f327
+  - enabled: 1
+    path: Assets/Scenes/DTL Cat.unity
+    guid: a355fe6c3d0964c189785ab021ebc983
+  - enabled: 1
+    path: Assets/Scenes/DTL Croc.unity
+    guid: 42b2fa577783949ffa33901332eba41f
+  - enabled: 1
+    path: Assets/Scenes/DTL Donk.unity
+    guid: a84ac002a82464fa8947889bc2c759f5
+  - enabled: 1
+    path: Assets/Scenes/DTL Pig.unity
+    guid: 737b2e0de297841fcb64fffce2ed6f2a
+  - enabled: 1
+    path: Assets/Scenes/DTL Rab.unity
+    guid: 2ea40a28397114e3f8ff49598cde0738
   m_configObjects: {}

@@ -331,7 +331,7 @@ public class LevelController : MonoBehaviour {
         cueController.ShowCue();
         onSessionTrigger.Invoke(SessionTrigger.TrialStartedTrigger, targetIndex);
 
-        yield return new WaitForSecondsRealtime(1f); // Wait time for showing cue before minimising
+        yield return new WaitForSecondsRealtime(2f); // Wait time for showing cue before minimising
 
         cueController.HideCue();
         if (!disableHint) {
