@@ -13,7 +13,7 @@ public class NonTargetRaycast : MonoBehaviour
     private bool isPosterInView = false;
     private bool isCorrectPoster = false;
     //private float sweepValue = 0f;
-    public bool errorFlag = false;
+    public bool errorFlag = true;
     private bool flag;
     private bool FlagLeft;
     private bool FlagRight;
@@ -23,7 +23,8 @@ public class NonTargetRaycast : MonoBehaviour
     //public static string cueImage { get; private set; }
 
     [SerializeField]
-    private float maxDist = 1;
+    public float maxDist = 1f;
+    public float maxAngle = 97f;
 
     void Start()
     {
@@ -87,10 +88,10 @@ public class NonTargetRaycast : MonoBehaviour
 
         //Vector3 straightline = cam.transform.forward;
         Vector3 straightline = Quaternion.AngleAxis(0f / 2f, Vector3.up) * cam.transform.forward;
-        Vector3 leftline = Quaternion.AngleAxis(-RewardArea.RequiredViewAngle / 2f, Vector3.up) * cam.transform.forward;
-        Vector3 rightline = Quaternion.AngleAxis(RewardArea.RequiredViewAngle / 2f, Vector3.up) * cam.transform.forward;
-        Vector3 checkleftline = Quaternion.AngleAxis(-(RewardArea.RequiredViewAngle + 5) / 2f, Vector3.up) * cam.transform.forward;
-        Vector3 checkrightline = Quaternion.AngleAxis((RewardArea.RequiredViewAngle + 5) / 2f, Vector3.up) * cam.transform.forward;
+        Vector3 leftline = Quaternion.AngleAxis(-maxAngle / 2f, Vector3.up) * cam.transform.forward;
+        Vector3 rightline = Quaternion.AngleAxis(maxAngle / 2f, Vector3.up) * cam.transform.forward;
+        Vector3 checkleftline = Quaternion.AngleAxis(-(maxAngle + 5) / 2f, Vector3.up) * cam.transform.forward;
+        Vector3 checkrightline = Quaternion.AngleAxis((maxAngle + 5) / 2f, Vector3.up) * cam.transform.forward;
         straightline.y = 0;
         leftline.y = 0;
         rightline.y = 0;
@@ -202,10 +203,10 @@ public class NonTargetRaycast : MonoBehaviour
         **********************************/
         for (float rayAngleDeviation = 0f; rayAngleDeviation < 100f; rayAngleDeviation += 10f)
         {
-            ShootRay(rayAngleDeviation, RewardArea.RequiredViewAngle);
+            ShootRay(rayAngleDeviation, maxAngle);
             if (flag) break;
             // the flag is triggered when a poster is in view. prevents extra rays from being created unnecessarily
-            ShootRay(-rayAngleDeviation, -RewardArea.RequiredViewAngle);
+            ShootRay(-rayAngleDeviation, -maxAngle);
             if (flag) break;
         }
 

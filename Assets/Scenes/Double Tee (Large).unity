@@ -513,6 +513,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Center.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4019488325760741237, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
       propertyPath: cueImage
@@ -523,6 +538,11 @@ PrefabInstance:
         type: 3}
       propertyPath: rewardOrder
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749144276145685612, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7270209383901763778, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
@@ -1584,6 +1604,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Center.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4019488325760741237, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
       propertyPath: cueImage
@@ -1594,6 +1629,11 @@ PrefabInstance:
         type: 3}
       propertyPath: rewardOrder
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749144276145685612, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7270209383901763778, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
@@ -3836,6 +3876,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Center.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4019488325760741237, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
       propertyPath: cueImage
@@ -3846,6 +3901,11 @@ PrefabInstance:
         type: 3}
       propertyPath: rewardOrder
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749144276145685612, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7270209383901763778, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
@@ -4750,6 +4810,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Center.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4019488325760741237, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
       propertyPath: cueImage
@@ -4760,6 +4835,11 @@ PrefabInstance:
         type: 3}
       propertyPath: rewardOrder
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749144276145685612, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7270209383901763778, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
@@ -5339,6 +5419,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Center.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4019488325760741237, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
       propertyPath: cueImage
@@ -5349,6 +5444,11 @@ PrefabInstance:
         type: 3}
       propertyPath: rewardOrder
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749144276145685612, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7270209383901763778, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
@@ -5495,6 +5595,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Poster
       objectReference: {fileID: 0}
+    - target: {fileID: 1936230905977177446, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 2472647010858284900, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
       propertyPath: _attachedTo
@@ -5513,7 +5618,7 @@ PrefabInstance:
     - target: {fileID: 2708100266483357146, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -7.6
+      value: -7.5
       objectReference: {fileID: 0}
     - target: {fileID: 2708100266483357146, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
@@ -5555,6 +5660,31 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Center.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Center.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4019488325760741237, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
       propertyPath: cueImage
@@ -5565,6 +5695,11 @@ PrefabInstance:
         type: 3}
       propertyPath: rewardOrder
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749144276145685612, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7270209383901763778, guid: aa1b4192074926247b9711507173d20f,
         type: 3}

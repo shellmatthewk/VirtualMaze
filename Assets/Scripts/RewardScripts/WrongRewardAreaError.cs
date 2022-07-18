@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class WrongRewardAreaError : MonoBehaviour
 {
@@ -33,25 +34,32 @@ public class WrongRewardAreaError : MonoBehaviour
         }
     }
 
-    
+
+    /// <summary>
+    /// Triggers error sound when the robot enters the trigger zone, commented out as this is no longer required with OnTriggerStay introduced
+    /// </summary>
+    /// <param name="other"></param>
+    /*
     private void OnTriggerEnter(Collider other)
     {
-        if (LevelController.sessionStarted && !isSoundTriggered)
+        if (LevelController.sessionStarted && !isSoundTriggered
+            && experimentController.enableRewardAreaError)// && nonTargetRaycast.errorFlag.ToString() == "True")
+            // global variable nonTargetRaycast.errorFlag does not directly interact with scripts unless used as string
         {
             string areaPosterImage = rewardArea.cueImage.name;
             //Debug.Log(areaPosterImage);
             string cueImage = CueImage.cueImage;
             //Debug.Log(cueImage);
-            if (areaPosterImage != cueImage && experimentController.enableRewardAreaError && nonTargetRaycast.errorFlag.ToString() == "True")
-            // global variable nonTargetRaycast.errorFlag does not directly interact with scripts unless used as string
+            if (areaPosterImage != cueImage)
+            
             {
                 Vector3 direction = rewardArea.transform.position - other.transform.position;
                 direction.y = 0;
                 float angle = Vector3.Angle(direction, other.transform.forward);
                 float distance = Vector3.Magnitude(direction);
-                if (angle < RewardArea.RequiredViewAngle * 0.5f)
+                if (Math.Abs(angle) < RewardArea.RequiredViewAngle * 0.5f)
                 {
-                    if (distance <= RewardArea.ProximityDistance)
+                    if (distance <= RewardArea.RequiredDistance)
                     {
                         Debug.Log("TriggerEnter Ping");
                         PlayerAudio.instance.PlayErrorClip();
@@ -62,26 +70,38 @@ public class WrongRewardAreaError : MonoBehaviour
                 }
             }
         }
-    }
-    /*
+    }*/
+
+
+
+    /// <summary>
+    /// Triggers error sound when the robot is within the collider (Called every frame)
+	/// Trigger flag is resetted within the collider when the robot looks away or moves out of the required distance
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerStay(Collider other)
     {
         // Debug.Log("Disable Hint: " + experimentController.disableHint);
-        if (LevelController.sessionStarted && experimentController.disableHint
-        && !isSoundTriggered && !experimentController.enableRewardAreaError)
+        Vector3 direction = rewardArea.transform.position - other.transform.position;
+        direction.y = 0;
+        float angle = Vector3.Angle(direction, other.transform.forward);
+        float distance = Vector3.Magnitude(direction);
+        //Debug.Log(angle);
+
+        if (LevelController.sessionStarted && !isSoundTriggered
+            && experimentController.enableRewardAreaError && nonTargetRaycast.errorFlag.ToString() == "True")
+            // global variable nonTargetRaycast.errorFlag does not directly interact with scripts unless used as string
         {
+            Debug.Log(angle);
             string areaPosterImage = rewardArea.cueImage.name;
             string cueImage = CueImage.cueImage;
             if (areaPosterImage != cueImage)
             {
-                Vector3 direction = rewardArea.transform.position - other.transform.position;
-                direction.y = 0;
-                float angle = Vector3.Angle(direction, other.transform.forward);
-                float distance = Vector3.Magnitude(direction);
-
-                if (angle < RewardArea.RequiredViewAngle * 0.5f)
+                if (angle < RewardArea.RequiredViewAngle)
                 {
-                    if (distance <= RewardArea.ProximityDistance)
+                    // Debug.Log(distance);
+                    // Debug.Log(angle);
+                    if (distance <= RewardArea.RequiredDistance)
                     {
                         Debug.Log("TriggerStay Ping");
                         PlayerAudio.instance.PlayErrorClip();
@@ -91,8 +111,18 @@ public class WrongRewardAreaError : MonoBehaviour
                 }
             }
         }
+
+        if (LevelController.sessionStarted && isSoundTriggered)
+        {
+            if (distance > RewardArea.RequiredDistance || angle > RewardArea.RequiredViewAngle)
+                // resets the flag when robot stays within the collider but moves beyond RequiredDistance and RequiredViewAngle
+            {
+                isSoundTriggered = false;
+            }
+        }
+        //Debug.Log(isSoundTriggered);
     }
-    */
+    
 
     private void OnTriggerExit(Collider other)
     {
