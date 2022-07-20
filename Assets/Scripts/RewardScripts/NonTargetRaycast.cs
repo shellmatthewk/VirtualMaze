@@ -8,7 +8,8 @@ public class NonTargetRaycast : MonoBehaviour
     public AudioClip errorClip;
     public CueController cueController;
     private static ExperimentController experimentController;
-    private static RewardArea rewardArea;
+    private static RewardsController rewardsController;
+    private static WrongRewardAreaError wrongRewardAreaError;
     private bool isSoundTriggered = false;
     private bool isPosterInView = false;
     private bool isCorrectPoster = false;
@@ -29,6 +30,8 @@ public class NonTargetRaycast : MonoBehaviour
     void Start()
     {
         experimentController = GameObject.FindObjectOfType(typeof(ExperimentController)) as ExperimentController;
+        rewardsController = GameObject.FindObjectOfType(typeof(RewardsController)) as RewardsController;
+        wrongRewardAreaError = GameObject.FindObjectOfType(typeof(WrongRewardAreaError)) as WrongRewardAreaError;
     }
 
     void Update()
@@ -45,7 +48,7 @@ public class NonTargetRaycast : MonoBehaviour
         }*/
 
         // Checks if a session is currently running
-        if (LevelController.sessionStarted)
+        if (LevelController.sessionStarted && rewardsController.enableNonTargetRaycast)
         {
             Shoot();
             HintBlink();
@@ -55,7 +58,7 @@ public class NonTargetRaycast : MonoBehaviour
             Reset();
         }
 
-        if (timer >= experimentController.rewardAreaErrorTime)
+        if (timer >= rewardsController.rewardAreaErrorTime && wrongRewardAreaError.timer >= rewardsController.rewardAreaErrorTime)
         {
             errorFlag = true; // duration between error sounds long enough
         }

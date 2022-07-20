@@ -13,6 +13,11 @@ public class RewardsGUIController : DataGUIController {
     public InputField requiredDistanceInput;
     public InputField proximityDistanceInput;
     public InputField directionErrorDistanceInput;
+    public Toggle rewardAreaErrorToggle;
+    public Toggle nonTargetRaycastToggle;
+    public InputField rewardAreaErrorField;
+
+
     public RewardsController rewardsController;
 
     private void Awake() {
@@ -23,6 +28,9 @@ public class RewardsGUIController : DataGUIController {
         requiredDistanceInput.onEndEdit.AddListener(OnRequiredDistanceChanged);
         proximityDistanceInput.onEndEdit.AddListener(OnProximityDistanceChanged);
         directionErrorDistanceInput.onEndEdit.AddListener(OnDirectionErrorDistanceChanged);
+        rewardAreaErrorToggle.onValueChanged.AddListener(toggleRewardAreaError);
+        nonTargetRaycastToggle.onValueChanged.AddListener(toggleNonTargetRaycast);
+        rewardAreaErrorField.onEndEdit.AddListener(OnRewardAreaErrorFieldEndEdit);
     }
 
     private void OnRequiredViewAngleChanged(string value) {
@@ -97,7 +105,65 @@ public class RewardsGUIController : DataGUIController {
         proximityDistanceInput.text = DirectionError.distanceRange.ToString();
     }
 
-    public override void UpdateSettingsGUI() {
+    private bool IsDurationInputValid(string duration) {
+        if (string.IsNullOrEmpty(duration)) {
+            return false;
+        }
+        if (int.TryParse(duration, out int milliseconds)) {
+            return IsDurationInputValid(milliseconds);
+        }
+        return false;
+    }
+
+    private bool IsValidFloatDuration(string text, out float duration)
+    {
+        float result = -1;
+        if (float.TryParse(text, out result))
+        {
+            duration = result;
+            return IsValidFloatDuration(duration);
+        }
+        duration = result;
+        return false;
+    }
+
+    private bool IsValidFloatDuration(float duration)
+    {
+        return duration >= 0;
+    }
+
+    private bool IsDurationInputValid(int duration) {
+        if (duration >= 0) {
+            return true;
+        }
+        return false;
+    }
+
+    private void toggleRewardAreaError(bool isOn)
+    {
+        rewardsController.enableRewardAreaError = isOn;
+    }
+
+    private void toggleNonTargetRaycast(bool isOn)
+    {
+        rewardsController.enableNonTargetRaycast = isOn;
+    }
+
+    private void OnRewardAreaErrorFieldEndEdit(string text)
+    {
+        if (IsValidFloatDuration(text, out float duration))
+        {
+            rewardsController.rewardAreaErrorTime = duration;
+        }
+        else
+        {
+            text = rewardsController.rewardAreaErrorTime.ToString();
+            Console.WriteError("Invalid Value");
+        }
+    }
+
+    public override void UpdateSettingsGUI()
+    {
         portNumField.text = rewardsController.portNum;
         SetInputFieldNeutral(portNumField);
 
@@ -109,22 +175,8 @@ public class RewardsGUIController : DataGUIController {
         requiredDistanceInput.text = RewardArea.RequiredDistance.ToString();
         proximityDistanceInput.text = RewardArea.ProximityDistance.ToString();
         directionErrorDistanceInput.text = DirectionError.distanceRange.ToString();
-    }
-
-    private bool IsDurationInputValid(string duration) {
-        if (string.IsNullOrEmpty(duration)) {
-            return false;
-        }
-        if (int.TryParse(duration, out int milliseconds)) {
-            return IsDurationInputValid(milliseconds);
-        }
-        return false;
-    }
-
-    private bool IsDurationInputValid(int duration) {
-        if (duration >= 0) {
-            return true;
-        }
-        return false;
+        rewardAreaErrorToggle.isOn = rewardsController.enableRewardAreaError;
+        nonTargetRaycastToggle.isOn = rewardsController.enableNonTargetRaycast;
+        rewardAreaErrorField.text = rewardsController.rewardAreaErrorTime.ToString();
     }
 }

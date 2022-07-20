@@ -235,6 +235,8 @@ public class SessionContext {
             RequiredDistance = rewardSettings.requiredDistance.ToString();
             ProximityDistance = rewardSettings.proximityDistance.ToString();
             DirectionErrorDistance = rewardSettings.directionErrorDistance.ToString();
+            EnableRewardAreaError = rewardSettings.enableRewardAreaError.ToString();
+            RewardAreaErrorTime = rewardSettings.rewardAreaErrorTime.ToString();
         }
         else {
             //this values are a must to be logged. Therefore an exception is thrown.
@@ -256,8 +258,7 @@ public class SessionContext {
             ResetPositionOnSession = experimentSettings.resetPositionOnSession.ToString();
             EnableDirectionError = experimentSettings.enableDirectionError.ToString();
             DisableHint = experimentSettings.disableHint.ToString();
-            EnableRewardAreaError = experimentSettings.enableRewardAreaError.ToString();
-            RewardAreaErrorTime = experimentSettings.rewardAreaErrorTime.ToString();
+            
         }
         else {
             //this values are a must to have. Therefore an exception is thrown

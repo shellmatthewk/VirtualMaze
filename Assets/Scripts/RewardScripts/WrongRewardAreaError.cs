@@ -7,9 +7,10 @@ public class WrongRewardAreaError : MonoBehaviour
     public AudioClip errorClip;
     public RewardArea rewardArea;
     private static CueController cueController;
+    private static RewardsController rewardsController;
     private static ExperimentController experimentController;
     private static NonTargetRaycast nonTargetRaycast;
-    private float timer = 1000f;
+    public float timer = 1000f;
     private bool isSoundTriggered = false;
 
     // Number and duration of blinks
@@ -21,6 +22,7 @@ public class WrongRewardAreaError : MonoBehaviour
         cueController = GameObject.FindObjectOfType(typeof(CueController)) as CueController;
         experimentController = GameObject.FindObjectOfType(typeof(ExperimentController)) as ExperimentController;
         nonTargetRaycast = GameObject.FindObjectOfType(typeof(NonTargetRaycast)) as NonTargetRaycast;
+        rewardsController = GameObject.FindObjectOfType(typeof(RewardsController)) as RewardsController;
     }
 
     private void Update()
@@ -89,7 +91,7 @@ public class WrongRewardAreaError : MonoBehaviour
         //Debug.Log(angle);
 
         if (LevelController.sessionStarted && !isSoundTriggered
-            && experimentController.enableRewardAreaError && nonTargetRaycast.errorFlag.ToString() == "True")
+            && rewardsController.enableRewardAreaError && nonTargetRaycast.errorFlag.ToString() == "True")
             // global variable nonTargetRaycast.errorFlag does not directly interact with scripts unless used as string
         {
             Debug.Log(angle);

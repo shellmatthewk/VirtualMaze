@@ -12,14 +12,19 @@ public class RewardsController : ConfigurableComponent {
         public float requiredDistance;
         public float proximityDistance;
         public float directionErrorDistance;
-
+        public bool enableRewardAreaError;
+        public bool enableNonTargetRaycast;
+        public float rewardAreaErrorTime;
 
         public Settings(string portNum,
             int rewardDurationMilliSecs,
             float requiredViewAngle,
             float requiredDistance,
             float proximityDistance,
-            float directionErrorDistance)
+            float directionErrorDistance,
+            bool enableRewardAreaError,
+            bool enableNonTargetRaycast,
+            float rewardAreaErrorTime)
         {
             this.proximityDistance = proximityDistance;
             this.portNum = portNum;
@@ -27,11 +32,17 @@ public class RewardsController : ConfigurableComponent {
             this.requiredViewAngle = requiredViewAngle;
             this.requiredDistance = requiredDistance;
             this.directionErrorDistance = directionErrorDistance;
+            this.enableRewardAreaError = enableRewardAreaError;
+            this.enableNonTargetRaycast = enableNonTargetRaycast;
+            this.rewardAreaErrorTime = rewardAreaErrorTime;
         }
     }
 
     public string portNum;
     public int rewardDurationMilliSecs;
+    public bool enableRewardAreaError;
+    public bool enableNonTargetRaycast;
+    public float rewardAreaErrorTime { get; set; }
 
     private const int buadRate = 9600;
     private static SerialPort rewardSerial;
@@ -89,11 +100,12 @@ public class RewardsController : ConfigurableComponent {
     }
 
     public override ComponentSettings GetCurrentSettings() {
-        return new Settings(portNum, rewardDurationMilliSecs, RewardArea.RequiredViewAngle, RewardArea.RequiredDistance, RewardArea.ProximityDistance, DirectionError.distanceRange);
+        return new Settings(portNum, rewardDurationMilliSecs, RewardArea.RequiredViewAngle, RewardArea.RequiredDistance,
+            RewardArea.ProximityDistance, DirectionError.distanceRange, enableRewardAreaError, enableNonTargetRaycast, rewardAreaErrorTime);
     }
 
     public override ComponentSettings GetDefaultSettings() {
-        return new Settings("", 1000, 45f, 1f, 1f, 0.5f); //1000, 0.8f, 1f, 1f, 0.5f
+        return new Settings("", 1000, 45f, 1f, 1f, 0.5f, false, false, -1f); //1000, 0.8f, 1f, 1f, 0.5f
     }
 
     public override Type GetSettingsType() {
@@ -112,5 +124,8 @@ public class RewardsController : ConfigurableComponent {
         RewardArea.ProximityDistance = settings.proximityDistance;
         RewardArea.RequiredDistance = settings.requiredDistance;
         DirectionError.distanceRange = settings.directionErrorDistance;
+        enableRewardAreaError = settings.enableRewardAreaError;
+        enableNonTargetRaycast = settings.enableNonTargetRaycast;
+        rewardAreaErrorTime = settings.rewardAreaErrorTime;
     }
 }
