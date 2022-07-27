@@ -10,8 +10,8 @@ public class WrongRewardAreaError : MonoBehaviour
     private static RewardsController rewardsController;
     private static ExperimentController experimentController;
     private static NonTargetRaycast nonTargetRaycast;
-    public float timer = 1000f;
-    private bool isSoundTriggered = false;
+    private float timer = 1000f;
+    public bool isSoundTriggered = false;
 
     // Number and duration of blinks
     int numBlinks = 2;
@@ -25,7 +25,7 @@ public class WrongRewardAreaError : MonoBehaviour
         rewardsController = GameObject.FindObjectOfType(typeof(RewardsController)) as RewardsController;
     }
 
-    private void Update()
+    void Update()
     {
         timer += Time.deltaTime;
         HintBlink();
@@ -45,8 +45,8 @@ public class WrongRewardAreaError : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (LevelController.sessionStarted && !isSoundTriggered
-            && experimentController.enableRewardAreaError)// && nonTargetRaycast.errorFlag.ToString() == "True")
-            // global variable nonTargetRaycast.errorFlag does not directly interact with scripts unless used as string
+            && experimentController.enableRewardAreaError)
+
         {
             string areaPosterImage = rewardArea.cueImage.name;
             //Debug.Log(areaPosterImage);
@@ -94,7 +94,7 @@ public class WrongRewardAreaError : MonoBehaviour
             && rewardsController.enableRewardAreaError && nonTargetRaycast.errorFlag.ToString() == "True")
             // global variable nonTargetRaycast.errorFlag does not directly interact with scripts unless used as string
         {
-            Debug.Log(angle);
+            // Debug.Log(angle);
             string areaPosterImage = rewardArea.cueImage.name;
             string cueImage = CueImage.cueImage;
             if (areaPosterImage != cueImage)
@@ -105,9 +105,7 @@ public class WrongRewardAreaError : MonoBehaviour
                     // Debug.Log(angle);
                     if (distance <= RewardArea.RequiredDistance)
                     {
-                        Debug.Log("TriggerStay Ping");
-                        PlayerAudio.instance.PlayErrorClip();
-                        timer = 0f;
+                        WrongPoster();
                         isSoundTriggered = true;
                     }
                 }
@@ -129,6 +127,13 @@ public class WrongRewardAreaError : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         isSoundTriggered = false;
+    }
+
+    private void WrongPoster()
+    {
+        Debug.Log("TriggerStay Ping");
+        PlayerAudio.instance.PlayErrorClip();
+        timer = 0f;
     }
 
     private void HintBlink()

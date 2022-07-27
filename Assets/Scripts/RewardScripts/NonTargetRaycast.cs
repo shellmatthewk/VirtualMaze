@@ -13,12 +13,10 @@ public class NonTargetRaycast : MonoBehaviour
     private bool isSoundTriggered = false;
     private bool isPosterInView = false;
     private bool isCorrectPoster = false;
+    private bool tempWrongRewardAreaFlag = false;
     //private float sweepValue = 0f;
     public bool errorFlag = true;
     private bool flag;
-    private bool FlagLeft;
-    private bool FlagRight;
-    private bool FlagStraight;
     private float timer = 1000f;
 
     //public static string cueImage { get; private set; }
@@ -50,6 +48,7 @@ public class NonTargetRaycast : MonoBehaviour
         // Checks if a session is currently running
         if (LevelController.sessionStarted && rewardsController.enableNonTargetRaycast)
         {
+            isErrorTriggered();
             Shoot();
             HintBlink();
         }
@@ -58,7 +57,7 @@ public class NonTargetRaycast : MonoBehaviour
             Reset();
         }
 
-        if (timer >= rewardsController.rewardAreaErrorTime && wrongRewardAreaError.timer >= rewardsController.rewardAreaErrorTime)
+        if (timer >= rewardsController.rewardAreaErrorTime)
         {
             errorFlag = true; // duration between error sounds long enough
         }
@@ -66,11 +65,11 @@ public class NonTargetRaycast : MonoBehaviour
         // Debug.Log(errorFlag);
         // Debug.Log(timer);
 
-        if (FlagLeft || FlagRight || FlagStraight || flag)
+        if (flag) //(FlagLeft || FlagRight || FlagStraight || flag)
         {
             isPosterInView = true; // At least one of the rays is hitting a poster
         }
-        else if (!FlagLeft && !FlagRight && !FlagStraight && !flag)
+        else if (!flag) //(!FlagLeft && !FlagRight && !FlagStraight && !flag)
         {
             isPosterInView = false;
             isCorrectPoster = false;
@@ -82,6 +81,20 @@ public class NonTargetRaycast : MonoBehaviour
         }
     }
 
+    /// <summary>
+	/// if function resets the timer when any of the reward zone error sound is triggered. This method is used to bypass the need
+	/// to keep track of every reward zone.
+	/// This function only resets timer when the isSoundTriggered is changed from false to true, and not true to false or remains true
+	/// </summary>
+    private void isErrorTriggered()
+    {
+        if (wrongRewardAreaError.isSoundTriggered == true && tempWrongRewardAreaFlag == false)
+        {
+            timer = 0f;
+        }
+        tempWrongRewardAreaFlag = wrongRewardAreaError.isSoundTriggered; // stores isSoundTrigger value to carry to the next iteration
+    }
+
     // Raycasts to check whether rays are colliding with poster
     void Shoot()
     {
@@ -90,14 +103,8 @@ public class NonTargetRaycast : MonoBehaviour
         string cueImage = CueImage.cueImage; // Retrieves name of cue image from CueImage
 
         //Vector3 straightline = cam.transform.forward;
-        Vector3 straightline = Quaternion.AngleAxis(0f / 2f, Vector3.up) * cam.transform.forward;
-        Vector3 leftline = Quaternion.AngleAxis(-maxAngle / 2f, Vector3.up) * cam.transform.forward;
-        Vector3 rightline = Quaternion.AngleAxis(maxAngle / 2f, Vector3.up) * cam.transform.forward;
         Vector3 checkleftline = Quaternion.AngleAxis(-(maxAngle + 5) / 2f, Vector3.up) * cam.transform.forward;
         Vector3 checkrightline = Quaternion.AngleAxis((maxAngle + 5) / 2f, Vector3.up) * cam.transform.forward;
-        straightline.y = 0;
-        leftline.y = 0;
-        rightline.y = 0;
         checkleftline.y = 0;
         checkrightline.y = 0;
         //Debug.Log(straightline);
@@ -121,89 +128,11 @@ public class NonTargetRaycast : MonoBehaviour
             }
         }
 
-        if (Physics.Raycast(cam.transform.position, straightline, out RaycastHit hitstraight, 500))
-        {
-            Debug.DrawLine(cam.transform.position, hitstraight.point);
-            //Debug.Log(hitstraight.transform.name);
-            if (hitstraight.transform.name == "Poster" && hitstraight.distance < maxDist)
-            {
-                FlagStraight = true;
-                string posterImage = hitstraight.transform.GetComponent<Renderer>().material.name;
-                //Debug.Log(posterImage);
-                string strcheck = cueImage + " (Instance)";
-                //Debug.Log(strcheck);
-                //Debug.Log(hitstraight.distance);
-                if (posterImage == strcheck)
-                {
-                    //Debug.Log("Correct Poster");
-                    isCorrectPoster = true;
-                }
-                else if (posterImage != strcheck && !isSoundTriggered && !isCorrectPoster)
-                {
-                    //Debug.Log("Wrong Poster");
-                    WrongPoster();
-                    isSoundTriggered = true;
-                }
-            }
-            else FlagStraight = false;
-        }
-
-        if (Physics.Raycast(cam.transform.position, leftline, out RaycastHit hitleft, 500))
-        {
-            Debug.DrawLine(cam.transform.position, hitleft.point);
-            //Debug.Log(hitleft.transform.name);
-            if (hitleft.transform.name == "Poster" && hitleft.distance < maxDist)
-            {
-                FlagLeft = true;
-                string posterImage = hitleft.transform.GetComponent<Renderer>().material.name;
-                //Debug.Log(posterImage);
-                string strcheck = cueImage + " (Instance)";
-                //Debug.Log(strcheck);
-                if (posterImage == strcheck)
-                {
-                    //Debug.Log("Correct Poster");
-                    isCorrectPoster = true;
-                }
-                else if (posterImage != strcheck && !isSoundTriggered && !isCorrectPoster)
-                {
-                    //Debug.Log("Wrong Poster");
-                    WrongPoster();
-                    isSoundTriggered = true;
-                }
-            }
-            else FlagLeft = false;
-        }
-
-        if (Physics.Raycast(cam.transform.position, rightline, out RaycastHit hitright, 500))
-        {
-            Debug.DrawLine(cam.transform.position, hitright.point);
-            //Debug.Log(hitleft.transform.name);
-            if (hitright.transform.name == "Poster" && hitright.distance < maxDist)
-            {
-                FlagRight = true;
-                string posterImage = hitright.transform.GetComponent<Renderer>().material.name;
-                //Debug.Log(posterImage);
-                string strcheck = cueImage + " (Instance)";
-                //Debug.Log(strcheck);
-                if (posterImage == strcheck)
-                {
-                    //Debug.Log("Correct Poster");
-                    isCorrectPoster = true;
-                }
-                else if (posterImage != strcheck && !isSoundTriggered && !isCorrectPoster)
-                {
-                    //Debug.Log("Wrong Poster");
-                    WrongPoster();
-                    isSoundTriggered = true;
-                }
-            }
-            else FlagRight = false;
-        }
-
-        /********************************** 
-        this for loop shoots all the rays from 0 degrees from midline to 100 degrees away from midline
-        in both directions at 10 degrees interval each.
-        **********************************/
+        /// <summary>
+        /// this for loop shoots all the rays from 0 degrees from midline to 100 degrees away from midline
+        /// in both directions at 10 degrees interval each.
+        /// </summary>
+        /// <param name="other"></param>
         for (float rayAngleDeviation = 0f; rayAngleDeviation < 100f; rayAngleDeviation += 10f)
         {
             ShootRay(rayAngleDeviation, maxAngle);
@@ -213,7 +142,6 @@ public class NonTargetRaycast : MonoBehaviour
             if (flag) break;
         }
 
-        /************************************************************************/
         void ShootRay(float rayAngleDeviation, float maxAngle)
         {
             Vector3 line = Quaternion.AngleAxis((maxAngle - rayAngleDeviation) / 2f, Vector3.up) * cam.transform.forward;
@@ -231,7 +159,7 @@ public class NonTargetRaycast : MonoBehaviour
                         //Debug.Log("Correct Poster");
                         isCorrectPoster = true;
                     }
-                    else if (posterImage != strcheck && !isSoundTriggered && !isCorrectPoster)
+                    else if (posterImage != strcheck && !isSoundTriggered && !isCorrectPoster && errorFlag)
                     {
                         //Debug.Log("Wrong Poster");
                         WrongPoster();
@@ -241,7 +169,6 @@ public class NonTargetRaycast : MonoBehaviour
                 else flag = false;
             }
         }
-        /*************************************************************************/
     }
 
 
@@ -279,10 +206,8 @@ public class NonTargetRaycast : MonoBehaviour
         timer = 1000f;
         isSoundTriggered = false;
         flag = false;
-        FlagLeft = false;
-        FlagRight = false;
-        FlagStraight = false;
         isPosterInView = false;
         isCorrectPoster = false;
+        tempWrongRewardAreaFlag = false;
     }
 }

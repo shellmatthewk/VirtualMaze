@@ -513,6 +513,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 4019488325760741237, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
       propertyPath: cueImage
@@ -523,6 +533,11 @@ PrefabInstance:
         type: 3}
       propertyPath: rewardOrder
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749144276145685612, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7270209383901763778, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
@@ -562,6 +577,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   errorClip: {fileID: 8300000, guid: 9867167ea89524c9cb9a1c5d11cbfd3f, type: 3}
   rewardArea: {fileID: 293240971}
+  isSoundTriggered: 0
 --- !u!114 &293240971 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4019488325760741237, guid: aa1b4192074926247b9711507173d20f,
@@ -1589,6 +1605,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 4019488325760741237, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
       propertyPath: cueImage
@@ -1599,6 +1625,11 @@ PrefabInstance:
         type: 3}
       propertyPath: rewardOrder
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749144276145685612, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7270209383901763778, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
@@ -1643,6 +1674,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   errorClip: {fileID: 8300000, guid: 9867167ea89524c9cb9a1c5d11cbfd3f, type: 3}
   rewardArea: {fileID: 613689082}
+  isSoundTriggered: 0
 --- !u!114 &613689082 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4019488325760741237, guid: aa1b4192074926247b9711507173d20f,
@@ -3841,6 +3873,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 4019488325760741237, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
       propertyPath: cueImage
@@ -3851,6 +3893,11 @@ PrefabInstance:
         type: 3}
       propertyPath: rewardOrder
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749144276145685612, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7270209383901763778, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
@@ -3900,6 +3947,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   errorClip: {fileID: 8300000, guid: 9867167ea89524c9cb9a1c5d11cbfd3f, type: 3}
   rewardArea: {fileID: 1325035151}
+  isSoundTriggered: 0
 --- !u!114 &1325035151 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4019488325760741237, guid: aa1b4192074926247b9711507173d20f,
@@ -4760,6 +4808,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 4019488325760741237, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
       propertyPath: cueImage
@@ -4770,6 +4828,11 @@ PrefabInstance:
         type: 3}
       propertyPath: rewardOrder
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749144276145685612, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7270209383901763778, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
@@ -4814,6 +4877,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   errorClip: {fileID: 8300000, guid: 9867167ea89524c9cb9a1c5d11cbfd3f, type: 3}
   rewardArea: {fileID: 1591579542}
+  isSoundTriggered: 0
 --- !u!114 &1591579542 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4019488325760741237, guid: aa1b4192074926247b9711507173d20f,
@@ -5354,6 +5418,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 4019488325760741237, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
       propertyPath: cueImage
@@ -5364,6 +5438,11 @@ PrefabInstance:
         type: 3}
       propertyPath: rewardOrder
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749144276145685612, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7270209383901763778, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
@@ -5403,6 +5482,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   errorClip: {fileID: 8300000, guid: 9867167ea89524c9cb9a1c5d11cbfd3f, type: 3}
   rewardArea: {fileID: 1890611756}
+  isSoundTriggered: 0
 --- !u!114 &1890611756 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4019488325760741237, guid: aa1b4192074926247b9711507173d20f,
@@ -5575,6 +5655,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209489362816542570, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 4019488325760741237, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
       propertyPath: cueImage
@@ -5585,6 +5675,11 @@ PrefabInstance:
         type: 3}
       propertyPath: rewardOrder
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5749144276145685612, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7270209383901763778, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
@@ -5629,6 +5724,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   errorClip: {fileID: 8300000, guid: 9867167ea89524c9cb9a1c5d11cbfd3f, type: 3}
   rewardArea: {fileID: 1926017372}
+  isSoundTriggered: 0
 --- !u!114 &1926017372 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4019488325760741237, guid: aa1b4192074926247b9711507173d20f,
