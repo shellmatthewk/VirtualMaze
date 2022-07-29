@@ -84,7 +84,7 @@ public class NonTargetRaycast : MonoBehaviour
     /// <summary>
 	/// if function resets the timer when any of the reward zone error sound is triggered. This method is used to bypass the need
 	/// to keep track of every reward zone.
-	/// This function only resets timer when the isSoundTriggered is changed from false to true, and not true to false or remains true
+	/// This function only resets timer when the isSoundTriggered is changed in WrongRewardArea script from false to true, and not true to false or remains true
 	/// </summary>
     private void isErrorTriggered()
     {

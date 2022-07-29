@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using System.Collections;
 using Random = UnityEngine.Random;
 
 /// <summary>
@@ -214,6 +215,28 @@ public class RobotMovement : ConfigurableComponent {
     }
 
     /// <summary>
+    /// Rotates robot. 
+    /// Robot stays fixed during rotation.
+    /// </summary>
+    /// <param name="rotation"></param>
+
+    public IEnumerator RotateTo(Quaternion rotation)
+    {
+        var start = transform.rotation;
+
+        float timer = 0.0f;
+        float transitionDuration = 1000f;
+        float inTime = 0.8f;
+
+        for (var t = 0f; t <= 1; t += Time.deltaTime / inTime)
+        {
+            transform.rotation = Quaternion.Slerp(start, rotation, t);
+            yield return null;
+        }
+
+    }
+
+    /// <summary>
     /// Enables or disables the movement of the robot
     /// </summary>
     /// <param name="enable">true to enable</param>
@@ -262,7 +285,6 @@ public class RobotMovement : ConfigurableComponent {
         return transform;
     }
 }
-
 
 public class RobotConfiguration {
     public readonly double x, z, degreeY;

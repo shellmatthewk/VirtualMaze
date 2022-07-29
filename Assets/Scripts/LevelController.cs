@@ -92,6 +92,9 @@ public class LevelController : MonoBehaviour {
 
     public static bool sessionStarted { get; private set; } = false;
 
+    // bool for if robot triggers wrong reward
+    public bool triggeredWrongReward;
+
     private void Awake() {
         waitIfPaused = new WaitUntil(() => !isPaused);
 
@@ -148,6 +151,8 @@ public class LevelController : MonoBehaviour {
         logicProvider?.Cleanup(rewards);
         cueController.HideAll();
         RewardArea.OnRewardTriggered -= OnRewardTriggered;
+        logicProvider.RewardTriggered += OnRewardTriggered;
+        logicProvider.WrongRewardTriggered += OnWrongRewardTriggered;
         directionError.ResetRewards();
         if (!disableInterSessionBlackout || sessionController.index == sessionController.sessions.Count)
         {
@@ -180,6 +185,8 @@ public class LevelController : MonoBehaviour {
 
     IEnumerator MainLoop() {
         targetIndex = MazeLogic.NullRewardIndex;//reset targetindex for MazeLogic
+
+        triggeredWrongReward = false; // reset bool for checking if a wrong reward was triggered
 
         /* If this is true, it means that this session has multiple tasks and should restart fully */
         bool shouldFullyRestart = false;
@@ -221,6 +228,7 @@ public class LevelController : MonoBehaviour {
             if (!success) {
                 if (shouldFullyRestart) {
                     targetIndex = MazeLogic.NullRewardIndex;//reset targetindex for MazeLogic
+                    triggeredWrongReward = false; // reset bool for checking if a wrong reward was triggered
                 }
 
                 if (resetRobotPositionDuringInterTrial) {
@@ -267,6 +275,7 @@ public class LevelController : MonoBehaviour {
             PrepareNextTask((success || !restartOnTaskFail || targetIndex == MazeLogic.NullRewardIndex) && (trialCounter < numTrials)); // continue with next task or reward.
 
             success = false; //reset the success
+            triggeredWrongReward = false; // reset bool for checking if a wrong reward was triggered
         }
 
         yield return new WaitForSecondsRealtime(1f); // Wait time at the end of trial
@@ -314,6 +323,11 @@ public class LevelController : MonoBehaviour {
         rewards[targetIndex].IsActivated = true; // enable reward
         rewards[targetIndex].StartBlinking(); // start blinking if target has light
         RewardArea.OnRewardTriggered += OnRewardTriggered;
+        logicProvider.RewardTriggered += OnRewardTriggered;
+        logicProvider.WrongRewardTriggered += OnWrongRewardTriggered;
+
+        logicProvider?.Cleanup(rewards);
+
 
     }
 
@@ -392,15 +406,72 @@ public class LevelController : MonoBehaviour {
         yield return waitIfPaused;
     }
 
+
+    private void OnWrongRewardTriggered()
+    {
+        StartCoroutine(DeathScene());
+
+    }
+
+    private IEnumerator DeathScene()
+    {
+        // disable robot movement
+
+        robotMovement.SetMovementActive(false);
+
+        RewardArea reward = rewards[targetIndex];
+
+        yield return new WaitForSecondsRealtime(1f);
+
+        reward.target.gameObject.SetActive(true);
+
+        Debug.Log("Rotating");
+
+        // calculate rotation to reveal correct reward
+        var originalPos = robotMovement.getRobotTransform().position;
+        var originalRotation = robotMovement.getRobotTransform().rotation;
+
+        var rewardPos = reward.target.position;
+        rewardPos.y = originalPos.y;
+
+        var rotation = Quaternion.LookRotation(rewardPos - originalPos);
+
+        // rotate camera to correct reward
+        StartCoroutine(robotMovement.RotateTo(rotation));
+        yield return new WaitForSecondsRealtime(2f);
+
+        // rotate back to original position
+        StartCoroutine(robotMovement.RotateTo(originalRotation));
+
+        triggeredWrongReward = true;
+
+        yield return null;
+    }
+
+
     private IEnumerator TrialTimer() {
         // convert to seconds
         float trialTimeLimit = Session.trialTimeLimit / 1000f;
         SessionStatusDisplay.DisplaySessionStatus("Trial Running");
 
         while (trialTimeLimit > 0 && !success) {
+            if (Input.GetKeyDown("space"))
+            {
+                // Trigger death scene when pressing space outside of any rewardArea
+                StartCoroutine(DeathScene());
+            }
+
+            // set to 0 to end trial
+            if (triggeredWrongReward)
+            {
+                trialTimeLimit = 0;
+            }
+
             yield return SessionStatusDisplay.Tick(trialTimeLimit, out trialTimeLimit);
         }
         RewardArea.OnRewardTriggered -= OnRewardTriggered;
+        logicProvider.RewardTriggered -= OnRewardTriggered;
+        logicProvider.WrongRewardTriggered -= OnWrongRewardTriggered;
 
         //disable robot movement
         robotMovement.SetMovementActive(false);
