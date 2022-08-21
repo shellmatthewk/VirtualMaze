@@ -58,6 +58,7 @@ public class LevelController : MonoBehaviour {
     public bool disableHint = false;
     protected int numTrials { get; private set; } = 0;
     public int trialCounter = 0;
+    public bool errorFlag = true;
 
     /// <summary>
     /// Gameobjects tagged as "RewardArea" in the scene will be populated in here.
@@ -200,6 +201,7 @@ public class LevelController : MonoBehaviour {
         while (trialCounter < numTrials) {
             // +1 since trailCounter is starts from 0
             SessionStatusDisplay.DisplayTrialNumber(trialCounter + 1);
+
             if (logicProvider.ShowCue(targetIndex)) {
                 yield return ShowCues();
             }
@@ -374,7 +376,14 @@ public class LevelController : MonoBehaviour {
     }
 
     protected virtual IEnumerator InterTrial() {
+        if (trialCounter != 0 && !resetRobotPositionDuringInterTrial)
+        {
+            errorFlag = false; // don't sound error immediately after new trial start if resetRobotPositionDuringInterTrial is false
+        }
         yield return new WaitForSecondsRealtime(1f); // Wait time in-between trials
+
+        errorFlag = true; // resets flag for next trial
+
         cueController.HideHint();
         if (resetRobotPositionDuringInterTrial) {
             //fadeout and wait for fade out to finish.

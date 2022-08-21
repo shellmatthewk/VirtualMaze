@@ -123,7 +123,6 @@ public class ExperimentController : ConfigurableComponent {
     public void StartExperiment() {
         //ignore btn click if already started.
         if (started) return;
-
         started = true;
         sessionController.RestartIndex();
 

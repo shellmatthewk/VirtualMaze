@@ -12,7 +12,7 @@ using UnityEngine;
 public class GameController : MonoBehaviour {
     //UPDATE THESE WITH EACH COMPILATION
     public static readonly int versionNum = 4;
-    public static readonly string versionInfo = "20220630 Taxi Continuous/Discontinuous v" + versionNum;
+    public static readonly string versionInfo = "20220822 Taxi Continuous/Discontinuous v" + versionNum;
     public static readonly string pportInfo = "v" + versionNum;
 
     [SerializeField]

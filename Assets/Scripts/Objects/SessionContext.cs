@@ -13,9 +13,9 @@ public class SessionContext {
     public string Version;
     public string TriggerVersion;
     public string TaskType;
-    public List<PosterLocation> PosterLocations = new List<PosterLocation>();
     public string TrialName;
     public string NumTrial; //number of trials
+    public List<PosterLocation> PosterLocations = new List<PosterLocation>();
     public string CompletionWindow;
     public string TimeoutDuration;
     public string IntersessionInterval;
@@ -50,7 +50,6 @@ public class SessionContext {
     //regex to extract information from string
     // any word ( float or int, float or int, float or int )
     private const string posterRegex = @"(\w+)\(([-+]?[0-9]*\.?[0-9]+),([-+]?[0-9]*\.?[0-9]+),([-+]?[0-9]*\.?[0-9]+)\)";
-
 
     public SessionContext(Session session, ExperimentSettings settings, RewardArea[] rewards) {
         Version = GameController.versionInfo;
@@ -186,7 +185,7 @@ public class SessionContext {
 
             if (temp == "\"PosterLocations\"")
             {
-                newHeader += "\n\n";
+                newHeader += "\n";
                 keyFlag = true; // sets keyFlag to true again as posterLocation has an entire list as its value.
             }
             
@@ -258,7 +257,6 @@ public class SessionContext {
             ResetPositionOnSession = experimentSettings.resetPositionOnSession.ToString();
             EnableDirectionError = experimentSettings.enableDirectionError.ToString();
             DisableHint = experimentSettings.disableHint.ToString();
-            
         }
         else {
             //this values are a must to have. Therefore an exception is thrown
@@ -282,7 +280,7 @@ public class SessionContext {
         public string posterPosition;
         public PosterLocation(Vector3 position, string name) {
             this.name = name;
-            this.posterPosition = $"({position.x}, {position.y}, {position.z})" + "\n";
+            this.posterPosition = $"({position.x}, {position.y}, {position.z})";
         }
 
         public override string ToString() {

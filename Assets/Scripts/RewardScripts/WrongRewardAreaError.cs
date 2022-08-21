@@ -10,6 +10,7 @@ public class WrongRewardAreaError : MonoBehaviour
     private static RewardsController rewardsController;
     private static ExperimentController experimentController;
     private static NonTargetRaycast nonTargetRaycast;
+    private static LevelController levelController;
     private float timer = 1000f;
     public bool isSoundTriggered = false;
 
@@ -23,13 +24,17 @@ public class WrongRewardAreaError : MonoBehaviour
         experimentController = GameObject.FindObjectOfType(typeof(ExperimentController)) as ExperimentController;
         nonTargetRaycast = GameObject.FindObjectOfType(typeof(NonTargetRaycast)) as NonTargetRaycast;
         rewardsController = GameObject.FindObjectOfType(typeof(RewardsController)) as RewardsController;
+        levelController = GameObject.FindObjectOfType(typeof(LevelController)) as LevelController;
     }
 
     void Update()
     {
         timer += Time.deltaTime;
         HintBlink();
-
+        if (levelController.errorFlag == false)
+        {
+            isSoundTriggered = true; // doesn't immediately sound in new trial but the robot in the wrong area already ()
+        }
         if (!LevelController.sessionStarted)
         {
             Reset();
