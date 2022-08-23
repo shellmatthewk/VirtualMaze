@@ -13,6 +13,8 @@ public class WrongRewardAreaError : MonoBehaviour
     private static LevelController levelController;
     private float timer = 1000f;
     public bool isSoundTriggered = false;
+    private int _sessionIndex = 0;
+
 
     // Number and duration of blinks
     int numBlinks = 2;
@@ -31,14 +33,23 @@ public class WrongRewardAreaError : MonoBehaviour
     {
         timer += Time.deltaTime;
         HintBlink();
+
         if (levelController.errorFlag == false)
         {
-            isSoundTriggered = true; // doesn't immediately sound in new trial but the robot in the wrong area already ()
+            isSoundTriggered = true; // doesn't immediately sound in new trial but the robot in the wrong area already
         }
+
+        if (_sessionIndex != experimentController.sessionController.index && !experimentController.resetPositionOnSession) // checks if index has changed
+        {
+            isSoundTriggered = true; // doesn't immediately sound in new session but the robot in the wrong area already
+        }
+
         if (!LevelController.sessionStarted)
         {
             Reset();
         }
+
+        _sessionIndex = experimentController.sessionController.index; // sets new value to test for next iteration
     }
 
 

@@ -13,7 +13,7 @@ public class SessionContext {
     public string Version;
     public string TriggerVersion;
     public string TaskType;
-    public string TrialName;
+    public string MazeName;
     public string NumTrial; //number of trials
     public List<PosterLocation> PosterLocations = new List<PosterLocation>();
     public string CompletionWindow;
@@ -63,7 +63,7 @@ public class SessionContext {
             TaskType = "Discontinuous";
         }
 
-        TrialName = session.maze.MazeName;
+        MazeName = session.maze.MazeName;
         NumTrial = session.numTrials.ToString();
 
         foreach (RewardArea reward in rewards) {
@@ -98,7 +98,7 @@ public class SessionContext {
         }
 
         line = reader.ReadLine();
-        TrialName = GetValue(line);
+        MazeName = GetValue(line);
 
         line = reader.ReadLine();
         NumTrial = int.Parse(GetValue(line));
