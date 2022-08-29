@@ -14,7 +14,7 @@ public class SessionContext {
     public string TriggerVersion;
     public string TaskType;
     public string MazeName;
-    public string NumTrial; //number of trials
+    public string NumberOfTrials; //number of trials
     public List<PosterLocation> PosterLocations = new List<PosterLocation>();
     public string CompletionWindow;
     public string TimeoutDuration;
@@ -52,7 +52,7 @@ public class SessionContext {
     private const string posterRegex = @"(\w+)\(([-+]?[0-9]*\.?[0-9]+),([-+]?[0-9]*\.?[0-9]+),([-+]?[0-9]*\.?[0-9]+)\)";
 
     public SessionContext(Session session, ExperimentSettings settings, RewardArea[] rewards) {
-        Version = GameController.versionInfo;
+        Version = GameController.versionInfo + VersionInfo.Version.ToString();
         TriggerVersion = GameController.pportInfo;
         GetExperimentSettings(settings);
 
@@ -64,7 +64,7 @@ public class SessionContext {
         }
 
         MazeName = session.maze.MazeName;
-        NumTrial = session.numTrials.ToString();
+        NumberOfTrials = session.numTrials.ToString();
 
         foreach (RewardArea reward in rewards) {
             if (reward.target != null) {
@@ -167,7 +167,7 @@ public class SessionContext {
         string temp;
         bool keyFlag = true;
         header = JsonUtility.ToJson(this, true);
-        var reg = new Regex("\".*?\""); // specifies that selection is done to the string encased in ""
+        var reg = new Regex("\".*?\""); // specifies that selection is done to the strings encased in ""
         var matches = reg.Matches(header);
         foreach (var item in matches)
         {
@@ -190,7 +190,7 @@ public class SessionContext {
             }
             
         }
-        return newHeader;
+        return newHeader + "--- Start of Dataset --- \n";
     }
     /*******************************************************/
 

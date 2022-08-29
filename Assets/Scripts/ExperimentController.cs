@@ -98,7 +98,7 @@ public class ExperimentController : ConfigurableComponent {
     protected override void Awake() {
         base.Awake();
         waitIfPaused = new WaitUntil(() => !isPaused);
-
+        
         print(VersionInfo.Version);
     }
 
