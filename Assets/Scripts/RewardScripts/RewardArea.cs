@@ -18,6 +18,8 @@ public class RewardArea : MonoBehaviour {
     /// </summary>
     public Sprite cueImage;
 
+    public MeshRenderer imageRenderer;
+
     /// <summary>
     /// Optional target of the Reward Area
     /// if left null, this reward area will send an RewardTriggered event once
@@ -139,6 +141,12 @@ public class RewardArea : MonoBehaviour {
     public delegate void InTriggerZone(RewardArea rewardArea);
     public static event InTriggerZone InTriggerZoneListener;
 
+    /// <summary>
+    /// Checks the field of view of the robot in respect to target when in proximity
+    /// </summary>
+    public delegate void CheckFieldOfViewInProximity(Transform robot, RewardArea target, float reqProxDist, float reqDist, float reqAngle);
+    public static event CheckFieldOfViewInProximity CheckViewInProximity;
+
     //for blinking logic
     private bool blinkState;
     private readonly WaitForSeconds half_period = new WaitForSeconds(0.5f);
@@ -158,13 +166,19 @@ public class RewardArea : MonoBehaviour {
         }
     }
 
+    void Update()
+    {
+        StartCoroutine(BlinkReward(this));
+    }
+
     /* only checks for proximity when the subject enters the collider */
     protected virtual void OnTriggerStay(Collider other) {
         if (target == null && IsActivated) { //RewardAreas used as checkpoints (without posters)
             OnRewardTriggered?.Invoke(this);
         }
         else if (IsActivated) { //Any other activated RewardAreas
-            CheckFieldOfView(other.transform);
+            //CheckFieldOfView(other.transform);
+            OnRewardWithinProximity(other.transform);
         }
         InTriggerZoneListener?.Invoke(this);
     }
@@ -175,6 +189,20 @@ public class RewardArea : MonoBehaviour {
 
     private void OnTriggerExit(Collider other) {
         OnExitedTriggerZone?.Invoke(this);
+    }
+
+    public void OnProximityEntered()
+    {
+        OnProximityTriggered?.Invoke(this);
+    }
+
+    public void Triggered()
+    {
+        OnRewardTriggered?.Invoke(this);
+    }
+    public void OnRewardWithinProximity(Transform robot)
+    {
+        CheckViewInProximity?.Invoke(robot, this, s_proximityDistance, s_requiredDistance, s_requiredViewAngle);
     }
 
     /// <summary>
@@ -217,9 +245,39 @@ public class RewardArea : MonoBehaviour {
     }
 
     public void StartBlinking() {
+        // Debug.Log("Failed to blink");
+        float timer = 0f;
+        int numBlinks = 4;
+        float overallBlinkDuration = 0.5f;
         if (blinkLight != null) {
             blinkCoroutine = StartCoroutine(Blink());
         }
+    }
+
+    // Used by TrainingHiddenLogicMD2 to make reward blink to indicate within in zone
+    public void StartBlinkingReward(RewardArea reward)
+    {
+        blinkState = true;
+    }
+
+    // Blinks reward every half second while blinkState is true 
+    public IEnumerator BlinkReward(RewardArea reward)
+    {
+        float overallBlinkDuration = 0.5f;
+        while (blinkState)
+        {
+            Debug.Log("Blinking");
+            reward.target.gameObject.SetActive(true);
+            yield return new WaitForSeconds(overallBlinkDuration / 2);
+            reward.target.gameObject.SetActive(false);
+            yield return new WaitForSeconds(overallBlinkDuration / 2);
+        }
+    }
+
+    // Used by TrainingHiddenLogicMD2 to stop reward from blinking
+    public void StopBlinkingReward(RewardArea reward)
+    {
+        blinkState = false;
     }
 
     public void StopBlinking() {
