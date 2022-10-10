@@ -32,6 +32,9 @@ public class RewardArea : MonoBehaviour {
     /// </summary>
     public Renderer blinkLight;
 
+    private static float s_requiredViewAngle = 90f; //default
+    private static float s_requiredDistance = 2f; //default
+
     /// <summary>
     /// viewing angle required to register if the target is in sight
     /// 
@@ -41,7 +44,7 @@ public class RewardArea : MonoBehaviour {
     public static float RequiredViewAngle {
         get => s_requiredViewAngle;
         set {
-            float v = Mathf.Clamp(value, 0, 110);
+            float v = Mathf.Clamp(value, 0f, 110f);
             s_requiredViewAngle = v;
             if (v != value) {
                 Console.Write($"Value Clamped to {v}");
@@ -151,8 +154,6 @@ public class RewardArea : MonoBehaviour {
     private bool blinkState;
     private readonly WaitForSeconds half_period = new WaitForSeconds(0.5f);
     private Coroutine blinkCoroutine; // reference to properly stop the coroutine
-    private static float s_requiredViewAngle = 110f;
-    private static float s_requiredDistance = 2f;
 
     //constants
     private const string Format_NoRewardAreaComponentFound = "{0} does not have a RewardAreaComponent but is tagged as a reward";

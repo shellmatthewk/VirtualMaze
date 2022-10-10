@@ -23,7 +23,6 @@ public class HiddenRewardMazeLogicMD2 : StandardMazeLogic
         TrackExitTriggerZone(true);
         TrackFieldOfView(true);
         TrackInTriggerZone(true);
-        RewardArea.RequiredViewAngle = 180f;
     }
 
     protected void TrackExitTriggerZone(bool enable)

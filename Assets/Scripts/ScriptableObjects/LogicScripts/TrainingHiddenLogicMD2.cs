@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
 {
 
-    private bool inView = false;
+    private bool targetInView = false;
     int[] order;
     int index = 0;
 
@@ -29,8 +29,6 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
         TrackExitTriggerZone(true);
         TrackFieldOfView(true);
         TrackInTriggerZone(true);
-
-        RewardArea.RequiredViewAngle = 180f;
 
         order = new int[rewards.Length];
         for (int i = 0; i < order.Length; i++)
@@ -68,14 +66,14 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
         if (Input.GetKeyDown("space"))
         {
             TrackInTriggerZone(false);
-            ProcessReward(rewardArea, inView && isTarget);
+            ProcessReward(rewardArea, targetInView && isTarget);
         }
     }
 
     private void TriggerZoneExit(RewardArea rewardArea, bool isTarget)
     {
         inZone = false;
-        rewardArea.StopBlinkingReward(rewardArea);
+        //rewardArea.StopBlinkingReward(rewardArea);
     }
 
     public override void Cleanup(RewardArea[] rewards)
@@ -85,9 +83,9 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
         foreach (RewardArea area in rewards)
         {
             SetRewardTargetVisible(area, false);
-            area.StopBlinkingReward(area);
+            //area.StopBlinkingReward(area);
         }
-        inView = false;
+        targetInView = false;
         TrackEnterProximity(false);
         TrackExitTriggerZone(false);
 
@@ -96,7 +94,7 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
     public override void ProcessReward(RewardArea rewardArea, bool success)
     {
         base.IsTrialOver(true);
-        targetReward.StopBlinkingReward(targetReward);
+        //targetReward.StopBlinkingReward(targetReward);
 
         if (success && targetReward == rewardArea)
         {
@@ -133,17 +131,19 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
         float distance = Vector3.Magnitude(direction);
         // Debug.Log($"dist:{distance} / {s_proximityDistance}");
         // Debug.Log($"angle:{angle} / {s_requiredViewAngle}");
-        if (distance <= s_proximityDistance)
+
+
+        if (distance <= RewardArea.RequiredDistance)
         {
             reward.OnProximityEntered();
 
             //check if in view angle
-            if (angle < s_requiredViewAngle * 0.5f || (distance < 1))
+            if (angle < RewardArea.RequiredViewAngle * 0.5f || (distance < 1))
             {
                 //checks if close enough
-                inView = true;
-                reward.StartBlinkingReward(reward);
-                Debug.Log("In zone");
+                targetInView = true;
+                //reward.StartBlinkingReward(reward);
+                Debug.Log(RewardArea.RequiredViewAngle);
                 if (Input.GetKeyDown("space"))
                 {
                     ProcessReward(reward, true);
@@ -151,13 +151,13 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
             }
             else
             {
-                inView = false;
-                reward.StopBlinkingReward(reward);
+                targetInView = false;
+                //reward.StopBlinkingReward(reward);
             }
         }
         else
         {
-            inView = false;
+            targetInView = false;
         }
 
     }
@@ -166,16 +166,16 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
     public override void TrialListener(RewardArea target)
     {
         targetReward = target;
-        if (!inView)
+        if (!targetInView)
         {
-            target.StopBlinkingReward(target);
+            //target.StopBlinkingReward(target);
         }
 
         Debug.Log("End trial: " + EndTrial());
         if (Input.GetKeyDown("space"))
         {
             IsTrialOver(true);
-            ProcessReward(target, inView);
+            ProcessReward(target, targetInView);
         }
     }
 
@@ -183,7 +183,7 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
     // Setup right before trial begins
     public override void TrialSetup(RewardArea[] rewards, int target)
     {
-        inView = false;
+        targetInView = false;
         foreach (RewardArea area in rewards)
         {
             SetRewardTargetVisible(area, false);
