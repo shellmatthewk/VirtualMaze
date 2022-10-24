@@ -60,15 +60,22 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
         return target;
     }
 
+    // This function is unnecessary as it is alreayd covered by CheckFieldOfView function
+    //<---------------------------------------ARCHIVED-------------------------------------------------->
+    
     protected override void WhileInTriggerZone(RewardArea rewardArea, bool isTarget)
     {
-        inZone = true;
+        inZone = true;/*
         if (Input.GetKeyDown("space"))
         {
+            Debug.Log("WhileInTriggerZone Check FOV");
             TrackInTriggerZone(false);
-            ProcessReward(rewardArea, targetInView && isTarget);
-        }
+            //ProcessReward(rewardArea, targetInView && isTarget);
+        }*/
     }
+    
+    //<------------------------------------------------------------------------------------------------->
+
 
     private void TriggerZoneExit(RewardArea rewardArea, bool isTarget)
     {
@@ -110,6 +117,7 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
         base.ProcessReward(targetReward, success);
     }
 
+    // Function called in RewardArea
     public override void CheckFieldOfView(Transform robot, RewardArea reward, float s_proximityDistance, float RequiredDistance, float s_requiredViewAngle)
     {
         Transform target = reward.target;
@@ -118,6 +126,7 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
 
         float angle = Vector3.Angle(direction, robot.forward);
 
+        /*
         //uncomment to see the required view in the scene tab
         if (Debug.isDebugBuild)
         {
@@ -127,6 +136,7 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
             Debug.DrawRay(robot.position, right, Color.black);
             Debug.DrawRay(robot.position, direction.normalized * RequiredDistance, Color.cyan);
         }
+        */
 
         float distance = Vector3.Magnitude(direction);
         // Debug.Log($"dist:{distance} / {s_proximityDistance}");
@@ -140,12 +150,12 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
             //check if in view angle
             if (angle < RewardArea.RequiredViewAngle * 0.5f || (distance < 1))
             {
-                //checks if close enough
                 targetInView = true;
                 //reward.StartBlinkingReward(reward);
-                Debug.Log(RewardArea.RequiredViewAngle);
+                Debug.Log(Input.GetKeyDown("space"));
                 if (Input.GetKeyDown("space"))
                 {
+                    Debug.Log("MD2 Check FOV");
                     ProcessReward(reward, true);
                 }
             }
@@ -169,11 +179,13 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
         if (!targetInView)
         {
             //target.StopBlinkingReward(target);
+            
         }
-
-        Debug.Log("End trial: " + EndTrial());
+        
+        //Debug.Log("End trial: " + EndTrial());
         if (Input.GetKeyDown("space"))
         {
+            Debug.Log("TrialListener Check FOV");
             IsTrialOver(true);
             ProcessReward(target, targetInView);
         }

@@ -215,7 +215,7 @@ public class RewardArea : MonoBehaviour {
         direction.y = 0; // ignore y axis
 
         float angle = Vector3.Angle(direction, robot.forward);
-
+        //Debug.Log("RewardArea CheckFOV");
         //uncomment to see the required view in the scene tab
         if (Debug.isDebugBuild) {
             Vector3 left = Quaternion.AngleAxis(-s_requiredViewAngle / 2f, Vector3.up) * robot.forward * RequiredDistance;
@@ -231,7 +231,7 @@ public class RewardArea : MonoBehaviour {
         // Debug.Log($"angle:{angle} / {s_requiredViewAngle}");
         if (distance <= s_proximityDistance) {
             OnProximityTriggered?.Invoke(this);
-            // Debug.Log("RewardProx");
+            Debug.Log("RewardProx");
         }
 
 
@@ -247,9 +247,6 @@ public class RewardArea : MonoBehaviour {
 
     public void StartBlinking() {
         // Debug.Log("Failed to blink");
-        float timer = 0f;
-        int numBlinks = 4;
-        float overallBlinkDuration = 0.5f;
         if (blinkLight != null) {
             blinkCoroutine = StartCoroutine(Blink());
         }
