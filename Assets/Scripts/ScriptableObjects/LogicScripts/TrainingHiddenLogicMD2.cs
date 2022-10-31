@@ -9,6 +9,7 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
 
     private bool targetInView = false;
     int[] order;
+    private bool keyInputFlag = false;
     int index = 0;
 
     private RewardArea targetReward;
@@ -142,7 +143,7 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
         // Debug.Log($"dist:{distance} / {s_proximityDistance}");
         // Debug.Log($"angle:{angle} / {s_requiredViewAngle}");
 
-
+        
         if (distance <= RewardArea.RequiredDistance)
         {
             reward.OnProximityEntered();
@@ -152,8 +153,8 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
             {
                 targetInView = true;
                 //reward.StartBlinkingReward(reward);
-                Debug.Log(Input.GetKeyDown("space"));
-                if (Input.GetKeyDown("space"))
+
+                if (Input.GetKey("space") && keyInputFlag != Input.GetKey("space"))
                 {
                     Debug.Log("MD2 Check FOV");
                     ProcessReward(reward, true);
@@ -169,6 +170,7 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
         {
             targetInView = false;
         }
+        keyInputFlag = Input.GetKey("space"); //stores this iteration's Input.GetKey("space") as new flag for next iteration
 
     }
 
@@ -183,12 +185,13 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
         }
         
         //Debug.Log("End trial: " + EndTrial());
-        if (Input.GetKeyDown("space"))
+        if (Input.GetKeyDown("space") && keyInputFlag != Input.GetKey("space"))
         {
             Debug.Log("TrialListener Check FOV");
             IsTrialOver(true);
             ProcessReward(target, targetInView);
         }
+        keyInputFlag = Input.GetKey("space");
     }
 
 
