@@ -10,6 +10,7 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
     private bool targetInView = false;
     int[] order;
     private bool keyInputFlag = false;
+    private bool ongoingProcessRewardFlag = false;
     int index = 0;
 
     private RewardArea targetReward;
@@ -101,21 +102,26 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
 
     public override void ProcessReward(RewardArea rewardArea, bool success)
     {
-        base.IsTrialOver(true);
-        //targetReward.StopBlinkingReward(targetReward);
+        if (!ongoingProcessRewardFlag) // prevents multiple instance of this function occurring at the same time
+        {
+            base.IsTrialOver(true);
+            //targetReward.StopBlinkingReward(targetReward);
 
-        if (success && targetReward == rewardArea)
-        {
-            base.StartDeathScene(false);
-            base.OnRewardTriggered(targetReward);
+            if (success && targetReward == rewardArea)
+            {
+                base.StartDeathScene(false);
+                base.OnRewardTriggered(targetReward);
+            }
+            else
+            {
+                base.StartDeathScene(true);
+                base.OnWrongRewardTriggered();
+            }
+            //Prints to console which reward is processed
+            base.ProcessReward(targetReward, success);
         }
-        else
-        {
-            base.StartDeathScene(true);
-            base.OnWrongRewardTriggered();
-        }
-        //Prints to console which reward is processed
-        base.ProcessReward(targetReward, success);
+        keyInputFlag = false; //resets keyInputFlag once trial is over
+        ongoingProcessRewardFlag = false; // resets to allow ProcessReward function to run again
     }
 
     // Function called in RewardArea
@@ -154,7 +160,7 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
                 targetInView = true;
                 //reward.StartBlinkingReward(reward);
 
-                if (Input.GetKey("space") && keyInputFlag != Input.GetKey("space"))
+                if (Input.GetKey("space") && keyInputFlag != Input.GetKey("space")) // "space" input is freshly pressed
                 {
                     Debug.Log("MD2 Check FOV");
                     ProcessReward(reward, true);
@@ -163,6 +169,7 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
             else
             {
                 targetInView = false;
+                ProcessReward(reward, false);
                 //reward.StopBlinkingReward(reward);
             }
         }
@@ -170,8 +177,10 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
         {
             targetInView = false;
         }
-        keyInputFlag = Input.GetKey("space"); //stores this iteration's Input.GetKey("space") as new flag for next iteration
-
+        if (!keyInputFlag) //once space is pressed, the flag must stays true till the end of trial (since 1 input = 1 ending)
+        {
+            keyInputFlag = Input.GetKey("space"); //stores this iteration's Input.GetKey("space") as new flag for next iteration
+        }
     }
 
     // Continously called in while loop in LevelController. Used to listen for Spacebar press
@@ -181,17 +190,21 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
         if (!targetInView)
         {
             //target.StopBlinkingReward(target);
-            
         }
         
         //Debug.Log("End trial: " + EndTrial());
-        if (Input.GetKeyDown("space") && keyInputFlag != Input.GetKey("space"))
+        if (keyInputFlag)
         {
-            Debug.Log("TrialListener Check FOV");
+            Debug.Log("TrialListener Check");
             IsTrialOver(true);
             ProcessReward(target, targetInView);
         }
-        keyInputFlag = Input.GetKey("space");
+
+        if (!keyInputFlag) //once space is pressed, the flag must stays true till the end of trial (since 1 input = 1 ending)
+        {
+            keyInputFlag = Input.GetKey("space"); //stores this iteration's Input.GetKey("space") as new flag for next iteration
+        }
+        Debug.Log("KeyInputFlag: " + keyInputFlag);
     }
 
 
