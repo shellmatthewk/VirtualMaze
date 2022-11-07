@@ -169,7 +169,6 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
             else
             {
                 targetInView = false;
-                ProcessReward(reward, false);
                 //reward.StopBlinkingReward(reward);
             }
         }
