@@ -61,12 +61,12 @@ public class DirectionError : MonoBehaviour
         //              [L/R, R, L, L, L, .],
 
         correctTurnSign = new int[6, 6] {
-            { 0, 1, -1, -1, -1, 0 },    // Cat
-            { 1, 0, 1, -1, 1, 1 },      // Camel
-            { 1, -1, 0, -1, -1, -1 },   // Rabbit
-            { 1, 1, -1, 0, 0, 1 },      // Donkey
-            { 1, 1, -1, 0, 0, 1 },      // Crocodile
-            { 0, 1, -1, -1, -1, 0 }     // Pig
+            { 0, 1, -1, -1, -1, 0 },
+            { 1, 0, 1, -1, 1, 1 },
+            { 1, -1, 0, -1, -1, -1 },
+            { 1, 1, -1, 0, 0, 1 },
+            { 1, 1, -1, 0, 0, 1 },
+            { 0, 1, -1, -1, -1, 0 }
         };
     }
 
@@ -181,7 +181,7 @@ public class DirectionError : MonoBehaviour
 
                 // Debug.Log("distanceDiff: " + distanceDiff);
 
-                if (Math.Abs(distanceDiff) > distanceRange && !isSoundTriggered) { // Check if distance is larger than set distance range
+                if (Math.Abs(distanceDiff) > distanceRange && !isSoundTriggered) { // Chechk if distance is larger than set distance range
                     if (Math.Sign(distanceDiff) != correctTurnSign[actualPreviousTargetIndex, actualCurrentTargetIndex] && correctTurnSign[actualPreviousTargetIndex, actualCurrentTargetIndex] != 0) { // Wrong direction, use actual
                         WrongDirectionSound();
                     }
