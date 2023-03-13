@@ -192,7 +192,7 @@ public class BinWallManager {
                         b.Hit();
 
                         b.idText.text = mapper.MapBinToId(b.parent, b).ToString();
-                        b.SetTextCanvasActive(true);
+                        //b.SetTextCanvasActive(true);
                     }
                 }
             }
