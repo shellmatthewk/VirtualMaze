@@ -275,12 +275,12 @@ PrefabInstance:
     - target: {fileID: 2392802, guid: 542c5d0a9da094d3f8a72a738144e05b, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 17822ed0faf6a8c45ac7b3654442e066, type: 2}
+      objectReference: {fileID: 2100000, guid: a6be3b7a62ae44692a3b1dab1461685c, type: 2}
     - target: {fileID: 3249004728069940807, guid: 542c5d0a9da094d3f8a72a738144e05b,
         type: 3}
       propertyPath: cueImage
       value: 
-      objectReference: {fileID: 21300000, guid: be2633986282d5e4a85f52555bf4afb2,
+      objectReference: {fileID: 21300000, guid: 2330c9fa03cf04cdabd35255e7ccc863,
         type: 3}
     m_RemovedComponents:
     - {fileID: 11497916, guid: 542c5d0a9da094d3f8a72a738144e05b, type: 3}
