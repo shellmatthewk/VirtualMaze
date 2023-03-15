@@ -68,7 +68,7 @@ public class LevelController : MonoBehaviour {
     protected int numTrials { get; private set; } = 0;
     public int trialCounter = 0;
     public bool errorFlag = true;
-    public float sessionIntermissionWait = .1f; 
+    public float sessionIntermissionWait = 1f; 
 
     /// <summary>
     /// Gameobjects tagged as "RewardArea" in the scene will be populated in here.
@@ -370,7 +370,7 @@ public class LevelController : MonoBehaviour {
         cueController.ShowCue();
         onSessionTrigger.Invoke(SessionTrigger.TrialStartedTrigger, targetIndex);
 
-        yield return new WaitForSecondsRealtime(2f); // Wait time for showing cue before minimising
+        yield return new WaitForSecondsRealtime(3f); // Wait time for showing cue before minimising
 
         cueController.HideCue();
         if (!disableHint) {
