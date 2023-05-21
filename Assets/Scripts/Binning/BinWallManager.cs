@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
@@ -43,6 +44,25 @@ public class BinWallManager {
         wallCache.Clear();
     }
 
+
+    //// Tryna export all the Bin IDs into text file.
+    //public static void ExportBinIdsToFile(string path)
+    //{
+    //    using (StreamWriter writer = new StreamWriter(path))
+    //    {
+    //        foreach (List<BinWall> binWalls in wallCache.Values)
+    //        {
+    //            foreach (BinWall binWall in binWalls)
+    //            {
+    //                writer.Write("BinWall: ");
+    //                writer.WriteLine(binWall.name);
+    //                writer.Write("Bin IDs: ");
+    //                writer.WriteLine(string.Join(", ", binWall.binIds));
+    //            }
+    //        }
+    //    }
+    //}
+    
     private static int radius = -1;
     private static int density = -1;
 
@@ -56,6 +76,7 @@ public class BinWallManager {
     public static void DisplayGazes(List<Vector2> gazes, Camera c, GameObject binWallPrefab, BinMapper mapper) {
         IdentifyObjects(gazes, c, binWallPrefab, mapper);
         ViewBinGazes(gazes, c, binWallPrefab, mapper);
+        //ExportBinIdsToFile("bin_ids.txt");
         gazes.Clear();
     }
 
@@ -364,4 +385,5 @@ public class BinWallManager {
 
         return binWall;
     }
+
 }

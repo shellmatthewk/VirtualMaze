@@ -77,6 +77,12 @@ public class DoubleTeeBinMapper : BinMapper {
         groupOffsetTable[MazeWallZPos] = groupOffsetTable[MazeWallXPos];
 
         groupOffsetTable[PillarWalls] = groupOffsetTable[MazeWallZPos] + numWallsBins * 4;
+        
+        // To show the BinIDs for the objects
+        foreach (KeyValuePair<int, int> kvp in groupOffsetTable) {
+            Debug.Log("BinObject: " + kvp.Key + ", Initial BinID: " + kvp.Value);
+        }
+        // Debug.Log("Final BinID: " + groupOffsetTable[PillarWalls])
     }
 
     /// <summary>
