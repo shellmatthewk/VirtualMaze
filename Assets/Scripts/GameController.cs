@@ -94,7 +94,7 @@ public class GameController : MonoBehaviour {
                         sessionListPath = args[i + 1];
                         break;
 
-                    case "-numOfLengthBins":
+                    case "-numoflengthbins":
                         if (int.TryParse(args[i + 1], out numofLengthBins)) {
                             logger.Print($"Setting number of length bins to : {numofLengthBins}");
                         }
