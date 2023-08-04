@@ -80,7 +80,7 @@ public class DoubleTeeBinMapper : BinMapper {
         
         // To show the BinIDs for the objects
         foreach (KeyValuePair<int, int> kvp in groupOffsetTable) {
-            Debug.Log("BinObject: " + kvp.Key + ", Initial BinID: " + kvp.Value);
+            //Debug.Log("BinObject: " + kvp.Key + ", Initial BinID: " + kvp.Value);
         }
         // Debug.Log("Final BinID: " + groupOffsetTable[PillarWalls])
     }

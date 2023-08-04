@@ -77,11 +77,11 @@ public class CueController : MonoBehaviour {
 
         cueImage.rectTransform.GetWorldCorners(corners);
 
-        print($"{cueImage.name}|{corners[0]}{corners[1]}{corners[2]}{corners[3]}");
+        // print($"{cueImage.name}|{corners[0]}{corners[1]}{corners[2]}{corners[3]}");
 
         hintImage.rectTransform.GetWorldCorners(corners);
 
-        print($"{hintImage.name}|{corners[0]}{corners[1]}{corners[2]}{corners[3]}");
+        // print($"{hintImage.name}|{corners[0]}{corners[1]}{corners[2]}{corners[3]}");
 
         cueBoxCollider = cueImage.GetComponent<BoxCollider>();
         hintBoxCollider = hintImage.GetComponent<BoxCollider>();

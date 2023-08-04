@@ -203,7 +203,7 @@ public class TrainingHiddenLogicMD2 : HiddenRewardMazeLogicMD2
         {
             keyInputFlag = Input.GetKey("space"); //stores this iteration's Input.GetKey("space") as new flag for next iteration
         }
-        Debug.Log("KeyInputFlag: " + keyInputFlag);
+        // Debug.Log("KeyInputFlag: " + keyInputFlag);
     }
 
 

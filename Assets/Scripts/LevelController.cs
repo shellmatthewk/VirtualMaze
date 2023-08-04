@@ -244,6 +244,7 @@ public class LevelController : MonoBehaviour {
             if (!success) {
                 if (logicProvider.ExecuteDeathScene())
                 { // wait till Death Scene finishes
+                    StartCoroutine(DeathScene());
                     yield return new WaitUntil(() => logicProvider.DeathSceneComplete());
                 }
 
@@ -256,7 +257,6 @@ public class LevelController : MonoBehaviour {
                 }
 
                 cueController.HideHint();
-
                 float timeoutDuration = Session.timeoutDuration / 1000f;
                 yield return SessionStatusDisplay.Countdown("Timeout", timeoutDuration);
 
