@@ -1,5 +1,5 @@
 import tkinter as tk
-#import winsound
+import winsound
 import random
 
 #############################################################################
@@ -9,6 +9,7 @@ def control_Panel():
     controlPanel = tk.Tk()
     controlPanel.geometry("300x500")
     controlPanel.title("Button Control Panel")
+    controlPanel.mainloop()
     
     global gameWindowOpened
     gameWindowOpened = False
@@ -196,7 +197,7 @@ def createGameWindow():
     def play_audio():
         if gameSettings["soundCheckBox"] == 1:
             print("DING!")
-            #winsound.PlaySound("rewardSound.wav", winsound.SND_ASYNC)
+            winsound.PlaySound("rewardSound.wav", winsound.SND_ASYNC)
             # Only can use WAV files            
 
     def reset_color():
@@ -253,4 +254,4 @@ def createGameSettings():
 
 ##Main Loop##
 control_Panel()
-controlPanel.mainloop()
+
