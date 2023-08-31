@@ -10,6 +10,9 @@
 [Bb]uilds/
 Assets/AssetStoreTools*
 out*/
+
+
+
 # Visual Studio cache directory
 .vs/
 
@@ -17,6 +20,8 @@ out*/
 ExportedObj/
 .consulo/
 *.csproj
+!Assembly-Csharp.csproj 
+#this needs to be ain a certain config to let it play nice with VScode
 *.unityproj
 *.sln
 *.suo
@@ -66,3 +71,5 @@ Thumbs.db
 Assets/session_*
 out/*
 VideoCaptureLib_Log.txt
+
+.fake
