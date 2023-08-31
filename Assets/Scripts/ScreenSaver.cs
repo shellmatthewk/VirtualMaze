@@ -591,6 +591,7 @@ public class ScreenSaver : BasicGUIController {
         switch (data.dataType) {
             case DataTypes.SAMPLE_TYPE:
                 Fsample fs = (Fsample)data;
+                //This might cause a duplicate of the dataa to be written. Not sure. -Xavier, 19/08/23
                 if (IsInScreenBounds(fs.rawRightGaze)) {
                     gazePointPool?.AddGazePoint(GazeCanvas, viewport, fs.RightGaze);
 

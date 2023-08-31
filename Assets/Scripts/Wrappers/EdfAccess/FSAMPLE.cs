@@ -81,15 +81,23 @@ namespace Eyelink.Structs {
         public Vector2 RightGaze { get => rawRightGaze.ConvertToUnityOriginCoordinate(); }
 
         public Fsample(FSAMPLE sample, DataTypes datatype) : base(datatype, sample.time) {
-            rawRightGaze = sample.RightGaze;
+            rawRightGaze = applyCorrection(sample.RightGaze);
         }
 
         public Fsample(uint time, float gx, float gy, DataTypes datatype) : base(datatype, time) {
-            rawRightGaze = new Vector2(gx, gy);
+            rawRightGaze = applyCorrection(new Vector2(gx,gy));
         }
 
         public override string ToString() {
             return $"{dataType} @ {time} | {rawRightGaze}";
+        }
+
+        private Vector2 applyCorrection(Vector2 unCorrGaze){
+            float correctGx = unCorrGaze.x * ((float)640 / (float)1920);
+            // float correctGx = 0;
+            float correctGy = unCorrGaze.y * ((float)480 / (float)1080);
+            // float correctGy = 0;
+            return new Vector2(correctGx,correctGy);
         }
     }
 }

@@ -8,7 +8,7 @@ public class LevelController : MonoBehaviour {
     /// Triggers when the player enters the reward area
     /// </summary>
     /// <param name="rewardArea">RewardArea of the trigger zone entered</param>
-    /// /// <param name="isTarget">If the area the current target</param>
+    /// /// <param name="isTarget">If the area is the current target</param>
     public delegate void OnEnterTriggerZone(RewardArea rewardArea, bool isTarget);
     public static event OnEnterTriggerZone OnEnteredTriggerZone;
 
@@ -16,7 +16,7 @@ public class LevelController : MonoBehaviour {
     /// Triggers when the player leaves the reward area
     /// </summary>
     /// <param name="rewardArea">RewardArea of the trigger zone entered</param>
-    /// <param name="isTarget">If the area the current target</param>
+    /// <param name="isTarget">If the area is the current target</param>
     public delegate void OnExitTriggerZone(RewardArea rewardArea, bool isTarget);
     public static event OnExitTriggerZone OnExitedTriggerZone;
 
@@ -212,13 +212,15 @@ public class LevelController : MonoBehaviour {
 
         PrepareNextTask(true); //first task is always true
 
+        //TODO : un-nest this
         while (trialCounter < numTrials) {
+            
             // +1 since trailCounter is starts from 0
             SessionStatusDisplay.DisplayTrialNumber(trialCounter + 1);
 
             if (logicProvider.ShowCue(targetIndex)) {
                 yield return ShowCues();
-            }
+            } 
             else {
                 if (!disableHint) {
                     cueController.ShowHint();
