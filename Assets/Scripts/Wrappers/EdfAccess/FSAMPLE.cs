@@ -1,5 +1,9 @@
-﻿using System.Text;
+﻿using System.Runtime.InteropServices;
+using System.Text;
+
 using UnityEngine;
+
+
 
 //the arrays may need to be set as unsafe | fixed float gxvel[3];
 namespace Eyelink.Structs {
@@ -80,6 +84,11 @@ namespace Eyelink.Structs {
         /// </summary>
         public Vector2 RightGaze { get => rawRightGaze.ConvertToUnityOriginCoordinate(); }
 
+    // public static Vector2 ConvertToUnityOriginCoordinate(this Vector2 gazeVector) {
+    //     return new Vector2(gazeVector.x, Camera.main.pixelHeight - gazeVector.y);
+    // }
+
+        private double ORIGINAL_HEIGHT = 1080;
         public Fsample(FSAMPLE sample, DataTypes datatype) : base(datatype, sample.time) {
             rawRightGaze = applyCorrection(sample.RightGaze);
         }
