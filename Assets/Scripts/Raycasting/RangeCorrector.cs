@@ -15,8 +15,8 @@ namespace RangeCorrector{
 
         private static readonly Lazy<RangeCorrector> HD_TO_VIEWPORT_INTERNAL = 
         new Lazy<RangeCorrector>(() => new RangeCorrector(
-            Tuple.Create(0.0,0.0,1920.0,1080.0),
-            Tuple.Create(0.0,0.0,1.0,1.0))
+            Tuple.Create(0.0d,1920.0d,0.0d,1080.0d),
+            Tuple.Create(0.0d,1.0d,0.0d,1.0d))
             );
         
         public static RangeCorrector HD_TO_VIEWPORT {get {return HD_TO_VIEWPORT_INTERNAL.Value;}}
