@@ -21,6 +21,8 @@ This utility takes eye-tracking data and generates information about the fixated
 
 - **.edf file:** .edf file from the EyeLink eye-tracker.
 
+#### Important
+The screen size of the computer running the data generation must be the same as the screen size of the one used in the experiment.
 
 ## Steps to Use
 1. Open the VirtualMaze project in Unity.
@@ -50,9 +52,9 @@ VirtualMaze finds the name of the scene to load from the session file. Make sure
 If you would like to modify this utility, the source code can be found in *ScreenSaver.cs*.
 
 ## Eyelink Data Input Types
-VirtualMaze accepts .mat files.
+VirtualMaze accepts 2 formats for reading Eyelink Data Files (.edf) and Comma Separated Value (.csv) files.
 
-TODO : explain how the .mat files are generated.
+To use a .csv file, the file must **NOT** have any headers and the columns must be defined as follows:
 
 ### Resolution Correction
 
