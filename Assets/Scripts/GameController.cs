@@ -66,6 +66,7 @@ public class GameController : MonoBehaviour {
 
 
     private void Start() {
+        
         //Online sources says that if vSyncCount != 0, targetFrameRate will be ignored.
         if (!Application.isEditor) {
             Application.targetFrameRate = 30;
@@ -74,6 +75,8 @@ public class GameController : MonoBehaviour {
         }
 
         if (Application.isBatchMode) {
+            Camera.main.aspect = (1920f/1080f);
+            Debug.LogError($"Camera aspect ratio : {Camera.main.aspect}");
             BatchModeLogger logger = new BatchModeLogger(PresentWorkingDirectory);
 
             string[] args = Environment.GetCommandLineArgs();
@@ -86,6 +89,7 @@ public class GameController : MonoBehaviour {
 
             for (int i = 0; i < args.Length; i++) {
                 Debug.LogError($"ARG {i}: {args[i]}");
+                
                 switch (args[i].ToLower()) {
                     case "-sessionlist":
                         isSessionList = true;
