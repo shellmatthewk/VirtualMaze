@@ -1,4 +1,5 @@
-﻿using Eyelink.Structs;
+﻿using System.Runtime.InteropServices;
+using Eyelink.Structs;
 using HDF.PInvoke;
 using System;
 using System.Collections;
@@ -11,7 +12,7 @@ using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
+using RangeCorrector;
 /// <summary>
 /// TODO cancel button
 /// </summary>
@@ -576,9 +577,10 @@ public class ScreenSaver : BasicGUIController {
 
 
         for (int i = 0; i < numSamples; i++) {
-            Vector2 gaze = binSamples[i].RightGaze;
-            if (IsInScreenBounds(gaze)) {
-                Ray r = viewport.ScreenPointToRay(gaze);
+            Vector2 origGaze = binSamples[i].RightGaze;
+            if (IsInScreenBounds(origGaze)) {
+                Vector2 viewportGaze = RangeCorrector.RangeCorrector.HD_TO_VIEWPORT.correctVector(origGaze);
+                Ray r = viewport.ViewportPointToRay(viewportGaze);
                 cmds[i] = new RaycastCommand(r.origin, r.direction, layerMask: BinWallManager.ignoreBinningLayer);
             }
         }
@@ -591,6 +593,7 @@ public class ScreenSaver : BasicGUIController {
         switch (data.dataType) {
             case DataTypes.SAMPLE_TYPE:
                 Fsample fs = (Fsample)data;
+                //This might cause a duplicate of the dataa to be written. Not sure. -Xavier, 19/08/23
                 if (IsInScreenBounds(fs.rawRightGaze)) {
                     gazePointPool?.AddGazePoint(GazeCanvas, viewport, fs.RightGaze);
 

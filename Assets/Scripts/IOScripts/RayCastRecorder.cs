@@ -1,8 +1,13 @@
 ﻿using System;
 using System.IO;
 using UnityEngine;
-
+/// <summary>
+/// (16/08/23) Appears to be a convenience class to help handle writing data in number form into a file
+/// Also contains defines for the data format.
+/// -Xavier
+/// </summary>
 public class RayCastRecorder : IDisposable {
+
     //index reference
     public const int Type = 0;
     public const int Time = 1;
