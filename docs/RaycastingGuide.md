@@ -23,6 +23,8 @@ This utility takes eye-tracking data and generates information about the fixated
 
 #### Important
 The screen size of the computer running the data generation must be the same as the screen size of the one used in the experiment.
+#### Important
+The screen size of the computer running the data generation must be the same as the screen size of the one used in the experiment.
 
 ## Steps to Use
 1. Open the VirtualMaze project in Unity.
@@ -53,27 +55,16 @@ If you would like to modify this utility, the source code can be found in *Scree
 
 ## Eyelink Data Input Types
 VirtualMaze accepts 2 formats for reading Eyelink Data Files (.edf) and Comma Separated Value (.csv) files.
+VirtualMaze accepts 2 formats for reading Eyelink Data Files (.edf) and Comma Separated Value (.csv) files.
 
 To use a .csv file, the file must **NOT** have any headers and the columns must be defined as follows:
+To use a .csv file, the file must **NOT** have any headers and the columns must be defined as follows:
 
-### Resolution Correction
-
-VirtualMaze runs correction for screen size in EyeMatReader.cs.
-Currently, (19/08/23), this assumes the original resolution was captured at 1920 x 1080.
-
-The correction is applied to re-map the original eye gaze pixel coordinates to the current screen size.
-
-For example, gaze fixated on the centre of a 1920 x 1080 screen will be at the pixel at (1920/2,1080/2) = (810,540)
-If VirtualMaze is run as data processing on a 540 x 480 screen, that gaze data will be converted to (270,240).
-
-For the current version (19/08/23), resolution correction will cause the gaze data written to the .csv file to be the rescaled version
-I.e., the original resolution gaze data will NOT be written to the .csv file.
-
-In the example above, the point (810,540) that was converted to (270,240) will be saved as (270,240) in the .csv file.
-
-For clarity, the resolution correction does NOT overwrite the data in the original .mat file.
-
-
+1. Timestamp (uint).
+2. FEVENT.type (int, 200 if it is a FSAMPLE type as defined in the EDF_ACCESS_API documentation from SR Research).
+3. FSAMPLE.gx (float, 0 or empty if the current row is a FEVENT type).
+4. FSAMPLE.gy (float, 0 or empty if the current row is a FEVENT type).
+5. message (string, empty if the current row is a FSAMPLE type).
 
 ##### Note
 If a row is detected to be a FEVENT Type, the gx and gy column will be ignored and as for FSAMPLE, the message column will be ignored.

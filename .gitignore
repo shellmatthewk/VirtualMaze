@@ -21,8 +21,6 @@ VirtualMazeBatchLog.txt
 ExportedObj/
 .consulo/
 *.csproj
-!Assembly-Csharp.csproj 
-#this needs to be ain a certain config to let it play nice with VScode
 *.unityproj
 *.sln
 *.suo
@@ -73,4 +71,5 @@ Assets/session_*
 out/*
 VideoCaptureLib_Log.txt
 
+.fake
 .fake
