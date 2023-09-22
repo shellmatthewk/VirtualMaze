@@ -2242,6 +2242,16 @@ PrefabInstance:
       propertyPath: rewardOrder
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 4772045979641983681, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4772045979641983681, guid: aa1b4192074926247b9711507173d20f,
+        type: 3}
+      propertyPath: m_Center.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5749144276145685612, guid: aa1b4192074926247b9711507173d20f,
         type: 3}
       propertyPath: m_LocalScale.x
