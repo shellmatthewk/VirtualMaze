@@ -482,17 +482,17 @@ public class ScreenSaver : BasicGUIController {
                 Debug.LogError($"Final Excess ({finalExcess}) Larger that Accepted time diff ({Accepted_Time_Diff})");
             }
 
-            if (fixations.Count > 0) {
-                Debug.LogWarning($"{fixations.Count} fixations assumed to belong to next trigger");
-                while (fixations.Count > 0) {
-                    debugMaxMissedOffset = Math.Max(fixations.Count, debugMaxMissedOffset);
+            // if (fixations.Count > 0) {
+            //     Debug.LogWarning($"{fixations.Count} fixations assumed to belong to next trigger");
+            //     while (fixations.Count > 0) {
+            //         debugMaxMissedOffset = Math.Max(fixations.Count, debugMaxMissedOffset);
 
-                    if (ProcessData(fixations.Dequeue(), recorder, false, binRecorder) == SessionTrigger.TrialStartedTrigger) {
-                        trialCounter++;
-                        SessionStatusDisplay.DisplayTrialNumber(trialCounter);
-                    }
-                }
-            }
+            //         if (ProcessData(fixations.Dequeue(), recorder, false, binRecorder) == SessionTrigger.TrialStartedTrigger) {
+            //             trialCounter++;
+            //             SessionStatusDisplay.DisplayTrialNumber(trialCounter);
+            //         }
+            //     }
+            // }
         }
 
         Debug.LogError(debugMaxMissedOffset);
@@ -589,35 +589,35 @@ public class ScreenSaver : BasicGUIController {
         return new RaycastGazesJob(h, numSamples, binSamples, results, cmds);
     }
 
-    private SessionTrigger ProcessData(AllFloatData data, RayCastRecorder recorder, bool isLastSampleInFrame, BinRecorder binRecorder) {
-        switch (data.dataType) {
-            case DataTypes.SAMPLE_TYPE:
-                Fsample fs = (Fsample)data;
-                if (IsInScreenBounds(fs.rawRightGaze)) {
-                    gazePointPool?.AddGazePoint(GazeCanvas, viewport, fs.RightGaze);
+    // private SessionTrigger ProcessData(AllFloatData data, RayCastRecorder recorder, bool isLastSampleInFrame, BinRecorder binRecorder) {
+    //     switch (data.dataType) {
+    //         case DataTypes.SAMPLE_TYPE:
+    //             Fsample fs = (Fsample)data;
+    //             if (IsInScreenBounds(fs.rawRightGaze)) {
+    //                 gazePointPool?.AddGazePoint(GazeCanvas, viewport, fs.RightGaze);
 
-                    RaycastToScene(fs.RightGaze, out string objName, out Vector2 relativePos, out Vector3 objHitPos, out Vector3 gazePoint);
+    //                 RaycastToScene(fs.RightGaze, out string objName, out Vector2 relativePos, out Vector3 objHitPos, out Vector3 gazePoint);
 
-                    recorder.WriteSample(data.dataType, data.time, objName, relativePos, objHitPos, gazePoint, fs.rawRightGaze, robot.position, robot.rotation.eulerAngles.y, isLastSampleInFrame);
-                }
-                else {
-                    //ignore if gaze is out of bounds
-                    recorder.IgnoreSample(data.dataType, data.time, fs.rawRightGaze, robot.position, robot.rotation.eulerAngles.y, isLastSampleInFrame);
-                }
-                return SessionTrigger.NoTrigger;
-            case DataTypes.MESSAGEEVENT:
-                MessageEvent fe = (MessageEvent)data;
-                ProcessTrigger(fe.trigger, cueController);
+    //                 recorder.WriteSample(data.dataType, data.time, objName, relativePos, objHitPos, gazePoint, fs.rawRightGaze, robot.position, robot.rotation.eulerAngles.y, isLastSampleInFrame);
+    //             }
+    //             else {
+    //                 //ignore if gaze is out of bounds
+    //                 recorder.IgnoreSample(data.dataType, data.time, fs.rawRightGaze, robot.position, robot.rotation.eulerAngles.y, isLastSampleInFrame);
+    //             }
+    //             return SessionTrigger.NoTrigger;
+    //         case DataTypes.MESSAGEEVENT:
+    //             MessageEvent fe = (MessageEvent)data;
+    //             ProcessTrigger(fe.trigger, cueController);
 
-                recorder.FlagEvent(fe.message);
+    //             recorder.FlagEvent(fe.message);
 
-                return fe.trigger;
-            default:
-                //ignore others for now
-                //Debug.LogWarning($"Unsupported EDF DataType Found! ({type})");
-                return SessionTrigger.NoTrigger;
-        }
-    }
+    //             return fe.trigger;
+    //         default:
+    //             //ignore others for now
+    //             //Debug.LogWarning($"Unsupported EDF DataType Found! ({type})");
+    //             return SessionTrigger.NoTrigger;
+    //     }
+    // }
 
 
 
