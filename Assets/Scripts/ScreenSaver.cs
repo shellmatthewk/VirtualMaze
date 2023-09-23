@@ -482,6 +482,42 @@ public class ScreenSaver : BasicGUIController {
                 Debug.LogError($"Final Excess ({finalExcess}) Larger that Accepted time diff ({Accepted_Time_Diff})");
             }
 
+            // DO CLEANUP IF EXCESS FIXATIONS HERE
+            if (fixations.Count > 0) {
+                Debug.LogWarning($"-----\n{fixations.Count} fixations assumed to belong to next trigger, " +
+                    "and handled seperately from main processing loop, \n" +
+                    $"Starting from timestamp {fixations.Peek().time}\n-----");
+                List<Fsample> leftOverSamples = new List<Fsample>();
+                AllFloatData nextEyeDataEvent = null;
+                bool isLastSampleInFrame = false;
+
+                while (fixations.Count > 0) {
+                    nextEyeDataEvent = fixations.Dequeue();
+                    gazeTime = nextEyeDataEvent.time;
+
+                    isLastSampleInFrame = gazeTime > timepassed;
+                    if (nextEyeDataEvent is MessageEvent) {
+                        break;
+                    }
+                    else if (nextEyeDataEvent is Fsample) {
+                        leftOverSamples.Add((Fsample)nextEyeDataEvent);
+                    }
+
+                }
+
+                RaycastGazesJob leftOverRCastJob = RaycastGazes(leftOverSamples, recorder, nextEyeDataEvent, default);
+                if (leftOverRCastJob != null) {
+                    using (leftOverRCastJob) {
+                        leftOverRCastJob.h.Complete(); //force completion if not done yet
+                        leftOverRCastJob.Process(nextEyeDataEvent,
+                         recorder, robot,
+                         isLastSampleInFrame, gazePointPool, 
+                         displayGazes: frameCounter == Frame_Per_Batch, GazeCanvas, viewport);
+                    }
+                }
+                
+            }
+
             // if (fixations.Count > 0) {
             //     Debug.LogWarning($"{fixations.Count} fixations assumed to belong to next trigger");
             //     while (fixations.Count > 0) {
@@ -494,6 +530,8 @@ public class ScreenSaver : BasicGUIController {
             //     }
             // }
         }
+
+
 
         Debug.LogError(debugMaxMissedOffset);
 
