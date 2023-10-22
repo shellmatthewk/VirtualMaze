@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Security.AccessControl;
+using System.Runtime.InteropServices;
 using Eyelink.Structs;
 using HDF.PInvoke;
 using System;
@@ -287,7 +288,7 @@ public class ScreenSaver : BasicGUIController {
         uint edfEventPeriod = LoadToNextTriggerEdf(eyeReader, fixations, out MessageEvent edfdata, out SessionTrigger edfTrigger);
 
         if (sessionData.trigger != edfTrigger) {
-            throw new Exception("Unaligned session and eyedata! Are there missing triggers in eyelink or Unity data?");
+            throw new System.IO.FileFormatException("Unaligned session and eyedata! Are there missing triggers in eyelink or Unity data?");
         }
 
         decimal excessTime = (sessionEventPeriod - edfEventPeriod);
@@ -324,7 +325,7 @@ public class ScreenSaver : BasicGUIController {
         }
     }
 
-    private IEnumerator ProcessSession(ISessionDataReader sessionReader, EyeDataReader eyeReader, RayCastRecorder recorder, BinRecorder binRecorder, BinMapper mapper) {
+    private IEnumerator ProcessSession(ISessionDataReader sessionReader, EyeDataReader eyeReader, RayCastRecorder recorder, BinRecorder binRecorder, BinMapper mapper, out string message) {
         int frameCounter = 0;
         int trialCounter = 1;
 
