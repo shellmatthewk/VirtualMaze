@@ -1,4 +1,5 @@
-﻿using System.Security.AccessControl;
+﻿using System.Diagnostics;
+using System.Security.AccessControl;
 using System.Runtime.InteropServices;
 using Eyelink.Structs;
 using HDF.PInvoke;
@@ -362,7 +363,7 @@ public class ScreenSaver : BasicGUIController {
             try {
                 excessTime = EnqueueData(sessionFrames, sessionReader, fixations, eyeReader, out int status, out string reason);
             } catch (Exception e) {
-                
+                Debug.LogException(e);
                 yield break;
             } 
             decimal timepassed = fixations.Peek().time;
