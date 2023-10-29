@@ -1,10 +1,13 @@
-﻿using System;
+﻿
+using System.Runtime.InteropServices;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UnityEngine;
+using VirtualMaze.Assets.Scripts.Utils;
 
 /// <summary>
 /// MonoBehaviour that affects VirtualMaze globally.
@@ -195,6 +198,9 @@ public class GameController : MonoBehaviour {
         while (sessions.Count > 0) {
             path = sessions.Dequeue();
             logger.Print($"Starting({count}/{total}): {path}");
+            generationComplete = false;
+ 
+
 
             StartCoroutine(ProcessWrapper(path + unityfileMatFile, path + eyelinkMatFile, path, mapper, logger));
             while (!generationComplete) {
@@ -207,6 +213,10 @@ public class GameController : MonoBehaviour {
                 }
             }
             if (File.Exists(path + resultFile)) {
+                if (saver.progressBar.value != 1) {
+                    logger.Print($"Exited but not finished, check debug logger for possible reason!");
+                    logger.Print($"Percentage completed : {saver.progressBar.value * 100}%");
+                }
                 logger.Print($"Success: {path + resultFile}");
             }
             else {
@@ -234,17 +244,15 @@ public class GameController : MonoBehaviour {
         print($"edf: {edfPath}");
         print($"toFolder: {toFolderPath}");
 
-        generationComplete = false;
+
+
+
         try {
-            IEnumerator psdtCoroutine = saver.ProcessSessionDataTask(sessionPath, edfPath, toFolderPath, mapper)
-            if (psdtCoroutine.value)
-                yield return psdtCoroutine;
-        } catch (Exception e) {
-            logger.Print(e.Message);
-            yield break;
+            yield return saver.ProcessSessionDataTask(sessionPath, edfPath, toFolderPath, mapper);
         }
         finally { //so that the batchmode app will quit or move on the the next session
             generationComplete = true;
         }
+
     }
 }

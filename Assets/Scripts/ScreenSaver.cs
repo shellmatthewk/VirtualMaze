@@ -288,7 +288,7 @@ public class ScreenSaver : BasicGUIController {
         uint edfEventPeriod = LoadToNextTriggerEdf(eyeReader, fixations, out MessageEvent edfdata, out SessionTrigger edfTrigger);
 
         if (sessionData.trigger != edfTrigger) {
-            throw new System.IO.FileFormatException("Unaligned session and eyedata! Are there missing triggers in eyelink or Unity data?");
+            throw new Exception("Unaligned session and eyedata! Are there missing triggers in eyelink or Unity data?");
         }
 
         decimal excessTime = (sessionEventPeriod - edfEventPeriod);
@@ -325,7 +325,7 @@ public class ScreenSaver : BasicGUIController {
         }
     }
 
-    private IEnumerator ProcessSession(ISessionDataReader sessionReader, EyeDataReader eyeReader, RayCastRecorder recorder, BinRecorder binRecorder, BinMapper mapper, out string message) {
+    private IEnumerator ProcessSession(ISessionDataReader sessionReader, EyeDataReader eyeReader, RayCastRecorder recorder, BinRecorder binRecorder, BinMapper mapper) {
         int frameCounter = 0;
         int trialCounter = 1;
 
@@ -356,9 +356,15 @@ public class ScreenSaver : BasicGUIController {
              * and the previous frame raised a trigger for it to be printed in this frame*/
 
             sessionFrames.Enqueue(sessionReader.CurrentData);
-
-            decimal excessTime = EnqueueData(sessionFrames, sessionReader, fixations, eyeReader, out int status, out string reason);
-
+            decimal excessTime = 0; 
+            // dummy because it's in a try-catch below
+            // decimal will always have a value fed to it, will break if try fails.
+            try {
+                excessTime = EnqueueData(sessionFrames, sessionReader, fixations, eyeReader, out int status, out string reason);
+            } catch (Exception e) {
+                
+                yield break;
+            } 
             decimal timepassed = fixations.Peek().time;
             decimal c1 = 0;
             decimal c2 = 0;
