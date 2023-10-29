@@ -1,4 +1,6 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
+using System.Security.AccessControl;
+using System.Runtime.InteropServices;
 using Eyelink.Structs;
 using HDF.PInvoke;
 using System;
@@ -355,9 +357,15 @@ public class ScreenSaver : BasicGUIController {
              * and the previous frame raised a trigger for it to be printed in this frame*/
 
             sessionFrames.Enqueue(sessionReader.CurrentData);
-
-            decimal excessTime = EnqueueData(sessionFrames, sessionReader, fixations, eyeReader, out int status, out string reason);
-
+            decimal excessTime = 0; 
+            // dummy because it's in a try-catch below
+            // decimal will always have a value fed to it, will break if try fails.
+            try {
+                excessTime = EnqueueData(sessionFrames, sessionReader, fixations, eyeReader, out int status, out string reason);
+            } catch (Exception e) {
+                Debug.LogException(e);
+                yield break;
+            } 
             decimal timepassed = fixations.Peek().time;
             decimal c1 = 0;
             decimal c2 = 0;
