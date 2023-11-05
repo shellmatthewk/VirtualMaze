@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Security.AccessControl;
+﻿using System.Security.AccessControl;
 using System.Runtime.InteropServices;
 using Eyelink.Structs;
 using HDF.PInvoke;

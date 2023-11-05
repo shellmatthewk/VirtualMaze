@@ -7,7 +7,6 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UnityEngine;
-using VirtualMaze.Assets.Scripts.Utils;
 
 /// <summary>
 /// MonoBehaviour that affects VirtualMaze globally.
