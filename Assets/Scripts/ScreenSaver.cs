@@ -13,6 +13,7 @@ using UnityEngine.Profiling;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using RangeCorrector;
+using VirtualMaze.Assets.Scripts.Raycasting;
 /// <summary>
 /// TODO cancel button
 /// </summary>
@@ -555,6 +556,7 @@ public class ScreenSaver : BasicGUIController {
         public void Process(AllFloatData currData, RayCastRecorder recorder, Transform robot, bool isLastSampleInFrame, GazePointPool gazePointPool, bool displayGazes, RectTransform GazeCanvas, Camera viewport) {
             int lastGazeIndex = numSamples - 2;
             Image img = null;
+            //Debug.Log($"Writing datapoints from {binSamples[0].time} to {binSamples[binSamples.Count-1].time}");
             for (int i = 0; i < numSamples; i++) {
                 if (i == lastGazeIndex && currData is MessageEvent) {
                     recorder.FlagEvent(((MessageEvent)currData).message);
@@ -567,8 +569,8 @@ public class ScreenSaver : BasicGUIController {
                     recorder.WriteSample(
                             type: fsample.dataType,
                             time: fsample.time,
-                            objName: hitObj.name,
-                            centerOffset: ScreenSaver.ComputeLocalPostion(hitObj, raycastHit),
+                            objName: RelativeHitLocFinder.getChainedName(raycastHit.transform.gameObject),
+                            centerOffset: RelativeHitLocFinder.getRelativeHit(raycastHit),
                             hitObjLocation: hitObj.position,
                             pointHitLocation: raycastHit.point,
                             rawGaze: fsample.rawRightGaze,
