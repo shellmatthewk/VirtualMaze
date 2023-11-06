@@ -500,7 +500,7 @@ GameObject:
   - component: {fileID: 118893586}
   - component: {fileID: 118893585}
   m_Layer: 8
-  m_Name: m_wall_20
+  m_Name: NegXYellowWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1619,7 +1619,7 @@ GameObject:
   - component: {fileID: 494045043}
   - component: {fileID: 494045042}
   m_Layer: 8
-  m_Name: m_wall_7
+  m_Name: NegZYellowWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1804,7 +1804,7 @@ GameObject:
   - component: {fileID: 558815857}
   - component: {fileID: 558815856}
   m_Layer: 8
-  m_Name: PosZBlueWall
+  m_Name: NegZBlueWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2066,7 +2066,7 @@ GameObject:
   - component: {fileID: 608666644}
   - component: {fileID: 608666643}
   m_Layer: 8
-  m_Name: NegZBlueWall
+  m_Name: PosZBlueWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3508,7 +3508,7 @@ GameObject:
   - component: {fileID: 928025793}
   - component: {fileID: 928025792}
   m_Layer: 8
-  m_Name: m_wall_8
+  m_Name: PosXYellowWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3800,7 +3800,7 @@ GameObject:
   - component: {fileID: 1074366454}
   - component: {fileID: 1074366453}
   m_Layer: 8
-  m_Name: m_wall_12
+  m_Name: PosZYellowWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6241,7 +6241,7 @@ GameObject:
   - component: {fileID: 1687371087}
   m_Layer: 8
   m_Name: YellowPillar
-  m_TagString: Untagged
+  m_TagString: ObjectMaster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
