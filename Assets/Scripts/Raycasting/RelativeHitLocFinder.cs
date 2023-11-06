@@ -38,10 +38,11 @@ namespace VirtualMaze.Assets.Scripts.Raycasting
             // our aim here is to somehow project this 3-d vector into the 2-d surface plane.
 
             // cross of (normal,y) gives relative x-vector
-            Vector3 relativeXUnitVector = Vector3.Cross(Vector3.up, normal).normalized;
+            Vector3 relativeXUnitVector = Vector3.Cross(normal,Vector3.up).normalized;
+            Vector3 relativeYUnitVector = (rejection.normalized - relativeXUnitVector).normalized;
             // rotation of relative 
             float relativeX = Vector3.Dot(rejection, relativeXUnitVector); // project the rejection onto x-unit to get x
-            float relativeY = (rejection - (relativeXUnitVector * relativeX)).magnitude; //
+            float relativeY = Vector3.Dot(rejection, relativeYUnitVector); //
         
             return new Vector2(relativeX, relativeY);
             
