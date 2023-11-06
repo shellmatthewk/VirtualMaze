@@ -16,7 +16,12 @@ namespace VirtualMaze.Assets.Scripts.Raycasting
     public class RelativeHitLocFinder {
         
 
-
+        /// <summary>
+        /// Finds relative hit given a raycastHit on an object. Takes reference from center point of the object's master, and takes into account normal.
+        /// Convention is for positive y in the relative hit to be going up, and cross product of normal and positive y vector is positive x. 
+        /// </summary>
+        /// <param name="raycastHit"></param> the RaycastHit object to find relative hit for
+        /// <returns></returns> the 2d vector of the relative hit projected onto hit surface
         public static Vector2 getRelativeHit(RaycastHit raycastHit){
             Vector3 normal = raycastHit.normal;
             
@@ -39,10 +44,11 @@ namespace VirtualMaze.Assets.Scripts.Raycasting
 
             // cross of (normal,y) gives relative x-vector
             Vector3 relativeXUnitVector = Vector3.Cross(normal,Vector3.up).normalized;
+            // subtraction of rejection noramlised and relativeX unit vector must give relative Y unit vector
             Vector3 relativeYUnitVector = (rejection.normalized - relativeXUnitVector).normalized;
-            // rotation of relative 
+
             float relativeX = Vector3.Dot(rejection, relativeXUnitVector); // project the rejection onto x-unit to get x
-            float relativeY = Vector3.Dot(rejection, relativeYUnitVector); //
+            float relativeY = Vector3.Dot(rejection, relativeYUnitVector); // project rejection onto y-unit to get y
         
             return new Vector2(relativeX, relativeY);
             
@@ -59,7 +65,11 @@ namespace VirtualMaze.Assets.Scripts.Raycasting
         }
         
 
-
+        /// <summary>
+        /// Gets chained name which includes full tree hierachy of the object's name
+        /// </summary>
+        /// <param name="gameObject"></param> the object to find hierachy for
+        /// <returns></returns> the full chained name
         public static String getChainedName(GameObject gameObject) {
 
             String chainedName = gameObject.name;   
