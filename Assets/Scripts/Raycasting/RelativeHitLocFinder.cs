@@ -20,7 +20,7 @@ namespace VirtualMaze.Assets.Scripts.Raycasting
         public static Vector2 getRelativeHit(RaycastHit raycastHit){
             Vector3 normal = raycastHit.normal;
             
-            if (Math.Abs(normal.x) <= 0.0001 || Math.Abs(normal.z) <= 0.0001) {
+            if (Math.Abs(normal.x) <= 0.001 && Math.Abs(normal.z) <= 0.001) {
                 return getRelativeHitForVertical(raycastHit); //handle special case where it's just y.
             }
             
@@ -38,7 +38,7 @@ namespace VirtualMaze.Assets.Scripts.Raycasting
             // our aim here is to somehow project this 3-d vector into the 2-d surface plane.
 
             // cross of (normal,y) gives relative x-vector
-            Vector3 relativeXUnitVector = Vector3.Cross(Vector3.up, normal).normalized ;
+            Vector3 relativeXUnitVector = Vector3.Cross(Vector3.up, normal).normalized;
             // rotation of relative 
             float relativeX = Vector3.Dot(rejection, relativeXUnitVector); // project the rejection onto x-unit to get x
             float relativeY = (rejection - (relativeXUnitVector * relativeX)).magnitude; //
