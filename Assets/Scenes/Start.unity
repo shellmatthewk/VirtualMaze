@@ -2604,6 +2604,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1633849800832950645, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
+        type: 3}
+      propertyPath: m_TagString
+      value: ObjectMaster
+      objectReference: {fileID: 0}
     - target: {fileID: 1710135644748912527, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
         type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -6194,6 +6199,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_RootOrder
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6593511986686408162, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
+        type: 3}
+      propertyPath: m_TagString
+      value: ObjectMaster
       objectReference: {fileID: 0}
     - target: {fileID: 6642462011697426005, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
         type: 3}
