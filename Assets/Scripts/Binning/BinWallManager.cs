@@ -69,7 +69,9 @@ public class BinWallManager {
 
     static BinWallManager() {
         int shift = LayerMask.NameToLayer("Binning");
+        
         binningLayerOnly = (1 << shift);
+        
         ignoreBinningLayer = (1 << shift) ^ Physics.DefaultRaycastLayers; //-5 is default layermask, XOR with desired mask
         ReconfigureGazeOffsetCache(Default_Radius, Default_Density); //radius of 50 pixels, density of approx 1 raycast per 45 pixels
     }

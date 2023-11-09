@@ -94,8 +94,12 @@ public class DoubleTeeBinMapper : BinMapper {
         if (group == Poster_group) {
             group = GetGroupID(wall.parent);
         }
-
-        int offset = groupOffsetTable[group];
+        int offset = -1;
+        if (!groupOffsetTable.TryGetValue(group, out offset)){
+             // if we could not this offset inside the group for whatever reason
+             // TryGetValue returns false if  value is not inside.
+            return -1; // null value
+        }
 
         /* multiplied by 4 because of 4 walls */
         switch (group) {
