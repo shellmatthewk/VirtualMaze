@@ -61,6 +61,10 @@ public class RayCastRecorder : IDisposable {
         
     }
 
+    private async Task AsyncWriteWrapper(string toWrite, Task dependency) {
+        await dependency;
+        s.writeAsync(toWrite);
+    }
 
 
 
@@ -103,8 +107,8 @@ public class RayCastRecorder : IDisposable {
         }
         writeString.Append("\n"); //total 17 delimiters
 
-        await previousTask;
-        previousTask = s.writeAsync(writeString.ToString());
+        
+        previousTask = AsyncWriteWrapper(writeString.ToString(), previousTask);
     }
 
     public string Vector3ToString(Vector3 v) {
@@ -146,8 +150,7 @@ public class RayCastRecorder : IDisposable {
         }
         writeString.Append("\n"); //total 17 delimiters
         
-        await previousTask;
-        previousTask = s.writeAsync(writeString.ToString());
+        previousTask = AsyncWriteWrapper(writeString.ToString(), previousTask);
 
     }
 
