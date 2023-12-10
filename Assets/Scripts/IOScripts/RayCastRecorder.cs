@@ -41,11 +41,7 @@ public class RayCastRecorder : IDisposable {
 
     public const string DELIMITER = ",";
     private StreamWriter s;
-    private int writtenCapacity = 0;
 
-    private Task previousTask = Task.CompletedTask;
-
-    
     private string eventFlag;
 
     public RayCastRecorder(string saveLocation) : this(saveLocation, "defaultTest.csv") {
@@ -61,14 +57,10 @@ public class RayCastRecorder : IDisposable {
         
     }
 
-    private async Task AsyncWriteWrapper(string toWrite, Task dependency) {
-        await dependency;
-        s.writeAsync(toWrite);
-    }
 
 
 
-    public static async Task WriteSample(DataTypes type,
+    public void WriteSample(DataTypes type,
                             uint time,
                             string objName,
                             Vector2 centerOffset,
@@ -107,8 +99,8 @@ public class RayCastRecorder : IDisposable {
         }
         writeString.Append("\n"); //total 17 delimiters
 
-        
-        previousTask = AsyncWriteWrapper(writeString.ToString(), previousTask);
+
+        s.Write(writeString.ToString());
     }
 
     public string Vector3ToString(Vector3 v) {
@@ -119,14 +111,13 @@ public class RayCastRecorder : IDisposable {
         return $"{v.x}{DELIMITER}{v.y}";
     }
 
-    public async Task Dispose() {
-        await previousTask;
+    public void Dispose() {
         s.Flush();
         s.Dispose();
         s.Close();
     }
 
-    internal async Task IgnoreSample(DataTypes type, uint time, Vector2 rawGaze, Vector3 subjectLoc, float subjectRotation, bool isLastSampleInFrame) {
+    internal void IgnoreSample(DataTypes type, uint time, Vector2 rawGaze, Vector3 subjectLoc, float subjectRotation, bool isLastSampleInFrame) {
         StringBuilder writeString = new StringBuilder();
         writeString.Append($"{type}{DELIMITER}");
         writeString.Append($"{time}{DELIMITER}");
@@ -150,7 +141,8 @@ public class RayCastRecorder : IDisposable {
         }
         writeString.Append("\n"); //total 17 delimiters
         
-        previousTask = AsyncWriteWrapper(writeString.ToString(), previousTask);
+        
+        s.Write(writeString.ToString());
 
     }
 
