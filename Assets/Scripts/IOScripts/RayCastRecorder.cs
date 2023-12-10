@@ -1,4 +1,11 @@
-﻿using System;
+﻿
+
+using System.Threading.Tasks;
+using System.Collections.Specialized;
+using System.Text;
+using System.Security.AccessControl;
+using Microsoft.Win32.SafeHandles;
+using System;
 using System.IO;
 using UnityEngine;
 /// <summary>
@@ -8,6 +15,8 @@ using UnityEngine;
 /// </summary>
 public class RayCastRecorder : IDisposable {
 
+    public readonly static int BUFFER_SIZE = 65536;
+    public readonly static Encoding RECORDER_ENCODING = Encoding.ASCII;
     //index reference
     public const int Type = 0;
     public const int Time = 1;
@@ -28,21 +37,34 @@ public class RayCastRecorder : IDisposable {
     public const int Y2d = 16;
     public const int EndOfFrame = 17;
 
-    public const string EndOfFrameFlag = "F";
+    public const string END_OF_FRAME_FLAG = "F";
 
-    public const char delimiter = ',';
+    public const string DELIMITER = ",";
     private StreamWriter s;
+    private int writtenCapacity = 0;
 
+    private Task previousTask = Task.CompletedTask;
+
+    
     private string eventFlag;
 
     public RayCastRecorder(string saveLocation) : this(saveLocation, "defaultTest.csv") {
     }
 
     public RayCastRecorder(string saveLocation, string fileName) {
-        s = new StreamWriter(Path.Combine(saveLocation, fileName));
+
+        s = new StreamWriter(
+            path : Path.Combine(saveLocation, fileName),
+            append : false,
+            encoding : RECORDER_ENCODING,
+            bufferSize : BUFFER_SIZE);
+        
     }
 
-    public void WriteSample(DataTypes type,
+
+
+
+    public static async Task WriteSample(DataTypes type,
                             uint time,
                             string objName,
                             Vector2 centerOffset,
@@ -52,71 +74,81 @@ public class RayCastRecorder : IDisposable {
                             Vector3 subjectLoc,
                             float subjectRotation,
                             bool isLastSampleInFrame) {
-        s.Write($"{type}{delimiter}");
-        s.Write($"{time}{delimiter}");
-        s.Write($"{objName}{delimiter}");
-        s.Write(Vector2ToString(rawGaze)); //1 delimiter
-        s.Write(delimiter);
-        s.Write(Vector3ToString(subjectLoc)); //2 delimiters
-        s.Write(delimiter);
-        s.Write(subjectRotation);
-        s.Write(delimiter);
-        s.Write(Vector3ToString(pointHitLocation)); //2 delimiters
-        s.Write(delimiter);
-        s.Write(Vector3ToString(hitObjLocation));//2 delimiters
-        s.Write(delimiter);
-        s.Write(Vector2ToString(centerOffset));//1 delimiter
+        StringBuilder writeString = new StringBuilder();
 
-        s.Write(delimiter);
+
+        writeString.Append($"{type}{DELIMITER}");
+        writeString.Append($"{time}{DELIMITER}");
+        writeString.Append($"{objName}{DELIMITER}");
+        writeString.Append(Vector2ToString(rawGaze)); //1 delimiter
+        writeString.Append(DELIMITER);
+        writeString.Append(Vector3ToString(subjectLoc)); //2 delimiters
+        writeString.Append(DELIMITER);
+        writeString.Append(subjectRotation.ToString());
+        writeString.Append(DELIMITER);
+        writeString.Append(Vector3ToString(pointHitLocation)); //2 delimiters
+        writeString.Append(DELIMITER);
+        writeString.Append(Vector3ToString(hitObjLocation));//2 delimiters
+        writeString.Append(DELIMITER);
+        writeString.Append(Vector2ToString(centerOffset));//1 delimiter
+
+        writeString.Append(DELIMITER);
         if (isLastSampleInFrame) {
-            s.Write(EndOfFrameFlag);
+            writeString.Append(END_OF_FRAME_FLAG);
         }
         if (!string.IsNullOrEmpty(eventFlag))
         {
-            s.Write(eventFlag);
+            writeString.Append(eventFlag);
             eventFlag = null;
         }
-        s.WriteLine(); //total 17 delimiters
-        s.Flush();
+        writeString.Append("\n"); //total 17 delimiters
+
+        await previousTask;
+        previousTask = s.writeAsync(writeString.ToString());
     }
 
     public string Vector3ToString(Vector3 v) {
-        return $"{v.x}{delimiter}{v.y}{delimiter}{v.z}";
+        return $"{v.x}{DELIMITER}{v.y}{DELIMITER}{v.z}";
     }
 
     public string Vector2ToString(Vector2 v) {
-        return $"{v.x}{delimiter}{v.y}";
+        return $"{v.x}{DELIMITER}{v.y}";
     }
 
-    public void Dispose() {
+    public async Task Dispose() {
+        await previousTask;
         s.Flush();
         s.Dispose();
         s.Close();
     }
 
-    internal void IgnoreSample(DataTypes type, uint time, Vector2 rawGaze, Vector3 subjectLoc, float subjectRotation, bool isLastSampleInFrame) {
-        s.Write($"{type}{delimiter}");
-        s.Write($"{time}{delimiter}");
-        s.Write($"Sample Ignored{delimiter}");
-        s.Write(Vector2ToString(rawGaze)); //1 delimiter
-        s.Write(delimiter);
-        s.Write(Vector3ToString(subjectLoc)); //2 delimiters
-        s.Write(delimiter);
-        s.Write(subjectRotation);
+    internal async Task IgnoreSample(DataTypes type, uint time, Vector2 rawGaze, Vector3 subjectLoc, float subjectRotation, bool isLastSampleInFrame) {
+        StringBuilder writeString = new StringBuilder();
+        writeString.Append($"{type}{DELIMITER}");
+        writeString.Append($"{time}{DELIMITER}");
+        writeString.Append($"Sample Ignored{DELIMITER}");
+        writeString.Append(Vector2ToString(rawGaze)); //1 delimiter
+        writeString.Append(DELIMITER);
+        writeString.Append(Vector3ToString(subjectLoc)); //2 delimiters
+        writeString.Append(DELIMITER);
+        writeString.Append(subjectRotation.ToString());
         for (int i = 0; i < 9; i++) {
-            s.Write(delimiter);
+            writeString.Append(DELIMITER);
         }
 
         if (isLastSampleInFrame) {
-            s.Write(EndOfFrameFlag);
+            writeString.Append(END_OF_FRAME_FLAG);
         }
         if(!string.IsNullOrEmpty( eventFlag))
         {
-            s.Write(eventFlag);
+            writeString.Append(eventFlag);
             eventFlag = null;
         }
-        s.WriteLine(); //total 17 delimiters
-        s.Flush();
+        writeString.Append("\n"); //total 17 delimiters
+        
+        await previousTask;
+        previousTask = s.writeAsync(writeString.ToString());
+
     }
 
     internal void FlagEvent(string message)
