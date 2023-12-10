@@ -44,7 +44,7 @@ public class RaycastDataLoader : ICsvLineParser<PlaybackData> {
                 prevRawData = rawData;
                 rawData = reader.GetCurrentRawData();
 
-                if (rawData[RayCastRecorder.EndOfFrame].Contains(RayCastRecorder.EndOfFrameFlag)) {
+                if (rawData[RayCastRecorder.EndOfFrame].Contains(RayCastRecorder.END_OF_FRAME_FLAG)) {
                     if (data is PlaybackSample sam) {
                         t.NextFrame(GetRobotConfig(rawData));
                     }
