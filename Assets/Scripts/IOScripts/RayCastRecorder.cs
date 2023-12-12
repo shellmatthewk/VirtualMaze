@@ -59,8 +59,7 @@ public class RayCastRecorder : IDisposable {
 
 
 
-
-    public void WriteSample(DataTypes type,
+    private String FormatWriteSample(DataTypes type,
                             uint time,
                             string objName,
                             Vector2 centerOffset,
@@ -99,9 +98,56 @@ public class RayCastRecorder : IDisposable {
         }
         writeString.Append("\n"); //total 17 delimiters
 
+        return writeString.ToString();
 
-        s.Write(writeString.ToString());
     }
+    public void WriteSample(DataTypes type,
+                            uint time,
+                            string objName,
+                            Vector2 centerOffset,
+                            Vector3 hitObjLocation,
+                            Vector3 pointHitLocation,
+                            Vector2 rawGaze,
+                            Vector3 subjectLoc,
+                            float subjectRotation,
+                            bool isLastSampleInFrame) {
+            
+        s.Write(FormatWriteSample(type,
+                                time,
+                                objName,
+                                centerOffset,
+                                hitObjLocation,
+                                pointHitLocation,
+                                rawGaze,
+                                subjectLoc,
+                                subjectRotation,
+                                isLastSampleInFrame));
+    }
+
+    public async Task WriteSampleAsync(DataTypes type,
+                            uint time,
+                            string objName,
+                            Vector2 centerOffset,
+                            Vector3 hitObjLocation,
+                            Vector3 pointHitLocation,
+                            Vector2 rawGaze,
+                            Vector3 subjectLoc,
+                            float subjectRotation,
+                            bool isLastSampleInFrame) {
+
+        await s.WriteAsync(FormatWriteSample(type,
+                                time,
+                                objName,
+                                centerOffset,
+                                hitObjLocation,
+                                pointHitLocation,
+                                rawGaze,
+                                subjectLoc,
+                                subjectRotation,
+                                isLastSampleInFrame));
+    }
+
+    
 
     public string Vector3ToString(Vector3 v) {
         return $"{v.x}{DELIMITER}{v.y}{DELIMITER}{v.z}";
@@ -117,7 +163,7 @@ public class RayCastRecorder : IDisposable {
         s.Close();
     }
 
-    internal void IgnoreSample(DataTypes type, uint time, Vector2 rawGaze, Vector3 subjectLoc, float subjectRotation, bool isLastSampleInFrame) {
+    private String FormatIgnoreSample(DataTypes type, uint time, Vector2 rawGaze, Vector3 subjectLoc, float subjectRotation, bool isLastSampleInFrame) {
         StringBuilder writeString = new StringBuilder();
         writeString.Append($"{type}{DELIMITER}");
         writeString.Append($"{time}{DELIMITER}");
@@ -140,10 +186,27 @@ public class RayCastRecorder : IDisposable {
             eventFlag = null;
         }
         writeString.Append("\n"); //total 17 delimiters
-        
-        
-        s.Write(writeString.ToString());
+        return writeString.ToString();
+    }
 
+    internal void IgnoreSample(DataTypes type, uint time, Vector2 rawGaze, Vector3 subjectLoc, float subjectRotation, bool isLastSampleInFrame) {
+        
+        s.Write(FormatIgnoreSample(type,
+                                time,
+                                rawGaze,
+                                subjectLoc,
+                                subjectRotation,
+                                isLastSampleInFrame));
+
+    }
+
+    public async Task IgnoreSampleAsync(DataTypes type, uint time, Vector2 rawGaze, Vector3 subjectLoc, float subjectRotation, bool isLastSampleInFrame) {
+        await s.WriteAsync(FormatIgnoreSample(type,
+                                time,
+                                rawGaze,
+                                subjectLoc,
+                                subjectRotation,
+                                isLastSampleInFrame));
     }
 
     internal void FlagEvent(string message)

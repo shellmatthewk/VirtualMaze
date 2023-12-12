@@ -5,7 +5,8 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.Profiling;
-using RangeCorrector;
+using VirtualMaze.Assets.Scripts.Raycasting;
+
 
 public class BinWallManager {
     const int GroundCeiling = 0;
@@ -119,7 +120,7 @@ public class BinWallManager {
         foreach (Vector2 offset in secondaryOffset) {
             if (counter % modder == 0) {
                 Vector2 offsetGaze = gaze + offset;
-                Vector2 viewportGaze = RangeCorrector.RangeCorrector.HD_TO_VIEWPORT.correctVector(offsetGaze);
+                Vector2 viewportGaze = RangeCorrector.HD_TO_VIEWPORT.correctVector(offsetGaze);
                 Ray r = cam.ViewportPointToRay(viewportGaze);
                 commands[idx] = new RaycastCommand(r.origin, r.direction, layerMask: binningLayerOnly);
                 idx++;
@@ -206,7 +207,7 @@ public class BinWallManager {
                 int counter = 0;
                 foreach (Vector2 offset in secondaryOffset) {
                     Vector2 offsetGaze = gaze + offset;
-                    Vector2 viewportGaze = RangeCorrector.RangeCorrector.HD_TO_VIEWPORT.correctVector(offsetGaze);
+                    Vector2 viewportGaze = RangeCorrector.HD_TO_VIEWPORT.correctVector(offsetGaze);
                     Ray r = cam.ViewportPointToRay(viewportGaze);
                     // Ray r = cam.ScreenPointToRay(gaze + offset);
                     commands[counter] = new RaycastCommand(r.origin, r.direction, float.MaxValue, binningLayerOnly);
@@ -254,7 +255,7 @@ public class BinWallManager {
 
                 foreach (Vector2 offset in primaryOffset) {
                     Vector2 offsetGaze = gaze + offset;
-                    Vector2 viewportGaze = RangeCorrector.RangeCorrector.HD_TO_VIEWPORT.correctVector(offsetGaze);
+                    Vector2 viewportGaze = RangeCorrector.HD_TO_VIEWPORT.correctVector(offsetGaze);
                     Ray r = cam.ViewportPointToRay(viewportGaze);
                     commands[counter] = new RaycastCommand(r.origin, r.direction, float.MaxValue, ignoreBinningLayer);
                     counter++;

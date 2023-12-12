@@ -1,3 +1,7 @@
+using System.Security.AccessControl;
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
@@ -7,7 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace RangeCorrector{
+namespace VirtualMaze.Assets.Scripts.Raycasting{
     public class RangeCorrector {
 
         private Rect  originalRange;
@@ -35,7 +39,8 @@ namespace RangeCorrector{
 
 
         public Vector2 correctVector(Vector2 value) {
-            
+            value.x = Mathf.Clamp(value.x,originalRange.xMin,originalRange.xMax);
+            value.y = Mathf.Clamp(value.y,originalRange.yMin,originalRange.yMax);
             return Rect.NormalizedToPoint(this.newRange,Rect.PointToNormalized(this.originalRange,value));
         }
 

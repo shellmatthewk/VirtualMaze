@@ -1,6 +1,8 @@
-﻿using Eyelink.Structs;
+﻿using System.Xml;
+using Eyelink.Structs;
 using System;
 using UnityEngine;
+using VirtualMaze.Assets.Scripts.Utils;
 
 public class EyeMatReader : EyeDataReader {
     private AllFloatData currentData = null;
@@ -13,6 +15,9 @@ public class EyeMatReader : EyeDataReader {
 
     //SessionTrigger state = SessionTrigger.TrialStartedTrigger;
     double stateTime;
+    
+    Interval cu;
+    
 
     public EyeMatReader(string filePath) {
         file = new EyelinkMatFile(filePath);
@@ -23,6 +28,10 @@ public class EyeMatReader : EyeDataReader {
 
         //additional 1 second for fadeout
         lastTriggerTime = GetStateTime(file.trial_index.GetLength(1) * 3 - 1) + 1000;
+        
+        //get the first fixation
+        nextFixation = new Interval((int)file.fixationStarts[0],(int)file.fixationEnds[0]);
+
     }
 
     //datatype is unused for .mat file as they do not contain thee information
@@ -61,6 +70,7 @@ public class EyeMatReader : EyeDataReader {
                 if (currentTime >= lastTriggerTime) {
                     currentData = new FEvent(1, DataTypes.NO_PENDING_ITEMS);
                 }
+                    
                 else {
                     float gx = file.eyePos[0, currentTime];
                     float gy = file.eyePos[1, currentTime];
@@ -71,8 +81,11 @@ public class EyeMatReader : EyeDataReader {
                     //if (float.IsNaN(gy)) {
                     //    gy = 100_000_000f;
                     //}
+                    
+                    // This line decides if the data type should be fixation start/end or just sample type
+                    DataTypes sampleType = getDataType(currentTime);
 
-                    currentData = new Fsample(file.timestamps[0, currentTime], gx, gy, DataTypes.SAMPLE_TYPE);
+                    currentData = new Fsample(file.timestamps[0, currentTime], gx, gy, sampleType);
                 }
             }
         }
@@ -86,6 +99,23 @@ public class EyeMatReader : EyeDataReader {
 
     private int GetStateCode(int stateIndex) {
         return file.trial_codes[stateIndex % 3, stateIndex / 3];
+    }
+
+    private DataTypes GetDataType(int currentTime) {
+        if (IsFixationStart(currentTime)) {
+            return Datatypes.STARTFIX;
+        } else if (IsFixationEnd(currentTime)) {
+            return Datatypes.ENDFIX;
+        } else {
+            return Datatypes.SAMPLE_TYPE;
+        }
+    }
+    private bool IsFixationStart(int eventTime) {
+        return eventTime == nextFixation.Start;
+    }
+
+    private bool IsFixationEnd(int eventTime) {
+        return eventTime == nextFixation.End;
     }
 
     private string parseTrialCode(int code) {
