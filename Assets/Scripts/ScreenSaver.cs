@@ -1,4 +1,4 @@
-﻿using System.Security.AccessControl;
+using System.Security.AccessControl;
 using System.Runtime.InteropServices;
 using Eyelink.Structs;
 using HDF.PInvoke;
@@ -428,7 +428,7 @@ public class ScreenSaver : BasicGUIController {
 
                 /* Start the binning process while rCastJob is running */
                 Profiler.BeginSample("Binning");
-                BinGazes(binSamples, binRecorder, jobQueue, mapper);
+                //BinGazes(binSamples, binRecorder, jobQueue, mapper);
                 Profiler.EndSample();
 
                 Profiler.BeginSample("RaycastingSingleProcess");
