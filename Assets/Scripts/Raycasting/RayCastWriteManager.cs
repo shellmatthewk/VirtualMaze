@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HDF.PInvoke;
+using Unity.Collections;
+using Unity.Jobs;
 using UnityEditor.Build.Content;
 using UnityEngine;
 using UnityEngine.Jobs;
@@ -42,6 +44,9 @@ namespace VirtualMaze.Assets.Scripts.Raycasting
 
         public abstract void Write(RayCastWriteData data);
 
+        public abstract void Dispose();
+
+
         // private class HdfWriteManager : RayCastWriteManager {
 
         //     // This is not an error. The library treats HDF files as longs.
@@ -52,23 +57,46 @@ namespace VirtualMaze.Assets.Scripts.Raycasting
         //         status = H5P.set_chunk() 
         //     }
         // }
-        
+
         private class CSVWriteManager : RayCastWriteManager {
             public CSVWriteManager(StreamWriter writer) {
                 this.Writer = writer;
             }
 
+            public override void Dispose()
+            {
+                Writer.Dispose();
+            }
+
             public override JobHandle ScheduleWrite(RayCastWriteData data)
             {
-                throw new NotImplementedException();
+                return new WriteJob(Write, data).Schedule();
             }
 
             public override void Write(RayCastWriteData data)
             {
-                throw new NotImplementedException();
-            }
+                Writer.WriteLine(data.DataString);
+            }        
 
         }
+
+
+        private struct WriteJob : IJob {
+            private Action<RayCastWriteData> WriteMethod;
+            private NativeArray<RayCastWriteData> RayCastWriteData;
+            public WriteJob(Action<RayCastWriteData> writeMethod, RayCastWriteData writeData) {
+                this.WriteMethod = writeMethod;
+                this.RayCastWriteData = new NativeArray<RayCastWriteData>(1, Allocator.TempJob);
+                this.RayCastWriteData[0] = writeData;
+            }
+
+            public void Execute()
+            {
+                WriteMethod(RayCastWriteData[0]);
+            }
+        }
+
+
     }
     
 }

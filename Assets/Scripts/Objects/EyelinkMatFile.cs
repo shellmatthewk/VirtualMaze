@@ -1,4 +1,7 @@
-﻿public class EyelinkMatFile : AbstractHDF5File {
+﻿using System;
+using VirtualMaze.Assets.Scripts.Utils;
+
+public class EyelinkMatFile : AbstractHDF5File {
     public readonly double[,] trial_index;
     public readonly int[,] trial_codes;
     public readonly uint[,] timestamps;
@@ -6,6 +9,8 @@
 
     public readonly double[] fixationStarts;
     public readonly double[] fixationEnds;
+    private static readonly int FIXATION_START_COL = 0;
+    private static readonly int FIXATION_END_COL = 1;
 
     public int Length { get => timestamps.Length; }
 
@@ -15,8 +20,10 @@
             eyePos = HDFHelper.GetDataMatrix<float>(data, "eye_pos");
             timestamps = HDFHelper.GetDataMatrix<uint>(data, "timestamps");
             trial_codes = HDFHelper.GetDataMatrix<int>(data, "trial_codes");
-            fixationStarts = HDFHelper.GetDataMatrix<double>(data, "fix_times")[,0];
-            fixationEnds = HDFHelper.GetDataMatrix<double>(data, "fix_times")[,1];
+
+            double[,] fixationTimes = HDFHelper.GetDataMatrix<double>(data, "fix_times");
+            fixationStarts = TwoDArrayUtils.GetColumn(fixationTimes,FIXATION_START_COL);
+            fixationEnds = TwoDArrayUtils.GetColumn(fixationTimes,FIXATION_END_COL);
         }
         //Hdf5Group grp = Groups["el"].Groups["data"];
         //trial_index = (double[,])grp.Datasets["trial_timestamps"].GetData();
@@ -29,7 +36,9 @@
         //Debug.Log(a);
 
         //trial_codes = (int[,])grp.Datasets["trial_codes"].GetData();
+        
     }
+
 
 
 }

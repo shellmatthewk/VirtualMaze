@@ -3,6 +3,7 @@ using Eyelink.Structs;
 using System;
 using UnityEngine;
 using VirtualMaze.Assets.Scripts.Utils;
+using VirtualMaze.Assets.Utils;
 
 public class EyeMatReader : EyeDataReader {
     private AllFloatData currentData = null;
@@ -15,8 +16,8 @@ public class EyeMatReader : EyeDataReader {
 
     //SessionTrigger state = SessionTrigger.TrialStartedTrigger;
     double stateTime;
-    
-    Interval cu;
+
+    Interval nextFixation;
     
 
     public EyeMatReader(string filePath) {
@@ -83,7 +84,7 @@ public class EyeMatReader : EyeDataReader {
                     //}
                     
                     // This line decides if the data type should be fixation start/end or just sample type
-                    DataTypes sampleType = getDataType(currentTime);
+                    DataTypes sampleType = GetDataType(currentTime);
 
                     currentData = new Fsample(file.timestamps[0, currentTime], gx, gy, sampleType);
                 }
@@ -103,11 +104,11 @@ public class EyeMatReader : EyeDataReader {
 
     private DataTypes GetDataType(int currentTime) {
         if (IsFixationStart(currentTime)) {
-            return Datatypes.STARTFIX;
+            return DataTypes.STARTFIX;
         } else if (IsFixationEnd(currentTime)) {
-            return Datatypes.ENDFIX;
+            return DataTypes.ENDFIX;
         } else {
-            return Datatypes.SAMPLE_TYPE;
+            return DataTypes.SAMPLE_TYPE;
         }
     }
     private bool IsFixationStart(int eventTime) {
