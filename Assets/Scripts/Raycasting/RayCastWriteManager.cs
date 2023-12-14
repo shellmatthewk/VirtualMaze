@@ -1,14 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using HDF.PInvoke;
 using Unity.Collections;
 using Unity.Jobs;
-using UnityEditor.Build.Content;
-using UnityEngine;
 using UnityEngine.Jobs;
 
 namespace VirtualMaze.Assets.Scripts.Raycasting

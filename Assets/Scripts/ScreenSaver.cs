@@ -344,6 +344,16 @@ public class ScreenSaver : BasicGUIController {
         Queue<BinWallManager.BinGazeJobData> jobQueue = new Queue<BinWallManager.BinGazeJobData>();
         HashSet<int> binsHitId = new HashSet<int>();
 
+        AreaRaycastManager areaRaycastManager = 
+            new AreaRaycastManager(
+                recorder: multiCastRecorder,
+                angularRadius: 15,
+                angularDensity: 1,
+                distToScreen: 68 ,
+                screenDims : new Rect(0,0,60,40),
+                pixelDims : new Rect(0,0,1920,1080)
+            );
+
         //feed in current Data due to preparation moving the data pointer forward
         fixations.Enqueue(data);
 
@@ -430,18 +440,14 @@ public class ScreenSaver : BasicGUIController {
                 // Profiler.BeginSample("Binning");
                 // BinGazes(binSamples, binRecorder, jobQueue, mapper);
                 // Profiler.EndSample();
-                Profiler.BeginSample("MulticastingPrepare");
-                AreaRaycastManager areaRaycastManager = 
-                    new AreaRaycastManager(
-                    binSamples,
-                    multiCastRecorder,
-                    viewport,
-                    angularRadius : 15,
-                    angularDensity : 1,
-                    distToScreen : 68,
-                    screenDims : new Rect(0,0,60,40),
-                    pixelDims : new Rect(0,0,1920,1080));                
-                areaRaycastManager.StartAreaCasting(robot, isLastSampleInFrame);
+                Profiler.BeginSample("MulticastingPrepare");              
+                JobHandle areaCastHandle = 
+                    areaRaycastManager.ScheduleAreaCasting(
+                        currentPos: robot.position,
+                        sampleToCast: binSamples[0],
+                        viewport: viewport,
+                        isLastSampleInFrame: isLastSampleInFrame
+                    );
                 Profiler.EndSample();
 
 
@@ -548,22 +554,6 @@ public class ScreenSaver : BasicGUIController {
                 }
 
                 Profiler.BeginSample("MulticastingCleanUp");
-                AreaRaycastManager cleanUpAreaRaycastManager = 
-                    new AreaRaycastManager(
-                    binSamples,
-                    multiCastRecorder,
-                    viewport,
-                    angularRadius : 15,
-                    angularDensity : 1,
-                    distToScreen : 68,
-                    screenDims : new Rect(0,0,60,40),
-                    pixelDims : new Rect(0,0,1920,1080));                    
-                cleanUpAreaRaycastManager.StartAreaCasting(robot, isLastSampleInFrame);   
-                    if (cleanUpAreaRaycastManager != null) {
-
-                        //cleanUpAreaRaycastManager.writeToFile(multiCastRecorder, robot, isLastSampleInFrame);
-
-                    }
                 Profiler.EndSample();
                 
             }
