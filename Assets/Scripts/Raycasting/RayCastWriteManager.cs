@@ -1,9 +1,13 @@
+using System.Security.AccessControl;
+using System.Net;
 using System;
 using System.IO;
 using System.Text;
 using Unity.Collections;
 using Unity.Jobs;
+using System.Threading.Tasks;
 using UnityEngine.Jobs;
+using UnityEngine;
 
 namespace VirtualMaze.Assets.Scripts.Raycasting
 {
@@ -18,9 +22,9 @@ namespace VirtualMaze.Assets.Scripts.Raycasting
             bool append, 
             System.Text.Encoding encoding, 
             int bufferSize) {
-            if (!File.Exists(fileLoc)) {
-                File.Create(fileLoc);
-            }
+            // if (!File.Exists(fileLoc)) {
+            //     File.Create(fileLoc);
+            // }
             StreamWriter writer = new StreamWriter(fileLoc,append,encoding,bufferSize);
             return new CSVWriteManager(writer);
         }
@@ -34,7 +38,9 @@ namespace VirtualMaze.Assets.Scripts.Raycasting
             
         }
 
-        public abstract JobHandle ScheduleWrite(RayCastWriteData data);
+
+        // Unfortunately, switching between APIs is neccessary as Unity has no Job-based file-writing
+        public abstract Task AsyncWrite(RayCastWriteData data);
 
         public abstract void Write(RayCastWriteData data);
 
@@ -62,32 +68,24 @@ namespace VirtualMaze.Assets.Scripts.Raycasting
                 Writer.Dispose();
             }
 
-            public override JobHandle ScheduleWrite(RayCastWriteData data)
-            {
-                return new WriteJob(Write, data).Schedule();
-            }
 
             public override void Write(RayCastWriteData data)
             {
+
                 Writer.WriteLine(data.DataString);
-            }        
-
-        }
-
-
-        private struct WriteJob : IJob {
-            private Action<RayCastWriteData> WriteMethod;
-            private NativeArray<RayCastWriteData> RayCastWriteData;
-            public WriteJob(Action<RayCastWriteData> writeMethod, RayCastWriteData writeData) {
-                this.WriteMethod = writeMethod;
-                this.RayCastWriteData = new NativeArray<RayCastWriteData>(1, Allocator.TempJob);
-                this.RayCastWriteData[0] = writeData;
             }
 
-            public void Execute()
-            {
-                WriteMethod(RayCastWriteData[0]);
+            public async override Task AsyncWrite(RayCastWriteData data) {
+                Debug.Log($"call to async write{data.DataString}");
+                await AsyncWrite(data.DataString);
             }
+
+            private async Task AsyncWrite(string toWrite) {
+                await Writer.WriteAsync(toWrite);
+            }
+
+
+
         }
 
 

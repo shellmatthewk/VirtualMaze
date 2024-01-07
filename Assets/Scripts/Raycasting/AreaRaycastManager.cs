@@ -1,3 +1,5 @@
+using System.Transactions;
+using System.Net;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -5,6 +7,9 @@ using Eyelink.Structs;
 using UnityEngine;
 using Unity.Jobs;
 using Unity.Collections;
+using VirtualMaze.Assets.Scripts.Utils;
+using UnityEditor;
+using System.Runtime.CompilerServices;
 using VirtualMaze.Assets.Scripts.Utils;
 
 namespace VirtualMaze.Assets.Scripts.Raycasting {
@@ -18,7 +23,7 @@ namespace VirtualMaze.Assets.Scripts.Raycasting {
 
 
         
-        RayCastRecorder recorder;
+
         float angularRadius;
         float angularDensity;
         float distToScreen;
@@ -27,8 +32,7 @@ namespace VirtualMaze.Assets.Scripts.Raycasting {
         public static float SCENE_MAX_DIST = 7.5f;
         // based of tan(30) * 25 units, rounded up to give a buffer.
 
-
-        public AreaRaycastManager(RayCastRecorder recorder,
+        public AreaRaycastManager(
             float angularRadius, float angularDensity, float distToScreen, 
                 Rect screenDims, Rect pixelDims) {
 
@@ -38,32 +42,103 @@ namespace VirtualMaze.Assets.Scripts.Raycasting {
             this.distToScreen = distToScreen;
             this.screenDims = screenDims;
             this.pixelDims = pixelDims;
-            this.recorder = recorder;
+
         }
 
-        public JobHandle ScheduleAreaCasting(Vector3 currentPos, 
-            Fsample sampleToCast, Camera viewport, bool isLastSampleInFrame) {
-
+        public async Task<RaycastHit[]> ScheduleAreaCasting(Fsample sampleToCast, Camera viewport, JobHandle dependency = default) {
+            if (sampleToCast.RightGaze.isNaN()) {
+                return new RaycastHit[] {};
+                // return empty if the sample gaze is nan (has any nan component)
+            }
             List<Fsample> toCast = generateFromAngle(sampleToCast);
             List<Ray> rays = ConvertToRays(toCast, viewport);
 
             NativeArray<RaycastCommand> raycastCommands = 
                 new NativeArray<RaycastCommand>(rays.Count, Allocator.TempJob);
-            NativeArray<RaycastHit> raycastHits = 
-                new NativeArray<RaycastHit>(rays.Count, Allocator.TempJob);
-
-            JobHandle raycastHandle = RaycastCommand.ScheduleBatch(
-                raycastCommands, raycastHits, 1, default);
+            NativeArray<RaycastHit> resultsAsNative = new NativeArray<RaycastHit>(rays.Count, Allocator.TempJob);
             
-            return raycastHandle;
-
+            for (int i = 0; i < rays.Count; i++) {
+                Ray ray = rays[i];
+                if (RayConstants.IsAbsoluteEqual(ray, RayConstants.NullRay)) {
+                    continue;
+                     // will leave the raycast command as null, no raycasting will be performed here.
+                }
+                raycastCommands[i] = new RaycastCommand(ray.origin, ray.direction, layerMask : BinWallManager.ignoreBinningLayer);
+            }
+            
+            JobHandle raycastHandle = RaycastCommand.ScheduleBatch(
+                raycastCommands, resultsAsNative, 1, dependency);
+            
+            raycastHandle.Complete();
+            UnityEngine.Debug.Log($"Completed areacast for {sampleToCast}");
+            return resultsAsNative.ToArray();
         }
 
+        public void ScheduleHitWriteAndDispose(
+            uint time,
+            Task<RaycastHit[]> resultsTask,
+            Vector3 subjectLoc,
+            Vector2 rawGaze,
+            RayCastWriteManager writeManager) {
 
+            // Ensure resultsTask is completed synchronously
+            RaycastHit[] results = resultsTask.Result;
 
-        
+            void WriteTask(RaycastHit hit) {
+                string objName = RelativeHitLocFinder.getChainedName(hit.transform.gameObject);
+                Vector3 hitLoc = hit.point;
+                RayCastWriteData toWrite = new RayCastWriteDataBuilder()
+                    .WithTime(time)
+                    .WithSubjectLoc(subjectLoc)
+                    .WithRawGaze(rawGaze)
+                    .WithHitObjLocation(hitLoc)
+                    .WithObjName(objName)
+                    .Build();
 
+                writeManager.Write(toWrite);
+            }
 
+            void NullWriteTask() {
+                string objName = "NaN(Null Ray)";
+                Vector3 hitLoc = new Vector3(0, 0, 0);
+                RayCastWriteData toWrite = new RayCastWriteDataBuilder()
+                    .WithTime(time)
+                    .WithSubjectLoc(subjectLoc)
+                    .WithRawGaze(rawGaze)
+                    .WithHitObjLocation(hitLoc)
+                    .WithObjName(objName)
+                    .Build();
+
+                writeManager.Write(toWrite);
+
+            }
+
+            if (results.Length == 0) {
+                UnityEngine.Debug.Log($"Wrote NaN result");
+                string objName = "NaN(NaN Gaze)";
+                Vector3 hitLoc = new Vector3(0, 0, 0);
+                RayCastWriteData toWrite = new RayCastWriteDataBuilder()
+                    .WithTime(time)
+                    .WithSubjectLoc(subjectLoc)
+                    .WithRawGaze(rawGaze)
+                    .WithHitObjLocation(hitLoc)
+                    .WithObjName(objName)
+                    .Build();
+
+                writeManager.Write(toWrite);
+
+            }
+
+            UnityEngine.Debug.Log($"Trying to write {results.Length} many non-NaN results");
+            foreach (RaycastHit hit in results) {
+                if (hit.transform == null) {
+                    UnityEngine.Debug.Log($"null raycasthit");
+                }
+                WriteTask(hit);
+            }
+
+            UnityEngine.Debug.Log($"Wrote {results.Length} many non-NaN results");
+        }
 
 
         private List<Ray> ConvertToRays(List<Fsample> toConvert, Camera viewport) {

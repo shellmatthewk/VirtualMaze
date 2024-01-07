@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
@@ -14,6 +15,7 @@ using UnityEngine.Profiling;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using VirtualMaze.Assets.Scripts.Raycasting;
+using VirtualMaze.Assets.Utils;
 /// <summary>
 /// TODO cancel button
 /// </summary>
@@ -259,9 +261,11 @@ public class ScreenSaver : BasicGUIController {
         Debug.LogError($"s: {start}");
 
         using (BinRecorder bRec = new BinRecorder(toFolderPath))
-        using (RayCastRecorder multiCastRecorder = new RayCastRecorder(toFolderPath,multiCastName))
+        using (RayCastWriteManager areaCastWriteManager = RayCastWriteManager.GetCsvManager(
+                Path.Combine(toFolderPath,multiCastName)))
         using (RayCastRecorder recorder = new RayCastRecorder(toFolderPath, filename)) {
-            yield return ProcessSession(sessionReader, eyeReader, recorder, multiCastRecorder, bRec, mapper);
+            yield return ProcessSession(sessionReader,
+             eyeReader, recorder, areaCastWriteManager, bRec, mapper);
         }
         Console.Write($"s: {start}, e: {DateTime.Now}");
         Debug.LogError($"s: {start}, e: {DateTime.Now}");
@@ -326,7 +330,7 @@ public class ScreenSaver : BasicGUIController {
         }
     }
 
-    private IEnumerator ProcessSession(ISessionDataReader sessionReader, EyeDataReader eyeReader, RayCastRecorder recorder, RayCastRecorder multiCastRecorder, BinRecorder binRecorder, BinMapper mapper) {
+    private IEnumerator ProcessSession(ISessionDataReader sessionReader, EyeDataReader eyeReader, RayCastRecorder recorder, RayCastWriteManager multicastWriteManager, BinRecorder binRecorder, BinMapper mapper) {
         int frameCounter = 0;
         int trialCounter = 1;
 
@@ -334,8 +338,7 @@ public class ScreenSaver : BasicGUIController {
             yield break;
         }
 
-        //Move to first Trial Trigger
-        AllFloatData data = PrepareFiles(sessionReader, eyeReader, SessionTrigger.TrialStartedTrigger);
+        //set up all variables here
 
         Queue<SessionData> sessionFrames = new Queue<SessionData>();
         Queue<AllFloatData> fixations = new Queue<AllFloatData>();
@@ -346,13 +349,18 @@ public class ScreenSaver : BasicGUIController {
 
         AreaRaycastManager areaRaycastManager = 
             new AreaRaycastManager(
-                recorder: multiCastRecorder,
                 angularRadius: 15,
                 angularDensity: 1,
                 distToScreen: 68 ,
                 screenDims : new Rect(0,0,60,40),
                 pixelDims : new Rect(0,0,1920,1080)
             );
+
+
+
+        //Move to first Trial Trigger
+        AllFloatData data = PrepareFiles(sessionReader, eyeReader, SessionTrigger.TrialStartedTrigger);
+
 
         //feed in current Data due to preparation moving the data pointer forward
         fixations.Enqueue(data);
@@ -440,14 +448,31 @@ public class ScreenSaver : BasicGUIController {
                 // Profiler.BeginSample("Binning");
                 // BinGazes(binSamples, binRecorder, jobQueue, mapper);
                 // Profiler.EndSample();
-                Profiler.BeginSample("MulticastingPrepare");              
-                JobHandle areaCastHandle = 
-                    areaRaycastManager.ScheduleAreaCasting(
-                        currentPos: robot.position,
-                        sampleToCast: binSamples[0],
-                        viewport: viewport,
-                        isLastSampleInFrame: isLastSampleInFrame
-                    );
+
+                Profiler.BeginSample("MulticastingPrepare");        
+                // Go through all in binSample to decide which need areacasting, and schedule areacasting & writing just for those
+                foreach(Fsample fsample in binSamples) {
+                    if (fsample.dataType == DataTypes.SAMPLESTARTFIX){
+                        Task<RaycastHit[]> areaCastTask = 
+                            areaRaycastManager.ScheduleAreaCasting(
+
+                                sampleToCast: fsample,
+                                viewport: viewport
+
+                            );
+                        
+                        areaRaycastManager.
+                            ScheduleHitWriteAndDispose(
+                                time: fsample.time,
+                                resultsTask: areaCastTask,
+                                subjectLoc: robot.transform.position,
+                                rawGaze: fsample.RightGaze,
+                                writeManager: multicastWriteManager
+
+                            );
+                        
+                    }
+                }
                 Profiler.EndSample();
 
 
@@ -461,13 +486,7 @@ public class ScreenSaver : BasicGUIController {
                 }
                 Profiler.EndSample();
 
-                Profiler.BeginSample("Multicasting Write");
-                if (areaRaycastManager != null) {
 
-                    //areaRaycastManager.writeToFile(multiCastRecorder, robot, isLastSampleInFrame);
-
-                }
-                Profiler.EndSample();
 
                 // Profiler.BeginSample("MultiCast Processing");
                 // while (jobQueue.Count > 0) {
@@ -554,6 +573,28 @@ public class ScreenSaver : BasicGUIController {
                 }
 
                 Profiler.BeginSample("MulticastingCleanUp");
+                foreach(Fsample fsample in leftOverSamples) {
+                    if (fsample.dataType == DataTypes.SAMPLESTARTFIX){
+                        Task<RaycastHit[]> areaCastTask = 
+                            areaRaycastManager.ScheduleAreaCasting(
+
+                                sampleToCast: fsample,
+                                viewport: viewport
+
+                            );
+                        
+                        areaRaycastManager.
+                            ScheduleHitWriteAndDispose(
+                                time: fsample.time,
+                                resultsTask: areaCastTask,
+                                subjectLoc: robot.transform.position,
+                                rawGaze: fsample.RightGaze,
+                                writeManager: multicastWriteManager
+
+                            );
+                        
+                    }
+                }
                 Profiler.EndSample();
                 
             }
