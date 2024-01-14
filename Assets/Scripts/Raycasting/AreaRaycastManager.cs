@@ -1,8 +1,10 @@
+using System.Xml;
 using System.Transactions;
 using System.Net;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System;
 using Eyelink.Structs;
 using UnityEngine;
 using Unity.Jobs;
@@ -45,13 +47,13 @@ namespace VirtualMaze.Assets.Scripts.Raycasting {
 
         }
 
-        public async Task<RaycastHit[]> ScheduleAreaCasting(Fsample sampleToCast, Camera viewport, JobHandle dependency = default) {
+        public async Task<Tuple<RaycastHit[],List<Fsample>>> ScheduleAreaCasting(Fsample sampleToCast, Camera viewport, JobHandle dependency = default) {
             if (sampleToCast.RightGaze.isNaN()) {
-                return new RaycastHit[] {};
+                return Tuple.Create(new RaycastHit[] {},new List<Fsample>());
                 // return empty if the sample gaze is nan (has any nan component)
             }
-            List<Fsample> toCast = generateFromAngle(sampleToCast);
-            List<Ray> rays = ConvertToRays(toCast, viewport);
+            List<Fsample> raycastSamples = generateFromAngle(sampleToCast);
+            List<Ray> rays = ConvertToRays(raycastSamples, viewport);
 
             NativeArray<RaycastCommand> raycastCommands = 
                 new NativeArray<RaycastCommand>(rays.Count, Allocator.TempJob);
@@ -71,28 +73,30 @@ namespace VirtualMaze.Assets.Scripts.Raycasting {
             
             raycastHandle.Complete();
             UnityEngine.Debug.Log($"Completed areacast for {sampleToCast}");
-            return resultsAsNative.ToArray();
+            return Tuple.Create(resultsAsNative.ToArray(),raycastSamples);
         }
 
         public void ScheduleHitWriteAndDispose(
             uint time,
-            Task<RaycastHit[]> resultsTask,
+            Task<Tuple<RaycastHit[],List<Fsample>>> resultsTask,
             Vector3 subjectLoc,
             Vector2 rawGaze,
             RayCastWriteManager writeManager) {
 
             // Ensure resultsTask is completed synchronously
-            RaycastHit[] results = resultsTask.Result;
+            RaycastHit[] results = resultsTask.Result.Item1;
+            List<Fsample> raycastSamples = resultsTask.Result.Item2;
 
-            void WriteTask(RaycastHit hit) {
+            void WriteTask(RaycastHit hit, Fsample fsample) {
                 string objName = RelativeHitLocFinder.getChainedName(hit.transform.gameObject);
                 Vector3 hitLoc = hit.point;
                 RayCastWriteData toWrite = new RayCastWriteDataBuilder()
                     .WithTime(time)
                     .WithSubjectLoc(subjectLoc)
-                    .WithRawGaze(rawGaze)
+                    .WithRawGaze(fsample.RightGaze)
                     .WithHitObjLocation(hitLoc)
                     .WithObjName(objName)
+                    .WithType(fsample.dataType)
                     .Build();
 
                 writeManager.Write(toWrite);
@@ -107,6 +111,7 @@ namespace VirtualMaze.Assets.Scripts.Raycasting {
                     .WithRawGaze(rawGaze)
                     .WithHitObjLocation(hitLoc)
                     .WithObjName(objName)
+                    .WithType(DataTypes.NODATA)
                     .Build();
 
                 writeManager.Write(toWrite);
@@ -123,6 +128,7 @@ namespace VirtualMaze.Assets.Scripts.Raycasting {
                     .WithRawGaze(rawGaze)
                     .WithHitObjLocation(hitLoc)
                     .WithObjName(objName)
+                    .WithType(DataTypes.NODATA)
                     .Build();
 
                 writeManager.Write(toWrite);
@@ -130,12 +136,14 @@ namespace VirtualMaze.Assets.Scripts.Raycasting {
             }
 
             UnityEngine.Debug.Log($"Trying to write {results.Length} many non-NaN results");
-            foreach (RaycastHit hit in results) {
+            for (int i = 0; i < results.Length; i++) {
+                RaycastHit hit = results[i];
+                Fsample fsample = raycastSamples[i];
                 if (hit.transform == null) {
                     UnityEngine.Debug.Log($"null raycasthit");
                     NullWriteTask();
                 }
-                WriteTask(hit);
+                WriteTask(hit, fsample);
             }
 
             UnityEngine.Debug.Log($"Wrote {results.Length} many non-NaN results");
@@ -180,18 +188,25 @@ namespace VirtualMaze.Assets.Scripts.Raycasting {
 
                             Vector2 vectorCmNew = new Vector2(xCmNew, yCmNew);
                             // the new location of the gaze in cm coordinates
-                            if (!screenDims.Contains(vectorCmNew)) {
-                                continue; // sanity check for inside location
-                            }
-                            Vector2 vectorPixelNew  = CmToPixel.correctVector(vectorCmNew);
 
-                            
+
+                            // do bounds-checking & flagging here
+                            DataTypes datatype = default;
+                            if (!screenDims.Contains(vectorCmNew)) {
+                                datatype = DataTypes.SAMPLEINVALID;
+                                // flag if it is somehow invalid.
+                            } else {
+                                datatype = sample.dataType;
+                            }
+
+                            // back-compute the correct pixel value here.
+                            Vector2 vectorPixelNew  = CmToPixel.correctVector(vectorCmNew);
                             Vector2 vectorPixelRounded = roundToQuarterPixel(vectorPixelNew);
 
                             Fsample temp = new Fsample(sample.time,
                                 vectorPixelRounded.x,
                                 vectorPixelRounded.y,
-                                sample.dataType);
+                                datatype);
                             outList.Add(temp);
 
                             

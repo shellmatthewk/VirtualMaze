@@ -13,7 +13,13 @@
     SAMPLE_TYPE = 200,  // type code for samples
     SAMPLESTARTFIX = 201,
     SAMPLEENDFIX = 202, // Startfix and endfix are marked for another purpose so this marks samples that are also start/end
+    
+    SAMPLEINVALID = 203, // Flag to mark this as a sample that is 
+                         // syntatically correct but semantically invalid
+                         // E.g. gaze location is out of screen
+    NODATA = 204,
     LOST_DATA_EVENT = 0x3F, // NEW: Event flags gap in data stream
+                            //this is equal to 63
 
     STARTPARSE = 1,     /* these only have time and eye data */
     ENDPARSE = 2,

@@ -459,12 +459,11 @@ public class ScreenSaver : BasicGUIController {
                 // Go through all in binSample to decide which need areacasting, and schedule areacasting & writing just for those
                 foreach(Fsample fsample in binSamples) {
                     if (fsample.dataType == DataTypes.SAMPLESTARTFIX){
-                        Task<RaycastHit[]> areaCastTask = 
-                            areaRaycastManager.ScheduleAreaCasting(
 
+                        Task<Tuple<RaycastHit[],List<Fsample>>> areaCastTask = 
+                            areaRaycastManager.ScheduleAreaCasting(
                                 sampleToCast: fsample,
                                 viewport: viewport
-
                             );
                         
                         areaRaycastManager.
@@ -581,7 +580,7 @@ public class ScreenSaver : BasicGUIController {
                 Profiler.BeginSample("MulticastingCleanUp");
                 foreach(Fsample fsample in leftOverSamples) {
                     if (fsample.dataType == DataTypes.SAMPLESTARTFIX){
-                        Task<RaycastHit[]> areaCastTask = 
+                        Task<Tuple<RaycastHit[],List<Fsample>>> areaCastTask = 
                             areaRaycastManager.ScheduleAreaCasting(
 
                                 sampleToCast: fsample,
