@@ -99,7 +99,7 @@ namespace VirtualMaze.Assets.Scripts.Raycasting {
             }
 
             void NullWriteTask() {
-                string objName = "NaN(Null Ray)";
+                string objName = "NaN(Null RaycastHit)";
                 Vector3 hitLoc = new Vector3(0, 0, 0);
                 RayCastWriteData toWrite = new RayCastWriteDataBuilder()
                     .WithTime(time)
@@ -133,6 +133,7 @@ namespace VirtualMaze.Assets.Scripts.Raycasting {
             foreach (RaycastHit hit in results) {
                 if (hit.transform == null) {
                     UnityEngine.Debug.Log($"null raycasthit");
+                    NullWriteTask();
                 }
                 WriteTask(hit);
             }
@@ -178,6 +179,10 @@ namespace VirtualMaze.Assets.Scripts.Raycasting {
                             float yCmNew = Mathf.Tan(yRadianNew) * distToScreen;
 
                             Vector2 vectorCmNew = new Vector2(xCmNew, yCmNew);
+                            // the new location of the gaze in cm coordinates
+                            if (!screenDims.Contains(vectorCmNew)) {
+                                continue; // sanity check for inside location
+                            }
                             Vector2 vectorPixelNew  = CmToPixel.correctVector(vectorCmNew);
 
                             

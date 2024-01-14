@@ -1,3 +1,4 @@
+
 using System.Security.AccessControl;
 using System.Runtime.InteropServices;
 using Eyelink.Structs;
@@ -52,11 +53,22 @@ public class ScreenSaver : BasicGUIController {
     public FileSelector folderInput;
 
     [SerializeField]
-    private InputField numberOfLengthBinsInput = null;
+    private InputField distToScreenInput = null;
     [SerializeField]
     private InputField gazeRadiusInput = null;
     [SerializeField]
     private InputField densityInput = null;
+    [SerializeField]
+    private InputField screenPixelDimsX = null;
+    [SerializeField]
+    private InputField screenPixelDimsY= null;
+    [SerializeField]
+    private InputField screenCmDimsX = null;
+    [SerializeField]
+    private InputField screenCmDimsY = null;
+
+    //non-SerializeField for runtime usage
+
 
     public Text sessionInfo;
 
@@ -72,6 +84,13 @@ public class ScreenSaver : BasicGUIController {
 
     public RectTransform GazeCanvas;
     public Slider progressBar;
+
+
+
+
+
+
+
 
     private void Awake() {
         eyeLinkFileInput.OnPathSelected.AddListener(ChooseEyelinkFile);
@@ -119,38 +138,20 @@ public class ScreenSaver : BasicGUIController {
             return;
         }
 
-        int numberOfLengthBins = 40;
-        if (string.IsNullOrEmpty(numberOfLengthBinsInput.text)) {
-            Console.Write("Default number of bins used");
-        }
-        else if (!int.TryParse(numberOfLengthBinsInput.text, out numberOfLengthBins)) {
-            Console.WriteError($"{numberOfLengthBinsInput.text} is not a valid number");
+        RaycastSettings raycastSettings = RaycastSettings.FromString(distToScreen: distToScreenInput.text, 
+            gazeRadius: gazeRadiusInput.text, 
+            density: densityInput.text, 
+            screenPixelX: screenPixelDimsX.text,
+            screenPixelY: screenPixelDimsY.text,
+            screenCmX: screenCmDimsX.text,
+            screenCmY: screenCmDimsY.text);
+        
+        if (raycastSettings == null) {
             return;
         }
 
-        Debug.Log(numberOfLengthBins);
 
-        int gazeRadius = 50;
-        if (string.IsNullOrEmpty(gazeRadiusInput.text)) {
-            Console.Write("Default radius used");
-        }
-        else if (!int.TryParse(gazeRadiusInput.text, out gazeRadius)) {
-            Console.WriteError($"{gazeRadiusInput.text} is not a valid number");
-            return;
-        }
-
-        int density = 220;
-        if (string.IsNullOrEmpty(densityInput.text)) {
-            Console.Write("Default density used");
-        }
-        else if (!int.TryParse(densityInput.text, out density)) {
-            Console.WriteError($"{densityInput.text} is not a valid number");
-            return;
-        }
-
-        BinMapper mapper = new DoubleTeeBinMapper(numberOfLengthBins);
-        BinWallManager.ReconfigureGazeOffsetCache(gazeRadius, density);
-        StartCoroutine(ProcessSessionDataTask(sessionInput.text, eyeLinkFileInput.text, folderInput.text, mapper));
+        StartCoroutine(ProcessSessionDataTask(sessionInput.text, eyeLinkFileInput.text, folderInput.text, raycastSettings));
     }
 
 
@@ -216,7 +217,7 @@ public class ScreenSaver : BasicGUIController {
         }
     }
 
-    public IEnumerator ProcessSessionDataTask(string sessionPath, string edfPath, string toFolderPath, BinMapper mapper) {
+    public IEnumerator ProcessSessionDataTask(string sessionPath, string edfPath, string toFolderPath, RaycastSettings raycastSettings) {
         /* Setup */
         H5.close();
         H5.open();
@@ -260,12 +261,12 @@ public class ScreenSaver : BasicGUIController {
         DateTime start = DateTime.Now;
         Debug.LogError($"s: {start}");
 
-        using (BinRecorder bRec = new BinRecorder(toFolderPath))
+
         using (RayCastWriteManager areaCastWriteManager = RayCastWriteManager.GetCsvManager(
                 Path.Combine(toFolderPath,multiCastName)))
         using (RayCastRecorder recorder = new RayCastRecorder(toFolderPath, filename)) {
             yield return ProcessSession(sessionReader,
-             eyeReader, recorder, areaCastWriteManager, bRec, mapper);
+             eyeReader, recorder, areaCastWriteManager, raycastSettings);
         }
         Console.Write($"s: {start}, e: {DateTime.Now}");
         Debug.LogError($"s: {start}, e: {DateTime.Now}");
@@ -330,7 +331,7 @@ public class ScreenSaver : BasicGUIController {
         }
     }
 
-    private IEnumerator ProcessSession(ISessionDataReader sessionReader, EyeDataReader eyeReader, RayCastRecorder recorder, RayCastWriteManager multicastWriteManager, BinRecorder binRecorder, BinMapper mapper) {
+    private IEnumerator ProcessSession(ISessionDataReader sessionReader, EyeDataReader eyeReader, RayCastRecorder recorder, RayCastWriteManager multicastWriteManager, RaycastSettings raycastSettings) {
         int frameCounter = 0;
         int trialCounter = 1;
 
@@ -346,14 +347,19 @@ public class ScreenSaver : BasicGUIController {
         List<Fsample> binSamples = new List<Fsample>();
         Queue<BinWallManager.BinGazeJobData> jobQueue = new Queue<BinWallManager.BinGazeJobData>();
         HashSet<int> binsHitId = new HashSet<int>();
-
+        Debug.Log($"Initialised AreaRaycastManager with:\n" + 
+            $"Radius : {raycastSettings.GazeRadius} \n"+
+            $"Density : {raycastSettings.Density} \n"+
+            $"distToScreen : {raycastSettings.DistToScreen}\n" +
+            $"screenDims : {raycastSettings.ScreenCmDims}\n" +
+            $"pixelDims : {raycastSettings.ScreenPixelDims}");
         AreaRaycastManager areaRaycastManager = 
             new AreaRaycastManager(
-                angularRadius: 15,
-                angularDensity: 1,
-                distToScreen: 68 ,
-                screenDims : new Rect(0,0,60,40),
-                pixelDims : new Rect(0,0,1920,1080)
+                angularRadius: raycastSettings.GazeRadius,
+                angularDensity: raycastSettings.Density,
+                distToScreen: raycastSettings.DistToScreen,
+                screenDims : raycastSettings.ScreenCmDims,
+                pixelDims : raycastSettings.ScreenPixelDims
             );
 
 
@@ -1014,3 +1020,4 @@ public class ScreenSaver : BasicGUIController {
         File.WriteAllBytes(filename, bytes);
     }
 }
+
