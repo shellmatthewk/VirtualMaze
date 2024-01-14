@@ -45,11 +45,11 @@ namespace VirtualMaze.Assets.Scripts.Raycasting
             Rect screenPixelDimsValue = default;
             Rect screenCmDimsValue = default;
             bool parseSuccess =
-                float.TryParse(distToScreen, out distToScreenValue) &&
-                float.TryParse(gazeRadius, out gazeRadiusValue) &&
-                float.TryParse(density, out densityValue) &&
-                parseDimensions(screenPixelX, screenPixelY, out screenPixelDimsValue) &&
-                parseDimensions(screenCmX, screenCmY, out screenCmDimsValue);
+                parseFloat(distToScreen, out distToScreenValue, defaultValue: DefaultDistToScreen) &&
+                parseFloat(gazeRadius, out gazeRadiusValue, defaultValue: DefaultGazeRadius) &&
+                parseFloat(density, out densityValue, defaultValue: DefaultDensity) &&
+                parseDimensions(screenPixelX, screenPixelY, out screenPixelDimsValue, defaultValue: DefaultScreenPixelDims) &&
+                parseDimensions(screenCmX, screenCmY, out screenCmDimsValue, defaultValue: DefaultScreenCmDims);
 
             if (!parseSuccess) {
                 return null;
@@ -65,15 +65,36 @@ namespace VirtualMaze.Assets.Scripts.Raycasting
             return new RaycastSettings(distToScreen, gazeRadius, density, screenPixelDimsValue, screenCmDimsValue);
         }
 
-        private static bool parseDimensions(string x, string y, out Rect rect) {
-            rect = default;
+        private static bool parseDimensions(string x, string y, out Rect rect, Rect defaultValue) {
+            float xDefault = defaultValue.width;
+            float yDefault = defaultValue.height;
+            
+            float rectX = default;
+            float rectY = default;
 
-            if (float.TryParse(x, out float xFloat) && float.TryParse(y, out float yFloat)) {
-                rect = new Rect(0, 0, xFloat, yFloat);
-                return true;
+            bool xSuccess = parseFloat(x, out rectX, xDefault);
+            bool ySuccess = parseFloat(y, out rectY, yDefault);
+
+            if (xSuccess && ySuccess) {
+                // set rect only if both succeed
+                rect = new Rect(0, 0, rectX, rectY);
+            } else {
+                rect = default;
+                // set rect to a default to satisfy compiler
+                // Value should be irrelevant if failed anyway.
             }
+            
 
-            return false;
+            return xSuccess && ySuccess;
+        }
+        
+        private static bool parseFloat(string stringFloat, out float result, float defaultValue = default) {
+            if (string.IsNullOrEmpty(stringFloat)) {
+                result = defaultValue;
+                return true;
+            } else {
+                return float.TryParse(stringFloat, out result);
+            }
         }
     }
 }

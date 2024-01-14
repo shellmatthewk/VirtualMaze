@@ -444,7 +444,7 @@ RectTransform:
   - {fileID: 1658050337}
   - {fileID: 1177290272}
   m_Father: {fileID: 997672948}
-  m_RootOrder: 15
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -555,7 +555,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Default : 60x40'
+  m_Text: 60
 --- !u!222 &354092736
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -600,7 +600,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 997672948}
-  m_RootOrder: 16
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -638,7 +638,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Experiment Device Resolution (Enter in WxH format, e.g. 1920x1080)
+  m_Text: Experiment Device Resolution (WxH)
 --- !u!222 &362425092
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1642,6 +1642,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnableDirectionErrorToggle
       objectReference: {fileID: 0}
+    - target: {fileID: 246318657230081784, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Default: 30 pixels'
+      objectReference: {fileID: 0}
     - target: {fileID: 252971336157182361, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -1796,6 +1801,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 442244325134163299, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Default: 1'
       objectReference: {fileID: 0}
     - target: {fileID: 445329749020999057, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
         type: 3}
@@ -2676,6 +2686,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1421184779135556810, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Default: 40 cm'
       objectReference: {fileID: 0}
     - target: {fileID: 1433030751286718274, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
         type: 3}
@@ -7223,6 +7238,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7256934132800354635, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
+        type: 3}
+      propertyPath: m_Text
+      value: Number of Raycast Per Degree
+      objectReference: {fileID: 0}
     - target: {fileID: 7349456652700524365, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -7532,6 +7552,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7608054833454297544, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Radius of Gaze (Degrees):'
       objectReference: {fileID: 0}
     - target: {fileID: 7625367860171983191, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
         type: 3}
@@ -8947,7 +8972,7 @@ RectTransform:
   - {fileID: 354092734}
   - {fileID: 2132611047}
   m_Father: {fileID: 997672948}
-  m_RootOrder: 14
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -9277,7 +9302,7 @@ RectTransform:
   - {fileID: 1692001419}
   - {fileID: 1497518898}
   m_Father: {fileID: 997672948}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -9475,7 +9500,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Experiment Screen Size (Enter in WxH format in <b>cm</b>, e.g. 60x40)
+  m_Text: Experiment Screen Size (WxH) (cm)
 --- !u!222 &1042887977
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9622,7 +9647,7 @@ RectTransform:
   - {fileID: 1961552971}
   - {fileID: 850760936}
   m_Father: {fileID: 997672948}
-  m_RootOrder: 13
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -9914,7 +9939,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Default : 60x40'
+  m_Text: 40
 --- !u!222 &1658050336
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10010,7 +10035,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Default : 1920x1080'
+  m_Text: 1920
 --- !u!222 &1692001421
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10112,7 +10137,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Default : 1920x1080'
+  m_Text: 1080
 --- !u!222 &1961552970
 CanvasRenderer:
   m_ObjectHideFlags: 0
