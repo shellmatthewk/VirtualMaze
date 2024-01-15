@@ -1,3 +1,4 @@
+
 using System.Security.AccessControl;
 using System.Runtime.InteropServices;
 using Eyelink.Structs;
@@ -7,14 +8,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using RangeCorrector;
 using VirtualMaze.Assets.Scripts.Raycasting;
+using VirtualMaze.Assets.Utils;
 /// <summary>
 /// TODO cancel button
 /// </summary>
@@ -51,11 +53,22 @@ public class ScreenSaver : BasicGUIController {
     public FileSelector folderInput;
 
     [SerializeField]
-    private InputField numberOfLengthBinsInput = null;
+    private InputField distToScreenInput = null;
     [SerializeField]
     private InputField gazeRadiusInput = null;
     [SerializeField]
     private InputField densityInput = null;
+    [SerializeField]
+    private InputField screenPixelDimsX = null;
+    [SerializeField]
+    private InputField screenPixelDimsY= null;
+    [SerializeField]
+    private InputField screenCmDimsX = null;
+    [SerializeField]
+    private InputField screenCmDimsY = null;
+
+    //non-SerializeField for runtime usage
+
 
     public Text sessionInfo;
 
@@ -71,6 +84,13 @@ public class ScreenSaver : BasicGUIController {
 
     public RectTransform GazeCanvas;
     public Slider progressBar;
+
+
+
+
+
+
+
 
     private void Awake() {
         eyeLinkFileInput.OnPathSelected.AddListener(ChooseEyelinkFile);
@@ -118,38 +138,20 @@ public class ScreenSaver : BasicGUIController {
             return;
         }
 
-        int numberOfLengthBins = 40;
-        if (string.IsNullOrEmpty(numberOfLengthBinsInput.text)) {
-            Console.Write("Default number of bins used");
-        }
-        else if (!int.TryParse(numberOfLengthBinsInput.text, out numberOfLengthBins)) {
-            Console.WriteError($"{numberOfLengthBinsInput.text} is not a valid number");
+        RaycastSettings raycastSettings = RaycastSettings.FromString(distToScreen: distToScreenInput.text, 
+            gazeRadius: gazeRadiusInput.text, 
+            density: densityInput.text, 
+            screenPixelX: screenPixelDimsX.text,
+            screenPixelY: screenPixelDimsY.text,
+            screenCmX: screenCmDimsX.text,
+            screenCmY: screenCmDimsY.text);
+        
+        if (raycastSettings == null) {
             return;
         }
 
-        Debug.Log(numberOfLengthBins);
 
-        int gazeRadius = 50;
-        if (string.IsNullOrEmpty(gazeRadiusInput.text)) {
-            Console.Write("Default radius used");
-        }
-        else if (!int.TryParse(gazeRadiusInput.text, out gazeRadius)) {
-            Console.WriteError($"{gazeRadiusInput.text} is not a valid number");
-            return;
-        }
-
-        int density = 220;
-        if (string.IsNullOrEmpty(densityInput.text)) {
-            Console.Write("Default density used");
-        }
-        else if (!int.TryParse(densityInput.text, out density)) {
-            Console.WriteError($"{densityInput.text} is not a valid number");
-            return;
-        }
-
-        BinMapper mapper = new DoubleTeeBinMapper(numberOfLengthBins);
-        BinWallManager.ReconfigureGazeOffsetCache(gazeRadius, density);
-        StartCoroutine(ProcessSessionDataTask(sessionInput.text, eyeLinkFileInput.text, folderInput.text, mapper));
+        StartCoroutine(ProcessSessionDataTask(sessionInput.text, eyeLinkFileInput.text, folderInput.text, raycastSettings));
     }
 
 
@@ -215,7 +217,7 @@ public class ScreenSaver : BasicGUIController {
         }
     }
 
-    public IEnumerator ProcessSessionDataTask(string sessionPath, string edfPath, string toFolderPath, BinMapper mapper) {
+    public IEnumerator ProcessSessionDataTask(string sessionPath, string edfPath, string toFolderPath, RaycastSettings raycastSettings) {
         /* Setup */
         H5.close();
         H5.open();
@@ -255,13 +257,16 @@ public class ScreenSaver : BasicGUIController {
         yield return PrepareScene("Double Tee");
 
         string filename = $"{Path.GetFileNameWithoutExtension(sessionPath)}_{Path.GetFileNameWithoutExtension(edfPath)}.csv";
-
+        string multiCastName = $"{Path.GetFileNameWithoutExtension(sessionPath)}_{Path.GetFileNameWithoutExtension(edfPath)}_multicast.csv";
         DateTime start = DateTime.Now;
         Debug.LogError($"s: {start}");
 
-        using (BinRecorder bRec = new BinRecorder(toFolderPath))
+
+        using (RayCastWriteManager areaCastWriteManager = RayCastWriteManager.GetCsvManager(
+                Path.Combine(toFolderPath,multiCastName)))
         using (RayCastRecorder recorder = new RayCastRecorder(toFolderPath, filename)) {
-            yield return ProcessSession(sessionReader, eyeReader, recorder, bRec, mapper);
+            yield return ProcessSession(sessionReader,
+             eyeReader, recorder, areaCastWriteManager, raycastSettings);
         }
         Console.Write($"s: {start}, e: {DateTime.Now}");
         Debug.LogError($"s: {start}, e: {DateTime.Now}");
@@ -326,7 +331,7 @@ public class ScreenSaver : BasicGUIController {
         }
     }
 
-    private IEnumerator ProcessSession(ISessionDataReader sessionReader, EyeDataReader eyeReader, RayCastRecorder recorder, BinRecorder binRecorder, BinMapper mapper) {
+    private IEnumerator ProcessSession(ISessionDataReader sessionReader, EyeDataReader eyeReader, RayCastRecorder recorder, RayCastWriteManager multicastWriteManager, RaycastSettings raycastSettings) {
         int frameCounter = 0;
         int trialCounter = 1;
 
@@ -334,8 +339,7 @@ public class ScreenSaver : BasicGUIController {
             yield break;
         }
 
-        //Move to first Trial Trigger
-        AllFloatData data = PrepareFiles(sessionReader, eyeReader, SessionTrigger.TrialStartedTrigger);
+        //set up all variables here
 
         Queue<SessionData> sessionFrames = new Queue<SessionData>();
         Queue<AllFloatData> fixations = new Queue<AllFloatData>();
@@ -343,6 +347,26 @@ public class ScreenSaver : BasicGUIController {
         List<Fsample> binSamples = new List<Fsample>();
         Queue<BinWallManager.BinGazeJobData> jobQueue = new Queue<BinWallManager.BinGazeJobData>();
         HashSet<int> binsHitId = new HashSet<int>();
+        Debug.Log($"Initialised AreaRaycastManager with:\n" + 
+            $"Radius : {raycastSettings.GazeRadius} \n"+
+            $"Density : {raycastSettings.Density} \n"+
+            $"distToScreen : {raycastSettings.DistToScreen}\n" +
+            $"screenDims : {raycastSettings.ScreenCmDims}\n" +
+            $"pixelDims : {raycastSettings.ScreenPixelDims}");
+        AreaRaycastManager areaRaycastManager = 
+            new AreaRaycastManager(
+                angularRadius: raycastSettings.GazeRadius,
+                angularDensity: raycastSettings.Density,
+                distToScreen: raycastSettings.DistToScreen,
+                screenDims : raycastSettings.ScreenCmDims,
+                pixelDims : raycastSettings.ScreenPixelDims
+            );
+
+
+
+        //Move to first Trial Trigger
+        AllFloatData data = PrepareFiles(sessionReader, eyeReader, SessionTrigger.TrialStartedTrigger);
+
 
         //feed in current Data due to preparation moving the data pointer forward
         fixations.Enqueue(data);
@@ -427,9 +451,36 @@ public class ScreenSaver : BasicGUIController {
                 Profiler.EndSample();
 
                 /* Start the binning process while rCastJob is running */
-                Profiler.BeginSample("Binning");
-                //BinGazes(binSamples, binRecorder, jobQueue, mapper);
+                // Profiler.BeginSample("Binning");
+                // BinGazes(binSamples, binRecorder, jobQueue, mapper);
+                // Profiler.EndSample();
+
+                Profiler.BeginSample("MulticastingPrepare");        
+                // Go through all in binSample to decide which need areacasting, and schedule areacasting & writing just for those
+                foreach(Fsample fsample in binSamples) {
+                    if (fsample.dataType == DataTypes.SAMPLESTARTFIX){
+
+                        Task<Tuple<RaycastHit[],List<Fsample>>> areaCastTask = 
+                            areaRaycastManager.ScheduleAreaCasting(
+                                sampleToCast: fsample,
+                                viewport: viewport
+                            );
+                        
+                        areaRaycastManager.
+                            ScheduleHitWriteAndDispose(
+                                time: fsample.time,
+                                resultsTask: areaCastTask,
+                                subjectLoc: robot.transform.position,
+                                rawGaze: fsample.RightGaze,
+                                writeManager: multicastWriteManager
+
+                            );
+                        
+                    }
+                }
                 Profiler.EndSample();
+
+
 
                 Profiler.BeginSample("RaycastingSingleProcess");
                 if (rCastJob != null) {
@@ -440,26 +491,28 @@ public class ScreenSaver : BasicGUIController {
                 }
                 Profiler.EndSample();
 
-                Profiler.BeginSample("MultiCast Processing");
-                while (jobQueue.Count > 0) {
-                    using (BinWallManager.BinGazeJobData job = jobQueue.Dequeue()) {
-                        while (!job.h.IsCompleted) {
 
-                        }
-                        job.h.Complete();
 
-                        job.process(mapper, binsHitId);
+                // Profiler.BeginSample("MultiCast Processing");
+                // while (jobQueue.Count > 0) {
+                //     using (BinWallManager.BinGazeJobData job = jobQueue.Dequeue()) {
+                //         while (!job.h.IsCompleted) {
 
-                        Profiler.BeginSample("HDFwrite");
-                        binRecorder.RecordMovement(job.sampleTime, binsHitId);
-                        Profiler.EndSample();
+                //         }
+                //         job.h.Complete();
 
-                        Profiler.BeginSample("ClearHashset");
-                        binsHitId.Clear();
-                        Profiler.EndSample();
-                    }
-                }
-                Profiler.EndSample();
+                //         job.process(mapper, binsHitId);
+
+                //         Profiler.BeginSample("HDFwrite");
+                //         binRecorder.RecordMovement(job.sampleTime, binsHitId);
+                //         Profiler.EndSample();
+
+                //         Profiler.BeginSample("ClearHashset");
+                //         binsHitId.Clear();
+                //         Profiler.EndSample();
+                //     }
+                // }
+                // Profiler.EndSample();
 
                 binSamples.Clear();
                 if (currData is Fsample) {
@@ -523,6 +576,31 @@ public class ScreenSaver : BasicGUIController {
                          displayGazes: frameCounter == Frame_Per_Batch, GazeCanvas, viewport);
                     }
                 }
+
+                Profiler.BeginSample("MulticastingCleanUp");
+                foreach(Fsample fsample in leftOverSamples) {
+                    if (fsample.dataType == DataTypes.SAMPLESTARTFIX){
+                        Task<Tuple<RaycastHit[],List<Fsample>>> areaCastTask = 
+                            areaRaycastManager.ScheduleAreaCasting(
+
+                                sampleToCast: fsample,
+                                viewport: viewport
+
+                            );
+                        
+                        areaRaycastManager.
+                            ScheduleHitWriteAndDispose(
+                                time: fsample.time,
+                                resultsTask: areaCastTask,
+                                subjectLoc: robot.transform.position,
+                                rawGaze: fsample.RightGaze,
+                                writeManager: multicastWriteManager
+
+                            );
+                        
+                    }
+                }
+                Profiler.EndSample();
                 
             }
 
@@ -545,69 +623,7 @@ public class ScreenSaver : BasicGUIController {
 
     }
 
-    class RaycastGazesJob : IDisposable {
-        int numSamples;
-        List<Fsample> binSamples;
-        NativeArray<RaycastHit> results;
-        NativeArray<RaycastCommand> cmds;
-        public JobHandle h;
-
-        public RaycastGazesJob(JobHandle h, int numSamples, List<Fsample> binSamples, NativeArray<RaycastHit> results, NativeArray<RaycastCommand> cmds) {
-            this.numSamples = numSamples;
-            this.binSamples = binSamples;
-            this.results = results;
-            this.cmds = cmds;
-            this.h = h;
-        }
-
-        public void Process(AllFloatData currData, RayCastRecorder recorder, Transform robot, bool isLastSampleInFrame, GazePointPool gazePointPool, bool displayGazes, RectTransform GazeCanvas, Camera viewport) {
-            int lastGazeIndex = numSamples - 2;
-            Image img = null;
-            //Debug.Log($"Writing datapoints from {binSamples[0].time} to {binSamples[binSamples.Count-1].time}");
-            for (int i = 0; i < numSamples; i++) {
-                if (i == lastGazeIndex && currData is MessageEvent) {
-                    recorder.FlagEvent(((MessageEvent)currData).message);
-                }
-
-                Fsample fsample = binSamples[i];
-                RaycastHit raycastHit = results[i];
-                if (raycastHit.collider != null) {
-                    Transform hitObj = raycastHit.transform;
-                    recorder.WriteSample(
-                            type: fsample.dataType,
-                            time: fsample.time,
-                            objName: RelativeHitLocFinder.getChainedName(raycastHit.transform.gameObject),
-                            centerOffset: RelativeHitLocFinder.getRelativeHit(raycastHit),
-                            hitObjLocation: hitObj.position,
-                            pointHitLocation: raycastHit.point,
-                            rawGaze: fsample.rawRightGaze,
-                            subjectLoc: robot.position,
-                            subjectRotation: robot.rotation.eulerAngles.y,
-                            isLastSampleInFrame: i == lastGazeIndex && isLastSampleInFrame);
-                }
-                else {
-                    recorder.IgnoreSample(
-                            type: fsample.dataType,
-                            time: fsample.time,
-                            rawGaze: fsample.rawRightGaze,
-                            subjectLoc: robot.position,
-                            subjectRotation: robot.rotation.eulerAngles.y,
-                            isLastSampleInFrame: i == lastGazeIndex && isLastSampleInFrame
-                        );
-                }
-                if (displayGazes) {
-                    img = gazePointPool.AddGazePoint(GazeCanvas, viewport, fsample.RightGaze);
-                }
-            }
-            if (img != null) {
-                img.color = Color.red;
-            }
-        }
-        public void Dispose() {
-            results.Dispose();
-            cmds.Dispose();
-        }
-    }
+    
 
     private RaycastGazesJob RaycastGazes(List<Fsample> binSamples, RayCastRecorder recorder, AllFloatData currData, JobHandle dependancy) {
         int numSamples = binSamples.Count;
@@ -626,7 +642,7 @@ public class ScreenSaver : BasicGUIController {
         for (int i = 0; i < numSamples; i++) {
             Vector2 origGaze = binSamples[i].RightGaze;
             if (IsInScreenBounds(origGaze)) {
-                Vector2 viewportGaze = RangeCorrector.RangeCorrector.HD_TO_VIEWPORT.correctVector(origGaze);
+                Vector2 viewportGaze = RangeCorrector.HD_TO_VIEWPORT.correctVector(origGaze);
                 Ray r = viewport.ViewportPointToRay(viewportGaze);
                 cmds[i] = new RaycastCommand(r.origin, r.direction, layerMask: BinWallManager.ignoreBinningLayer);
             }
@@ -717,7 +733,7 @@ public class ScreenSaver : BasicGUIController {
         Profiler.EndSample();
     }
 
-    private bool IsInScreenBounds(Vector2 gazeXY) {
+    public static bool IsInScreenBounds(Vector2 gazeXY) {
         /* If gaze point is not NaN and within screen bounds */
         return !gazeXY.isNaN() && gazeXY.x <= maxBound.x && gazeXY.y <= maxBound.y && gazeXY.x >= minBound.x && gazeXY.y >= minBound.y;
     }
@@ -1003,3 +1019,4 @@ public class ScreenSaver : BasicGUIController {
         File.WriteAllBytes(filename, bytes);
     }
 }
+

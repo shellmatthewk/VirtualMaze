@@ -1,4 +1,5 @@
-﻿public enum DataTypes {
+﻿public enum DataTypes
+{
     STARTBLINK = 3,     // pupil disappeared, time only
     ENDBLINK = 4,       // pupil reappeared, duration data
     STARTSACC = 5,      // start of saccade, time only
@@ -10,7 +11,15 @@
     BUTTONEVENT = 25,   // button state change: IOEVENT structure
     INPUTEVENT = 28,    // change of input port: IOEVENT structure
     SAMPLE_TYPE = 200,  // type code for samples
+    SAMPLESTARTFIX = 201,
+    SAMPLEENDFIX = 202, // Startfix and endfix are marked for another purpose so this marks samples that are also start/end
+    
+    SAMPLEINVALID = 203, // Flag to mark this as a sample that is 
+                         // syntatically correct but semantically invalid
+                         // E.g. gaze location is out of screen
+    NODATA = 204,
     LOST_DATA_EVENT = 0x3F, // NEW: Event flags gap in data stream
+                            //this is equal to 63
 
     STARTPARSE = 1,     /* these only have time and eye data */
     ENDPARSE = 2,
@@ -22,10 +31,15 @@
     ENDEVENTS = 18,     /* end of events in block */
 
     RECORDING_INFO = 30,  /* recording struct is returned */
-    NO_PENDING_ITEMS = 0,  /*no more data left.*/
+    NO_PENDING_ITEMS = 0,  /* no more data left. */
 
-    NULL = -1 //not part of API
+    NULL = -1 // not part of API
 }
 
-
-
+public static class DataTypesExtensions
+{
+    public static bool IsSampleDataType(this DataTypes dataType)
+    {
+        return (dataType == DataTypes.SAMPLE_TYPE || dataType == DataTypes.SAMPLESTARTFIX || dataType == DataTypes.SAMPLEENDFIX);
+    }
+}

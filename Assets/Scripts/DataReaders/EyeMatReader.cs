@@ -1,6 +1,9 @@
-﻿using Eyelink.Structs;
+using System.Xml;
+using Eyelink.Structs;
 using System;
 using UnityEngine;
+using VirtualMaze.Assets.Scripts.Utils;
+using VirtualMaze.Assets.Utils;
 
 public class EyeMatReader : EyeDataReader {
     private AllFloatData currentData = null;
@@ -14,6 +17,11 @@ public class EyeMatReader : EyeDataReader {
     //SessionTrigger state = SessionTrigger.TrialStartedTrigger;
     double stateTime;
 
+    Interval nextFixation;
+
+    int fixationIndex = 0;
+    
+
     public EyeMatReader(string filePath) {
         file = new EyelinkMatFile(filePath);
         // -1 since matlab is 1 based array, -1 again to act as a null value
@@ -23,6 +31,10 @@ public class EyeMatReader : EyeDataReader {
 
         //additional 1 second for fadeout
         lastTriggerTime = GetStateTime(file.trial_index.GetLength(1) * 3 - 1) + 1000;
+        
+        //get the first fixation
+        nextFixation = new Interval((int)file.fixationStarts[fixationIndex],(int)file.fixationEnds[fixationIndex]);
+
     }
 
     //datatype is unused for .mat file as they do not contain thee information
@@ -31,6 +43,7 @@ public class EyeMatReader : EyeDataReader {
     }
 
     public AllFloatData GetNextData() {
+
         if (currentData == null) {
             //do not need to decrement because the decrement is done in the constuctor
             currentData = new MessageEvent(file.timestamps[0, currentTime], parseTrialCode(GetStateCode(stateIndex)), DataTypes.MESSAGEEVENT);
@@ -61,6 +74,7 @@ public class EyeMatReader : EyeDataReader {
                 if (currentTime >= lastTriggerTime) {
                     currentData = new FEvent(1, DataTypes.NO_PENDING_ITEMS);
                 }
+                    
                 else {
                     float gx = file.eyePos[0, currentTime];
                     float gy = file.eyePos[1, currentTime];
@@ -71,8 +85,17 @@ public class EyeMatReader : EyeDataReader {
                     //if (float.IsNaN(gy)) {
                     //    gy = 100_000_000f;
                     //}
+                    
+                    // This line decides if the data type should be fixation start/end or just sample type
 
-                    currentData = new Fsample(file.timestamps[0, currentTime], gx, gy, DataTypes.SAMPLE_TYPE);
+                    uint currentTimeStamp = file.timestamps[0, currentTime]; 
+                    // I do not know why but we need to index here
+                    // I am not sure what currentTime actually is and am afraid to touch
+                    // -- Xavier, 1 Jan 2024
+                    DataTypes sampleType = GetDataType(currentTimeStamp);
+                    // TODO : add check for if either is NaN
+
+                    currentData = new Fsample(currentTimeStamp, gx, gy, sampleType);
                 }
             }
         }
@@ -86,6 +109,31 @@ public class EyeMatReader : EyeDataReader {
 
     private int GetStateCode(int stateIndex) {
         return file.trial_codes[stateIndex % 3, stateIndex / 3];
+    }
+
+    private void getCorrectInterval(uint currentTimeStamp) {
+        while (currentTimeStamp > nextFixation.End && fixationIndex < file.fixationStarts.Length) {
+            nextFixation = new Interval((int)file.fixationStarts[fixationIndex],(int)file.fixationEnds[fixationIndex]);
+            fixationIndex += 1;
+        }
+    }
+
+    private DataTypes GetDataType(uint currentTimeStamp) {
+        getCorrectInterval(currentTimeStamp);
+        if (IsFixationStart(currentTimeStamp)) {
+            return DataTypes.SAMPLESTARTFIX;
+        } else if (IsFixationEnd(currentTimeStamp)) {
+            return DataTypes.SAMPLEENDFIX;
+        } else {
+            return DataTypes.SAMPLE_TYPE;
+        }
+    }
+    private bool IsFixationStart(uint eventTime) {
+        return eventTime == nextFixation.Start;
+    }
+
+    private bool IsFixationEnd(uint eventTime) {
+        return eventTime == nextFixation.End;
     }
 
     private string parseTrialCode(int code) {

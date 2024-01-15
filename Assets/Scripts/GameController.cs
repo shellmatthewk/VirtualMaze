@@ -7,6 +7,8 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UnityEngine;
+using VirtualMaze.Assets.Scripts.Raycasting;
+
 
 /// <summary>
 /// MonoBehaviour that affects VirtualMaze globally.
@@ -82,52 +84,97 @@ public class GameController : MonoBehaviour {
             BatchModeLogger logger = new BatchModeLogger(PresentWorkingDirectory);
 
             string[] args = Environment.GetCommandLineArgs();
+
+
+            Queue<DirectoryInfo> dirQ = new Queue<DirectoryInfo>();
             bool isSessionList = false;
 
-            int numofLengthBins = BinMapper.DEFAULT_NUM_BIN_LENGTH;
-            int radius = BinWallManager.Default_Radius;
-            int density = BinWallManager.Default_Density;
+            float radius = RaycastSettings.DefaultGazeRadius;
+            float density = RaycastSettings.DefaultDensity;
+            float distToScreen = RaycastSettings.DefaultDistToScreen;
+            float screenX = RaycastSettings.DefaultScreenCmDimX;
+            float screenY = RaycastSettings.DefaultScreenCmDimY;
+            float resX = RaycastSettings.DefaultScreenPixelDimX;
+            float resY = RaycastSettings.DefaultScreenPixelDimY;
+
             string sessionListPath = null;
+
 
             for (int i = 0; i < args.Length; i++) {
                 Debug.LogError($"ARG {i}: {args[i]}");
-                
+
                 switch (args[i].ToLower()) {
                     case "-sessionlist":
                         isSessionList = true;
                         logger.Print($"Session List detected!");
-                        Debug.LogError($"{args[i + 1]}");
                         sessionListPath = args[i + 1];
                         break;
-
-                    case "-numoflengthbins":
-                        if (int.TryParse(args[i + 1], out numofLengthBins)) {
-                            logger.Print($"Setting number of length bins to : {numofLengthBins}");
-                        }
-                        else {
-                            logger.Print($"Unable to parse {args[i + 1]} to integer, using  {numofLengthBins} as default");
-                        }
-                        break;
                     case "-density":
-                        if (int.TryParse(args[i + 1], out density)) {
-                            logger.Print($"Setting density to : {density}");
+                        if (float.TryParse(args[i + 1], out density)) {
+                            logger.Print($"Setting density to: {density}");
                         }
                         else {
-                            logger.Print($"Unable to parse {args[i + 1]} to integer, using  {density} as default");
+                            logger.Print($"Unable to parse {args[i + 1]} to float, using {density} as default");
                         }
                         break;
                     case "-radius":
-                        if (int.TryParse(args[i + 1], out radius)) {
-                            logger.Print($"Setting radius to : {radius}");
+                        if (float.TryParse(args[i + 1], out radius)) {
+                            logger.Print($"Setting radius to: {radius}");
                         }
                         else {
-                            logger.Print($"Unable to parse {args[i + 1]} to integer, using  {radius} as default");
+                            logger.Print($"Unable to parse {args[i + 1]} to float, using {radius} as default");
+                        }
+                        break;
+                    case "-disttoscreen":
+                        if (float.TryParse(args[i + 1], out distToScreen)) {
+                            logger.Print($"Setting distToScreen to: {distToScreen}");
+                        }
+                        else {
+                            logger.Print($"Unable to parse {args[i + 1]} to float, using {distToScreen} as default");
+                        }
+                        break;
+                    case "-screenx":
+                        if (float.TryParse(args[i + 1], out screenX)) {
+                            logger.Print($"Setting screenX to: {screenX}");
+                        }
+                        else {
+                            logger.Print($"Unable to parse {args[i + 1]} to float, using {screenX} as default");
+                        }
+                        break;
+                    case "-screeny":
+                        if (float.TryParse(args[i + 1], out screenY)) {
+                            logger.Print($"Setting screenY to: {screenY}");
+                        }
+                        else {
+                            logger.Print($"Unable to parse {args[i + 1]} to float, using {screenY} as default");
+                        }
+                        break;
+                    case "-resx":
+                        if (float.TryParse(args[i + 1], out resX)) {
+                            logger.Print($"Setting resX to: {resX}");
+                        }
+                        else {
+                            logger.Print($"Unable to parse {args[i + 1]} to float, using {resX} as default");
+                        }
+                        break;
+                    case "-resy":
+                        if (float.TryParse(args[i + 1], out resY)) {
+                            logger.Print($"Setting resY to: {resY}");
+                        }
+                        else {
+                            logger.Print($"Unable to parse {args[i + 1]} to float, using {resY} as default");
                         }
                         break;
                 }
             }
-
-            Queue<DirectoryInfo> dirQ = new Queue<DirectoryInfo>();
+            RaycastSettings raycastSettings = RaycastSettings.FromFloat(
+                distToScreen : distToScreen,
+                gazeRadius : radius,
+                density : density,
+                screenCmX : screenX, 
+                screenCmY : screenY, 
+                screenPixelX : resX, 
+                screenPixelY : resY);
 
             if (!isSessionList) {
                 PwdMode(logger, dirQ);
@@ -135,8 +182,8 @@ public class GameController : MonoBehaviour {
             else {
                 SessionListMode(logger, sessionListPath, dirQ);
             }
-            BinWallManager.ReconfigureGazeOffsetCache(radius, density);
-            ProcessExperimentQueue(dirQ, logger, numofLengthBins);
+            //BinWallManager.ReconfigureGazeOffsetCache(radius, density);
+            ProcessExperimentQueue(dirQ, logger, raycastSettings);
         }
     }
 
@@ -155,7 +202,7 @@ public class GameController : MonoBehaviour {
         dirQ.Enqueue(pwd);
     }
 
-    private void ProcessExperimentQueue(Queue<DirectoryInfo> dirQ, BatchModeLogger logger, int numOfBinsForFloorLength) {
+    private void ProcessExperimentQueue(Queue<DirectoryInfo> dirQ, BatchModeLogger logger, RaycastSettings raycastSettings) {
         Queue<string> sessionQ = new Queue<string>();
 
         while (dirQ.Count > 0) {
@@ -176,11 +223,11 @@ public class GameController : MonoBehaviour {
             }
         }
 
-        BinMapper mapper = new DoubleTeeBinMapper(numOfBinsForFloorLength);
+        //BinMapper mapper = new DoubleTeeBinMapper(numOfBinsForFloorLength);
 
         if (sessionQ.Count > 0) {
             logger.Print($"{sessionQ.Count} sessions to be processed");
-            ProcessSession(sessionQ, logger, mapper);
+            ProcessSession(sessionQ, logger, raycastSettings);
         }
         else {
             logger.Print("No Session directories found! Exiting");
@@ -189,7 +236,7 @@ public class GameController : MonoBehaviour {
         }
     }
 
-    private async void ProcessSession(Queue<string> sessions, BatchModeLogger logger, BinMapper mapper) {
+    private async void ProcessSession(Queue<string> sessions, BatchModeLogger logger, RaycastSettings raycastSettings) {
         string path;
         int total = sessions.Count;
         int count = 1, notifyAliveCount = 0;
@@ -201,7 +248,7 @@ public class GameController : MonoBehaviour {
  
 
 
-            StartCoroutine(ProcessWrapper(path + unityfileMatFile, path + eyelinkMatFile, path, mapper, logger));
+            StartCoroutine(ProcessWrapper(path + unityfileMatFile, path + eyelinkMatFile, path, logger, raycastSettings));
             while (!generationComplete) {
                 await Task.Delay(10000); //10 second notify-alive message
 
@@ -238,7 +285,7 @@ public class GameController : MonoBehaviour {
         return Regex.IsMatch(dirInfo.Name, SessionPattern);
     }
 
-    private IEnumerator ProcessWrapper(string sessionPath, string edfPath, string toFolderPath, BinMapper mapper, BatchModeLogger logger) {
+    private IEnumerator ProcessWrapper(string sessionPath, string edfPath, string toFolderPath, BatchModeLogger logger, RaycastSettings raycastSettings) {
         print($"session: {sessionPath}");
         print($"edf: {edfPath}");
         print($"toFolder: {toFolderPath}");
@@ -247,7 +294,7 @@ public class GameController : MonoBehaviour {
 
 
         try {
-            yield return saver.ProcessSessionDataTask(sessionPath, edfPath, toFolderPath, mapper);
+            yield return saver.ProcessSessionDataTask(sessionPath, edfPath, toFolderPath, raycastSettings);
         }
         finally { //so that the batchmode app will quit or move on the the next session
             generationComplete = true;
