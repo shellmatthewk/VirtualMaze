@@ -17,7 +17,7 @@
     SAMPLEINVALID = 203, // Flag to mark this as a sample that is 
                          // syntatically correct but semantically invalid
                          // E.g. gaze location is out of screen
-    NODATA = 204,
+    SAMPLENODATA = 204,
     LOST_DATA_EVENT = 0x3F, // NEW: Event flags gap in data stream
                             //this is equal to 63
 
