@@ -37,23 +37,21 @@ namespace VirtualMaze.Assets.Scripts.Raycasting
 
         public static RaycastSettings FromString(string distToScreen, 
             string gazeRadius, string density, string screenPixelX, 
-            string screenPixelY, string screenCmX, string screenCmY) {
+            string screenPixelY, string screenCmX, string screenCmY, out bool successFlag) {
 
             float distToScreenValue = default;
             float gazeRadiusValue = default;
             float densityValue = default;
             Rect screenPixelDimsValue = default;
             Rect screenCmDimsValue = default;
-            bool parseSuccess =
+            successFlag =
                 parseFloat(distToScreen, out distToScreenValue, defaultValue: DefaultDistToScreen) &&
                 parseFloat(gazeRadius, out gazeRadiusValue, defaultValue: DefaultGazeRadius) &&
                 parseFloat(density, out densityValue, defaultValue: DefaultDensity) &&
                 parseDimensions(screenPixelX, screenPixelY, out screenPixelDimsValue, defaultValue: DefaultScreenPixelDims) &&
                 parseDimensions(screenCmX, screenCmY, out screenCmDimsValue, defaultValue: DefaultScreenCmDims);
 
-            if (!parseSuccess) {
-                return null;
-            }
+
 
             return new RaycastSettings(distToScreenValue, gazeRadiusValue, densityValue, screenPixelDimsValue, screenCmDimsValue);
         }

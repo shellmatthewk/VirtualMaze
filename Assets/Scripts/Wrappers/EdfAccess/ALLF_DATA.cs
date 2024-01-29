@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Xml;
+using System.Runtime.InteropServices;
 
 namespace Eyelink.Structs {
     //this configuration mimics the union datatype found in C.
@@ -57,6 +58,9 @@ namespace Eyelink.Structs {
                     return new MessageEvent(fe, type);
 
                 case DataTypes.SAMPLE_TYPE:
+                case DataTypes.SAMPLESTARTFIX:
+                case DataTypes.SAMPLEENDFIX:
+                case DataTypes.SAMPLEINVALID:
                     return new Fsample(fs, type);
                 
                 case DataTypes.BREAKPARSE:

@@ -111,7 +111,7 @@ namespace VirtualMaze.Assets.Scripts.Raycasting {
                     .WithRawGaze(rawGaze)
                     .WithHitObjLocation(hitLoc)
                     .WithObjName(objName)
-                    .WithType(DataTypes.NODATA)
+                    .WithType(DataTypes.SAMPLENODATA)
                     .Build();
 
                 writeManager.Write(toWrite);
@@ -128,7 +128,7 @@ namespace VirtualMaze.Assets.Scripts.Raycasting {
                     .WithRawGaze(rawGaze)
                     .WithHitObjLocation(hitLoc)
                     .WithObjName(objName)
-                    .WithType(DataTypes.NODATA)
+                    .WithType(DataTypes.SAMPLENODATA)
                     .Build();
 
                 writeManager.Write(toWrite);
