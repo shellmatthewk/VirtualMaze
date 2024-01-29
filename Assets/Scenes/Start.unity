@@ -2690,7 +2690,7 @@ PrefabInstance:
     - target: {fileID: 1421184779135556810, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
         type: 3}
       propertyPath: m_Text
-      value: 'Default: 40 cm'
+      value: 'Default: 68 cm'
       objectReference: {fileID: 0}
     - target: {fileID: 1433030751286718274, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
         type: 3}
@@ -5688,6 +5688,11 @@ PrefabInstance:
       propertyPath: screenCmDimsY
       value: 
       objectReference: {fileID: 326248014}
+    - target: {fileID: 5221027556612400899, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
+        type: 3}
+      propertyPath: distToScreenInput
+      value: 
+      objectReference: {fileID: 1833853400}
     - target: {fileID: 5221793554671527726, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
         type: 3}
       propertyPath: m_IsActive
@@ -10050,6 +10055,18 @@ Camera:
     type: 3}
   m_PrefabInstance: {fileID: 683878198}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1833853400 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6293365282130320862, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
+    type: 3}
+  m_PrefabInstance: {fileID: 683878198}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d199490a83bb2b844b9695cbf13b01ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1859985209 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3279135880371451742, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,

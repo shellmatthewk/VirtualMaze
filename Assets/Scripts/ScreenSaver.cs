@@ -137,17 +137,18 @@ public class ScreenSaver : BasicGUIController {
             Console.WriteError($"{edfPath} does not exist");
             return;
         }
-
+        bool successFlag = default;
         RaycastSettings raycastSettings = RaycastSettings.FromString(distToScreen: distToScreenInput.text, 
             gazeRadius: gazeRadiusInput.text, 
             density: densityInput.text, 
             screenPixelX: screenPixelDimsX.text,
             screenPixelY: screenPixelDimsY.text,
             screenCmX: screenCmDimsX.text,
-            screenCmY: screenCmDimsY.text);
+            screenCmY: screenCmDimsY.text,
+            successFlag: out successFlag);
         
-        if (raycastSettings == null) {
-            return;
+        if (!successFlag) {
+            Debug.Log("Error was found in raycast settings, default used.");
         }
 
 

@@ -58,7 +58,7 @@ namespace Eyelink.Structs {
                     return new MessageEvent(fe, type);
 
                 case DataTypes.SAMPLE_TYPE:
-                case DataTypes.SAMPLESTARTIFX:
+                case DataTypes.SAMPLESTARTFIX:
                 case DataTypes.SAMPLEENDFIX:
                 case DataTypes.SAMPLEINVALID:
                     return new Fsample(fs, type);
