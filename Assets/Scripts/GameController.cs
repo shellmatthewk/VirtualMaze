@@ -81,6 +81,11 @@ public class GameController : MonoBehaviour {
         if (Application.isBatchMode) {
             Camera.main.aspect = (1920f/1080f);
             Debug.LogError($"Camera aspect ratio : {Camera.main.aspect}");
+            Camera camera = saver.viewport;
+            float fov = camera.fieldOfView;
+            var frustrumHeight = 2.0f * 25 * Mathf.Tan(fov * 0.5f * Mathf.Deg2Rad);
+            var frustrumWidth = frustrumHeight * camera.aspect;
+            Debug.LogError($"Distance at 25 units (horz) : {frustrumWidth}");
             BatchModeLogger logger = new BatchModeLogger(PresentWorkingDirectory);
 
             string[] args = Environment.GetCommandLineArgs();
@@ -90,7 +95,7 @@ public class GameController : MonoBehaviour {
             bool isSessionList = false;
 
             float radius = RaycastSettings.DefaultGazeRadius;
-            float density = RaycastSettings.DefaultDensity;
+            float stepSize = RaycastSettings.DefaultStepSize;
             float distToScreen = RaycastSettings.DefaultDistToScreen;
             float screenX = RaycastSettings.DefaultScreenCmDimX;
             float screenY = RaycastSettings.DefaultScreenCmDimY;
@@ -109,12 +114,12 @@ public class GameController : MonoBehaviour {
                         logger.Print($"Session List detected!");
                         sessionListPath = args[i + 1];
                         break;
-                    case "-density":
-                        if (float.TryParse(args[i + 1], out density)) {
-                            logger.Print($"Setting density to: {density}");
+                    case "-stepsize":
+                        if (float.TryParse(args[i + 1], out stepSize)) {
+                            logger.Print($"Setting stepsize to: {stepSize}");
                         }
                         else {
-                            logger.Print($"Unable to parse {args[i + 1]} to float, using {density} as default");
+                            logger.Print($"Unable to parse {args[i + 1]} to float, using {stepSize} as default");
                         }
                         break;
                     case "-radius":
@@ -170,7 +175,7 @@ public class GameController : MonoBehaviour {
             RaycastSettings raycastSettings = RaycastSettings.FromFloat(
                 distToScreen : distToScreen,
                 gazeRadius : radius,
-                density : density,
+                stepSize : stepSize,
                 screenCmX : screenX, 
                 screenCmY : screenY, 
                 screenPixelX : resX, 
@@ -245,7 +250,7 @@ public class GameController : MonoBehaviour {
             path = sessions.Dequeue();
             logger.Print($"Starting({count}/{total}): {path}");
             generationComplete = false;
- 
+            
 
 
             StartCoroutine(ProcessWrapper(path + unityfileMatFile, path + eyelinkMatFile, path, logger, raycastSettings));

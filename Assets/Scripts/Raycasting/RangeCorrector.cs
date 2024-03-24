@@ -44,5 +44,9 @@ namespace VirtualMaze.Assets.Scripts.Raycasting{
             return Rect.NormalizedToPoint(this.newRange,Rect.PointToNormalized(this.originalRange,value));
         }
 
+        public bool isInBounds(Vector2 value) {
+            return (this.originalRange.Contains(value));
+        }
+
     }
 }

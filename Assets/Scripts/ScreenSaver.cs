@@ -57,7 +57,7 @@ public class ScreenSaver : BasicGUIController {
     [SerializeField]
     private InputField gazeRadiusInput = null;
     [SerializeField]
-    private InputField densityInput = null;
+    private InputField stepSizeInput = null;
     [SerializeField]
     private InputField screenPixelDimsX = null;
     [SerializeField]
@@ -140,7 +140,7 @@ public class ScreenSaver : BasicGUIController {
         bool successFlag = default;
         RaycastSettings raycastSettings = RaycastSettings.FromString(distToScreen: distToScreenInput.text, 
             gazeRadius: gazeRadiusInput.text, 
-            density: densityInput.text, 
+            density: stepSizeInput.text, 
             screenPixelX: screenPixelDimsX.text,
             screenPixelY: screenPixelDimsY.text,
             screenCmX: screenCmDimsX.text,
@@ -350,14 +350,14 @@ public class ScreenSaver : BasicGUIController {
         HashSet<int> binsHitId = new HashSet<int>();
         Debug.Log($"Initialised AreaRaycastManager with:\n" + 
             $"Radius : {raycastSettings.GazeRadius} \n"+
-            $"Density : {raycastSettings.Density} \n"+
+            $"Step Size : {raycastSettings.StepSize} \n"+
             $"distToScreen : {raycastSettings.DistToScreen}\n" +
             $"screenDims : {raycastSettings.ScreenCmDims}\n" +
             $"pixelDims : {raycastSettings.ScreenPixelDims}");
         AreaRaycastManager areaRaycastManager = 
             new AreaRaycastManager(
                 angularRadius: raycastSettings.GazeRadius,
-                angularDensity: raycastSettings.Density,
+                angularStepSize: raycastSettings.StepSize,
                 distToScreen: raycastSettings.DistToScreen,
                 screenDims : raycastSettings.ScreenCmDims,
                 pixelDims : raycastSettings.ScreenPixelDims
@@ -460,12 +460,44 @@ public class ScreenSaver : BasicGUIController {
                 // Go through all in binSample to decide which need areacasting, and schedule areacasting & writing just for those
                 foreach(Fsample fsample in binSamples) {
                     if (fsample.dataType == DataTypes.SAMPLESTARTFIX){
+                        // do a check to make sure it is not on a hint/view image
 
-                        Task<Tuple<RaycastHit[],List<Fsample>>> areaCastTask = 
+                        bool toAreaCast = true;
+                        Ray probeRay;
+                        if (IsInScreenBounds(fsample.RightGaze) && fsample.dataType != DataTypes.SAMPLEINVALID) {
+                            Vector2 viewportGaze = RangeCorrector.HD_TO_VIEWPORT.
+                                correctVector(fsample.RightGaze);
+                            probeRay = viewport.ViewportPointToRay(viewportGaze);
+                        } else {
+                            probeRay = RayConstants.NullRay;
+                            // skip probe-casting
+                            // Just because is invalid might not mean not subject to area casting
+                            // E.g. looking at corner of screen.
+                            // Still valid for area-casting.
+                        }
+                        if (probeRay != RayConstants.NullRay) {
+                            RaycastHit multiCastProbeHit;
+                            Physics.Raycast(probeRay.origin, probeRay.direction, out multiCastProbeHit, float.MaxValue, BinWallManager.ignoreBinningLayer);
+                            String hitName = multiCastProbeHit.collider.name;
+                            if (hitName == "CueImage" || hitName == "HintImage") {
+                                toAreaCast = false;
+                            }
+                        }
+
+                        Task<Tuple<RaycastHit[], Fsample[], AreaRaycastManager.OffsetData[]>> areaCastTask;
+                        if (toAreaCast) {
+                        areaCastTask = 
                             areaRaycastManager.ScheduleAreaCasting(
                                 sampleToCast: fsample,
                                 viewport: viewport
                             );
+                        } else {
+                            areaCastTask = 
+                            areaRaycastManager.ScheduleDummyCasting(
+                                sampleToCast: fsample,
+                                viewport: viewport
+                            );
+                        }
                         
                         areaRaycastManager.
                             ScheduleHitWriteAndDispose(
@@ -581,7 +613,7 @@ public class ScreenSaver : BasicGUIController {
                 Profiler.BeginSample("MulticastingCleanUp");
                 foreach(Fsample fsample in leftOverSamples) {
                     if (fsample.dataType == DataTypes.SAMPLESTARTFIX){
-                        Task<Tuple<RaycastHit[],List<Fsample>>> areaCastTask = 
+                        Task<Tuple<RaycastHit[], Fsample[], AreaRaycastManager.OffsetData[]>> areaCastTask = 
                             areaRaycastManager.ScheduleAreaCasting(
 
                                 sampleToCast: fsample,
