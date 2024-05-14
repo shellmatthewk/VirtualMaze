@@ -3,16 +3,32 @@ This utility takes eye-tracking data and generates information about the fixated
 ![data-generationScreenshot](/docs/images/data-generation.PNG)
 
 ## Table of Contents
+- [Introduction](#introduction)
 - [Prerequisites](#prerequisites)
 - [Steps to Use](#Steps-to-Use)
 - [Output](#output)
-- [Description of Columns](#Description-of-Columns)
+- [Description of Columns (Singlecast)](#Description-of-Columns-Singlecast)
+- [Description of Columns (Multicast)](#Description-of-Columns-Multicast)
 - [Unity Units](#Unity-Units)
 - [Object Size Reference](#Object-Size-Reference)
 - [Object Name References](#Object-Name-References)
 - [Gaze Position in Object](#Gaze-Position-in-Object)
 - [Environment Reference](#Environment-Reference)
 - [Synchronization](#Synchronization)
+
+## Introduction
+
+This utility takes eye-tracking data and generates information about the fixated surfaces or objects. It does so via ray-casting, which may be simply described as tracing a ray(i.e. a line) from the eye to the virtual environment, then reporting the location in virtual space that was hit.
+
+This utility generates two sets of data : So-called single-cast and multi-cast data.
+
+Single-cast carries out this process on every gaze datapoint in the original (`eyelink.mat`) file.
+
+Multi-cast attempts to simulate a cone of vision by casting out multiple rays in a cone, with a certain angular step, taking in physical parameters of the original experimental setup. 
+
+It does so internally by generating additional gaze-data points and conducting normal raycasting, computing the pixel coordinates with the aid of the above parameters of the original setup. The default parameters are of the setup that was used, as of the writing of this guide.
+
+For a description of the classes associated with this, see [this document](/docs/Raycasting.md)
 
 ## Prerequisites
 - Complete [Setting Up](/docs/DeveloperGuide.md#setting-up) in the Developer's Guide.
@@ -21,18 +37,30 @@ This utility takes eye-tracking data and generates information about the fixated
 
 - **.edf file:** .edf file from the EyeLink eye-tracker.
 
-#### Important
-The screen size of the computer running the data generation must be the same as the screen size of the one used in the experiment.
-#### Important
-The screen size of the computer running the data generation must be the same as the screen size of the one used in the experiment.
 
 ## Steps to Use
+
+### GUI
 1. Open the VirtualMaze project in Unity.
-2. Select the File->Open Scene menu command.
-3. Navigate to VirtualMaze->Assets->Scenes and select Start.unity.
+2. Select the File -> Open Scene menu command.
+3. Navigate to VirtualMaze -> Assets -> Scenes and select Start.unity.
 4. Select the files in the respective text boxes in the GUI.
 5. Select the destination folder to save the output file.
 6. Click ***Generate*** to start processing the files.
+
+### Headless/Terminal/Command Line
+1. Open the VirtualMaze project in Unity.
+2. Build the project from File -> Build Settings -> Build.
+    - Ensure the OS is correct for the OS you wish to run it on.
+    - For debugging, it may be helpful to check "Development Build".
+    - To attach a debugger, check "Script Debugging". Information on how to attach a Unity debugger is beyond the scope of this document.
+3. Optionally, transfer the created folder to the target machine you wish to run it on.
+4. Ensure that batch.txt, which specifies the file locations of the files to be run is present in the folder with the executable (.x86-64 for Linux-based OSes, .exe for Windows).
+5. Run the executable from the command line.
+    - For certain systems, you may have to run `chmod +x {NAME_OF_EXECUTABLE}` to enable executable permissions.
+    - Ensure that the arguments specified are correct. For the full list of arguments, consult the section titled [Arguments](#Arguments).
+
+
 
 ###### Note:
 Compiling the game will speed up the generation of ray cast data because the computer does not have to deal with the overhead of the Unity Editor.
@@ -86,7 +114,7 @@ A CSV (Comma Separated Value) file will be generated in the destination folder.
 ![data-generation-output Screenshot](/docs/images/data-generation-output.PNG)
 
 
-#### Description of Columns
+#### Description of Columns (Singlecast)
 1. Type of data in the row (string/text).
 2. Timestamp of the gaze data used to identify the fixated object (unsigned int)
 3. Name of the object fixated by the gaze, or message received by EyeLink (string/text).
@@ -121,6 +149,42 @@ A CSV (Comma Separated Value) file will be generated in the destination folder.
 17. 2D Y location of gaze with reference to the center of the fixated object.
 
 See [Gaze Position in Object](#gaze-position-in-object) for more details.
+
+
+#### Description of Columns (Multicast)
+1. Type of data in the row (string/text).
+2. Timestamp of the gaze data used to identify the fixated object (unsigned int)
+3. Name of the object fixated by the gaze, or message received by EyeLink (string/text).
+
+*Gaze Location ([Unity Units](#unity-units))*
+
+4. X Worldspace coordinate where the gaze lands.
+5. Y Worldspace coordinate where the gaze lands.
+6. Z Worldspace coordinate where the gaze lands.
+
+*Raw Gaze Data (Pixels)*
+
+7. gx data from the .edf file used to raycast.
+8. gy data from the .edf file used to raycast.
+
+*Subject Location in Worldspace ([Unity Units](#unity-units))*
+
+9. X coordinate of the subject's location in Worldspace.
+10. Y coordinate of the subject's location in Worldspace.
+11. Z coordinate of the subject's location in Worldspace.
+
+*Angular Offset Of Gaze (Degrees)*
+
+12. 2D X offset of offset-gaze with reference to the initial gaze.
+13. 2D Y offset of offset-gaze with reference to the initial gaze.
+
+*Pixel Offset Of Gaze (Pixels)*
+
+14. 2D X offset of offset-gaze with reference to the initial gaze.
+15. 2D Y offset of offset-gaze with reference to the initial gaze.
+
+See [Gaze Position in Object](#gaze-position-in-object) for more details.
+
 
 #### Unity Units
 Unity Units are values Unity uses to position the various game objects in Worldspace, where the center of the floor of the maze is located at (x: 0, y: 0, z: 0). For reference and scaling, the "rooms" used in VirtualMaze are 25 by 25 Unity Units and the ceiling is 4.93 Unity Units high.
