@@ -16,7 +16,7 @@ using UnityEngine.Profiling;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using VirtualMaze.Assets.Scripts.Raycasting;
-using VirtualMaze.Assets.Utils;
+using VirtualMaze.Assets.Scripts.Utils;
 /// <summary>
 /// TODO cancel button
 /// </summary>
@@ -57,7 +57,7 @@ public class ScreenSaver : BasicGUIController {
     [SerializeField]
     private InputField gazeRadiusInput = null;
     [SerializeField]
-    private InputField densityInput = null;
+    private InputField stepSizeInput = null;
     [SerializeField]
     private InputField screenPixelDimsX = null;
     [SerializeField]
@@ -140,7 +140,7 @@ public class ScreenSaver : BasicGUIController {
         bool successFlag = default;
         RaycastSettings raycastSettings = RaycastSettings.FromString(distToScreen: distToScreenInput.text, 
             gazeRadius: gazeRadiusInput.text, 
-            density: densityInput.text, 
+            density: stepSizeInput.text, 
             screenPixelX: screenPixelDimsX.text,
             screenPixelY: screenPixelDimsY.text,
             screenCmX: screenCmDimsX.text,
@@ -258,7 +258,8 @@ public class ScreenSaver : BasicGUIController {
         yield return PrepareScene("Double Tee");
 
         string filename = $"{Path.GetFileNameWithoutExtension(sessionPath)}_{Path.GetFileNameWithoutExtension(edfPath)}.csv";
-        string multiCastName = $"{Path.GetFileNameWithoutExtension(sessionPath)}_{Path.GetFileNameWithoutExtension(edfPath)}_multicast.csv";
+        string gazeRadiusNoDot = $"{raycastSettings.GazeRadius}".Replace(".","-");
+        string multiCastName = $"{Path.GetFileNameWithoutExtension(sessionPath)}_{Path.GetFileNameWithoutExtension(edfPath)}_r{gazeRadiusNoDot}.csv";
         DateTime start = DateTime.Now;
         Debug.LogError($"s: {start}");
 
@@ -350,14 +351,14 @@ public class ScreenSaver : BasicGUIController {
         HashSet<int> binsHitId = new HashSet<int>();
         Debug.Log($"Initialised AreaRaycastManager with:\n" + 
             $"Radius : {raycastSettings.GazeRadius} \n"+
-            $"Density : {raycastSettings.Density} \n"+
+            $"Step Size : {raycastSettings.StepSize} \n"+
             $"distToScreen : {raycastSettings.DistToScreen}\n" +
             $"screenDims : {raycastSettings.ScreenCmDims}\n" +
             $"pixelDims : {raycastSettings.ScreenPixelDims}");
         AreaRaycastManager areaRaycastManager = 
             new AreaRaycastManager(
                 angularRadius: raycastSettings.GazeRadius,
-                angularDensity: raycastSettings.Density,
+                angularStepSize: raycastSettings.StepSize,
                 distToScreen: raycastSettings.DistToScreen,
                 screenDims : raycastSettings.ScreenCmDims,
                 pixelDims : raycastSettings.ScreenPixelDims
@@ -460,17 +461,60 @@ public class ScreenSaver : BasicGUIController {
                 // Go through all in binSample to decide which need areacasting, and schedule areacasting & writing just for those
                 foreach(Fsample fsample in binSamples) {
                     if (fsample.dataType == DataTypes.SAMPLESTARTFIX){
+                        // do a check to make sure it is not on a hint/view image
 
-                        Task<Tuple<RaycastHit[],List<Fsample>>> areaCastTask = 
+                        bool toAreaCast = true;
+                        Ray probeRay;
+                        if (IsInScreenBounds(fsample.RightGaze) && fsample.dataType != DataTypes.SAMPLEINVALID) {
+                            Vector2 viewportGaze = RangeCorrector.HD_TO_VIEWPORT.
+                                correctVector(fsample.RightGaze);
+                            probeRay = viewport.ViewportPointToRay(viewportGaze);
+                        } else {
+                            probeRay = RayConstants.NullRay;
+                            // skip probe-casting
+                            // Just because is invalid might not mean not subject to area casting
+                            // E.g. looking at corner of screen.
+                            // Still valid for area-casting.
+                        }
+                        if (!(RayConstants.IsAbsoluteEqual(probeRay, RayConstants.NullRay))) {
+                            RaycastHit multiCastProbeHit;
+                            bool probeRayCastSucceed = Physics.Raycast(probeRay.origin, probeRay.direction, out multiCastProbeHit, float.MaxValue, BinWallManager.ignoreBinningLayer);
+                            
+                            String hitName;
+                            if (probeRayCastSucceed) {                            
+                                hitName = RelativeHitLocFinder.getChainedName(multiCastProbeHit.transform.gameObject);
+                            } else{
+                                hitName = "";
+                            }
+                            if (hitName.ToLower().Contains("cueimage") ||
+                                 hitName.ToLower().Contains("hintimage")) {
+                                toAreaCast = false;
+                                Debug.Log($"Skipped multicasting at {fsample.time}");
+                            }
+                        }
+
+                        Tuple<RaycastHit[], Fsample[], AreaRaycastManager.OffsetData[]> areacastResult;
+                        if (toAreaCast) {
+                        areacastResult = 
                             areaRaycastManager.ScheduleAreaCasting(
                                 sampleToCast: fsample,
                                 viewport: viewport
                             );
+                        } else {
+                            areacastResult = 
+                            areaRaycastManager.ScheduleDummyCasting(
+                                sampleToCast: fsample,
+                                viewport: viewport
+                            );
+                        }
                         
                         areaRaycastManager.
                             ScheduleHitWriteAndDispose(
                                 time: fsample.time,
-                                resultsTask: areaCastTask,
+                                results : areacastResult.Item1,
+                                raycastSamples : areacastResult.Item2,
+                                offsets : areacastResult.Item3,
+                                resultsTask: areacastResult,
                                 subjectLoc: robot.transform.position,
                                 rawGaze: fsample.RightGaze,
                                 writeManager: multicastWriteManager
@@ -581,18 +625,61 @@ public class ScreenSaver : BasicGUIController {
                 Profiler.BeginSample("MulticastingCleanUp");
                 foreach(Fsample fsample in leftOverSamples) {
                     if (fsample.dataType == DataTypes.SAMPLESTARTFIX){
-                        Task<Tuple<RaycastHit[],List<Fsample>>> areaCastTask = 
-                            areaRaycastManager.ScheduleAreaCasting(
+                        // do a check to make sure it is not on a hint/view image
 
+                        bool toAreaCast = true;
+                        Ray probeRay;
+                        if (IsInScreenBounds(fsample.RightGaze) && fsample.dataType != DataTypes.SAMPLEINVALID) {
+                            Vector2 viewportGaze = RangeCorrector.HD_TO_VIEWPORT.
+                                correctVector(fsample.RightGaze);
+                            probeRay = viewport.ViewportPointToRay(viewportGaze);
+                            Debug.Log($"Probe Ray : {probeRay.origin}, {probeRay.direction}");
+                        } else {
+                            probeRay = RayConstants.NullRay;
+                            // skip probe-casting
+                            // Just because is invalid might not mean not subject to area casting
+                            // E.g. looking at corner of screen.
+                            // Still valid for area-casting.
+                        }
+                        if (!(RayConstants.IsAbsoluteEqual(probeRay, RayConstants.NullRay))) {
+                            RaycastHit multiCastProbeHit;
+                            bool probeRayCastSucceed = Physics.Raycast(probeRay.origin, probeRay.direction, out multiCastProbeHit, float.MaxValue, BinWallManager.ignoreBinningLayer);
+                            
+                            String hitName;
+                            if (probeRayCastSucceed) {                            
+                                hitName = RelativeHitLocFinder.getChainedName(multiCastProbeHit.transform.gameObject);
+                            } else{
+                                hitName = "";
+                            }
+                            if (hitName.ToLower().Contains("cueimage") ||
+                                 hitName.ToLower().Contains("hintimage")) {
+                                toAreaCast = false;
+                                Debug.Log($"Skipped multicasting at {fsample.time}");
+                            }
+                        }
+
+                        Tuple<RaycastHit[], Fsample[], AreaRaycastManager.OffsetData[]> areacastResult;
+                        if (toAreaCast) {
+                        areacastResult = 
+                            areaRaycastManager.ScheduleAreaCasting(
                                 sampleToCast: fsample,
                                 viewport: viewport
-
                             );
+                        } else {
+                            areacastResult = 
+                            areaRaycastManager.ScheduleDummyCasting(
+                                sampleToCast: fsample,
+                                viewport: viewport
+                            );
+                        }
                         
                         areaRaycastManager.
                             ScheduleHitWriteAndDispose(
                                 time: fsample.time,
-                                resultsTask: areaCastTask,
+                                results : areacastResult.Item1,
+                                raycastSamples : areacastResult.Item2,
+                                offsets : areacastResult.Item3,
+                                resultsTask: areacastResult,
                                 subjectLoc: robot.transform.position,
                                 rawGaze: fsample.RightGaze,
                                 writeManager: multicastWriteManager

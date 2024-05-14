@@ -555,7 +555,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 60
+  m_Text: 56.5
 --- !u!222 &354092736
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2922,6 +2922,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -10.000034
       objectReference: {fileID: 0}
+    - target: {fileID: 1722937273050771886, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
+        type: 3}
+      propertyPath: m_Name
+      value: StepSizeInput
+      objectReference: {fileID: 0}
     - target: {fileID: 1729169739495278781, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -3236,6 +3241,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Text
       value: Enable Direction Error
+      objectReference: {fileID: 0}
+    - target: {fileID: 2005559735980568061, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
+        type: 3}
+      propertyPath: m_Name
+      value: StepSizeDescription
       objectReference: {fileID: 0}
     - target: {fileID: 2041193975703848383, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
         type: 3}
@@ -5693,6 +5703,11 @@ PrefabInstance:
       propertyPath: distToScreenInput
       value: 
       objectReference: {fileID: 1833853400}
+    - target: {fileID: 5221027556612400899, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
+        type: 3}
+      propertyPath: stepSizeInput
+      value: 
+      objectReference: {fileID: 866658093}
     - target: {fileID: 5221793554671527726, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
         type: 3}
       propertyPath: m_IsActive
@@ -7246,7 +7261,7 @@ PrefabInstance:
     - target: {fileID: 7256934132800354635, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
         type: 3}
       propertyPath: m_Text
-      value: Number of Raycast Per Degree
+      value: Number of Degress Per Raycast
       objectReference: {fileID: 0}
     - target: {fileID: 7349456652700524365, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
         type: 3}
@@ -9274,6 +9289,18 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 
+--- !u!114 &866658093 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 455334738848887977, guid: 7554bfb7c2ebf456e8e9c0a45a6b9ee0,
+    type: 3}
+  m_PrefabInstance: {fileID: 683878198}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d199490a83bb2b844b9695cbf13b01ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &931096737
 GameObject:
   m_ObjectHideFlags: 0
@@ -9944,7 +9971,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 40
+  m_Text: 32
 --- !u!222 &1658050336
 CanvasRenderer:
   m_ObjectHideFlags: 0

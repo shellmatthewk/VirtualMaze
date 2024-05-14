@@ -6,13 +6,13 @@ namespace VirtualMaze.Assets.Scripts.Raycasting
     {
         public float DistToScreen { get; private set; }
         public float GazeRadius { get; private set; }
-        public float Density { get; private set; }
+        public float StepSize { get; private set; }
         public Rect ScreenPixelDims { get; private set; }
         public Rect ScreenCmDims { get; private set; }
 
 
-        public static readonly float DefaultGazeRadius = 15f;
-        public static readonly float DefaultDensity = 1f;
+        public static readonly float DefaultGazeRadius = 5f;
+        public static readonly float DefaultStepSize = 0.25f;
         public static readonly float DefaultDistToScreen = 68f;
 
         // default for pixels
@@ -22,15 +22,15 @@ namespace VirtualMaze.Assets.Scripts.Raycasting
         public static readonly Rect DefaultScreenPixelDims = new Rect(0, 0, DefaultScreenPixelDimX, DefaultScreenPixelDimY);
 
         // Default values for cm
-        public static readonly float DefaultScreenCmDimX = 60f;
-        public static readonly float DefaultScreenCmDimY = 40f;
+        public static readonly float DefaultScreenCmDimX = 56.5f;
+        public static readonly float DefaultScreenCmDimY = 32f;
         public static readonly Rect DefaultScreenCmDims = new Rect(0, 0, DefaultScreenCmDimX, DefaultScreenCmDimY);
 
         // Private constructor
-        private RaycastSettings(float distToScreen, float gazeRadius, float density, Rect screenPixelDims, Rect screenCmDims) {
+        private RaycastSettings(float distToScreen, float gazeRadius, float stepSize, Rect screenPixelDims, Rect screenCmDims) {
             DistToScreen = distToScreen;
             GazeRadius = gazeRadius;
-            Density = density;
+            StepSize = stepSize;
             ScreenPixelDims = screenPixelDims;
             ScreenCmDims = screenCmDims;
         }
@@ -41,26 +41,26 @@ namespace VirtualMaze.Assets.Scripts.Raycasting
 
             float distToScreenValue = default;
             float gazeRadiusValue = default;
-            float densityValue = default;
+            float stepSizeValue = default;
             Rect screenPixelDimsValue = default;
             Rect screenCmDimsValue = default;
             successFlag =
                 parseFloat(distToScreen, out distToScreenValue, defaultValue: DefaultDistToScreen) &&
                 parseFloat(gazeRadius, out gazeRadiusValue, defaultValue: DefaultGazeRadius) &&
-                parseFloat(density, out densityValue, defaultValue: DefaultDensity) &&
+                parseFloat(density, out stepSizeValue, defaultValue: DefaultStepSize) &&
                 parseDimensions(screenPixelX, screenPixelY, out screenPixelDimsValue, defaultValue: DefaultScreenPixelDims) &&
                 parseDimensions(screenCmX, screenCmY, out screenCmDimsValue, defaultValue: DefaultScreenCmDims);
 
 
 
-            return new RaycastSettings(distToScreenValue, gazeRadiusValue, densityValue, screenPixelDimsValue, screenCmDimsValue);
+            return new RaycastSettings(distToScreenValue, gazeRadiusValue, stepSizeValue, screenPixelDimsValue, screenCmDimsValue);
         }
 
-        public static RaycastSettings FromFloat(float distToScreen, float gazeRadius, float density, float screenPixelX, float screenPixelY, float screenCmX, float screenCmY) {
+        public static RaycastSettings FromFloat(float distToScreen, float gazeRadius, float stepSize, float screenPixelX, float screenPixelY, float screenCmX, float screenCmY) {
             Rect screenPixelDimsValue = new Rect(0, 0, screenPixelX, screenPixelY);
             Rect screenCmDimsValue = new Rect(0, 0, screenCmX, screenCmY);
 
-            return new RaycastSettings(distToScreen, gazeRadius, density, screenPixelDimsValue, screenCmDimsValue);
+            return new RaycastSettings(distToScreen, gazeRadius, stepSize, screenPixelDimsValue, screenCmDimsValue);
         }
 
         private static bool parseDimensions(string x, string y, out Rect rect, Rect defaultValue) {

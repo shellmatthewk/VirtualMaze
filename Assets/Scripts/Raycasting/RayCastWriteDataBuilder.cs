@@ -21,6 +21,8 @@ namespace VirtualMaze.Assets.Scripts.Raycasting
         private Optional<float> _subjectRotation = Optional<float>.None;
         private Optional<bool> _isLastSampleInFrame = Optional<bool>.None;
         private Optional<Vector2> _angularOffset = Optional<Vector2>.None;
+        private Optional<Vector2> _pixelOffset = Optional<Vector2>.None;
+
         private string _delimiter = RayCastWriteData.DEFAULT_DELIMITER;
 
         /// <summary>
@@ -142,6 +144,17 @@ namespace VirtualMaze.Assets.Scripts.Raycasting
         }
 
         /// <summary>
+        /// Sets the angular offset of the raycast data in the builder.
+        /// </summary>
+        /// <param name="angularOffset">The angular offset of the raycast data.</param>
+        /// <returns>The updated builder instance.</returns>
+        public RayCastWriteDataBuilder WithPixelOffset(Vector2 pixelOffset)
+        {
+            _pixelOffset = Optional<Vector2>.Some(pixelOffset);
+            return this;
+        }
+
+        /// <summary>
         /// Sets the delimiter used to separate values in the formatted string in the builder.
         /// </summary>
         /// <param name="delimiter">The delimiter used to separate values in the formatted string.</param>
@@ -169,6 +182,7 @@ namespace VirtualMaze.Assets.Scripts.Raycasting
                 _subjectRotation,
                 _isLastSampleInFrame,
                 _angularOffset,
+                _pixelOffset,
                 _delimiter
             );
         }

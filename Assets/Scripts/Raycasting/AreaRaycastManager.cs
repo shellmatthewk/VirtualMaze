@@ -27,7 +27,7 @@ namespace VirtualMaze.Assets.Scripts.Raycasting {
         
 
         float angularRadius;
-        float angularDensity;
+        float angularStepSize;
         float distToScreen;
         Rect screenDims;
         Rect pixelDims;
@@ -35,59 +35,116 @@ namespace VirtualMaze.Assets.Scripts.Raycasting {
         // based of tan(30) * 25 units, rounded up to give a buffer.
 
         public AreaRaycastManager(
-            float angularRadius, float angularDensity, float distToScreen, 
+            float angularRadius, float angularStepSize, float distToScreen, 
                 Rect screenDims, Rect pixelDims) {
 
 
             this.angularRadius = angularRadius;
-            this.angularDensity = angularDensity;
+            this.angularStepSize = angularStepSize;
             this.distToScreen = distToScreen;
             this.screenDims = screenDims;
             this.pixelDims = pixelDims;
 
         }
+        public static readonly OffsetData NULL_OFFSET = new OffsetData(Vector2.negativeInfinity, Vector2.negativeInfinity);
 
-        public async Task<Tuple<RaycastHit[],List<Fsample>>> ScheduleAreaCasting(Fsample sampleToCast, Camera viewport, JobHandle dependency = default) {
+        public struct OffsetData {
+            public Vector2 AngularOffset;
+            public Vector2 PixelOffset;
+            public OffsetData(Vector2 angularOffset, Vector2 pixelOffset) {
+                this.AngularOffset = angularOffset;
+                this.PixelOffset = pixelOffset;
+            }
+        }
+
+        public Tuple<RaycastHit[],Fsample[],OffsetData[]> ScheduleAreaCasting(Fsample sampleToCast, Camera viewport, JobHandle dependency = default) {
             if (sampleToCast.RightGaze.isNaN()) {
-                return Tuple.Create(new RaycastHit[] {},new List<Fsample>());
+                return Tuple.Create(new RaycastHit[] {}, new Fsample[] {}, new OffsetData[] {});
                 // return empty if the sample gaze is nan (has any nan component)
             }
-            List<Fsample> raycastSamples = generateFromAngle(sampleToCast);
-            List<Ray> rays = ConvertToRays(raycastSamples, viewport);
+            Debug.Log($"Starting areacast with camera @ {viewport.transform.position}");
+                
+            Tuple<List<Fsample>,List<OffsetData>> angleResults = generateFromAngle(sampleToCast);
+            List<Fsample> sampleList = angleResults.Item1;
+            List<OffsetData> offsetList = angleResults.Item2;
+            List<Ray> rays = ConvertToRays(sampleList, viewport);
 
-            NativeArray<RaycastCommand> raycastCommands = 
-                new NativeArray<RaycastCommand>(rays.Count, Allocator.TempJob);
-            NativeArray<RaycastHit> resultsAsNative = new NativeArray<RaycastHit>(rays.Count, Allocator.TempJob);
+            // NativeArray<RaycastCommand> raycastCommands = 
+            //     new NativeArray<RaycastCommand>(rays.Count, Allocator.TempJob);
+            // NativeArray<RaycastHit> resultsAsNative = new NativeArray<RaycastHit>(rays.Count, Allocator.TempJob);
+            RaycastHit[] results = new RaycastHit[rays.Count];
+            Debug.Log($"First ray : {rays[0].origin}, {rays[0].direction}");
             
             for (int i = 0; i < rays.Count; i++) {
                 Ray ray = rays[i];
+                
                 if (RayConstants.IsAbsoluteEqual(ray, RayConstants.NullRay)) {
                     continue;
                      // will leave the raycast command as null, no raycasting will be performed here.
                 }
-                raycastCommands[i] = new RaycastCommand(ray.origin, ray.direction, layerMask : BinWallManager.ignoreBinningLayer);
+                Physics.Raycast(ray : ray, hitInfo : out results[i], maxDistance : float.MaxValue, layerMask : BinWallManager.ignoreBinningLayer);            }
+            
+            // JobHandle raycastHandle = RaycastCommand.ScheduleBatch(
+            //     raycastCommands, resultsAsNative, 1, dependency);
+            
+            // raycastHandle.Complete();
+            UnityEngine.Debug.Log($"Completed areacast for {sampleToCast}");
+            UnityEngine.Debug.Log($"Camera was at {viewport.transform.position}");
+            Fsample[] samples = sampleList.ToArray();
+            OffsetData[] offsets = offsetList.ToArray();
+            return Tuple.Create(results,samples,offsets);
+        }
+
+        public Tuple<RaycastHit[],Fsample[],OffsetData[]> ScheduleDummyCasting(Fsample sampleToCast, Camera viewport, JobHandle dependency = default) {
+            if (sampleToCast.RightGaze.isNaN()) {
+                return Tuple.Create(new RaycastHit[] {}, new Fsample[] {}, new OffsetData[] {});
+                // return empty if the sample gaze is nan (has any nan component)
+            }
+            List<Fsample> sampleList = new List<Fsample>();
+            sampleList.Add(sampleToCast); // Add fsample to sampleList
+            List<OffsetData> offsetList = new List<OffsetData>();
+            offsetList.Add(new OffsetData(new Vector2(0,0), new Vector2(0,0)));
+            List<Ray> rays = ConvertToRays(sampleList, viewport);
+
+            // NativeArray<RaycastCommand> raycastCommands = 
+            //     new NativeArray<RaycastCommand>(rays.Count, Allocator.TempJob);
+            // NativeArray<RaycastHit> resultsAsNative = new NativeArray<RaycastHit>(rays.Count, Allocator.TempJob);
+            RaycastHit[] results = new RaycastHit[rays.Count];
+            Debug.Log($"First ray : {rays[0].origin}, {rays[0].direction}");
+            for (int i = 0; i < rays.Count; i++) {
+                Ray ray = rays[i];
+                
+                if (RayConstants.IsAbsoluteEqual(ray, RayConstants.NullRay)) {
+                    continue;
+                     // will leave the raycast command as null, no raycasting will be performed here.
+                }
+                Physics.Raycast(ray : ray, hitInfo : out results[i], maxDistance : float.MaxValue, layerMask : BinWallManager.ignoreBinningLayer);
+                
             }
             
-            JobHandle raycastHandle = RaycastCommand.ScheduleBatch(
-                raycastCommands, resultsAsNative, 1, dependency);
+            // JobHandle raycastHandle = RaycastCommand.ScheduleBatch(
+            //     raycastCommands, resultsAsNative, 1, dependency);
             
-            raycastHandle.Complete();
-            UnityEngine.Debug.Log($"Completed areacast for {sampleToCast}");
-            return Tuple.Create(resultsAsNative.ToArray(),raycastSamples);
+            // raycastHandle.Complete();
+            UnityEngine.Debug.Log($"Completed (dummy) areacast for {sampleToCast}, did not do in a radius due to center being hint/cue image.");
+
+            Fsample[] samples = sampleList.ToArray();
+            OffsetData[] offsets = offsetList.ToArray();
+            return Tuple.Create(results,samples,offsets);
         }
 
         public void ScheduleHitWriteAndDispose(
             uint time,
-            Task<Tuple<RaycastHit[],List<Fsample>>> resultsTask,
+            RaycastHit[] results,
+            Fsample[] raycastSamples,
+            OffsetData[] offsets,
+            Tuple<RaycastHit[], Fsample[], OffsetData[]> resultsTask,
             Vector3 subjectLoc,
             Vector2 rawGaze,
             RayCastWriteManager writeManager) {
 
             // Ensure resultsTask is completed synchronously
-            RaycastHit[] results = resultsTask.Result.Item1;
-            List<Fsample> raycastSamples = resultsTask.Result.Item2;
-
-            void WriteTask(RaycastHit hit, Fsample fsample) {
+            void WriteTask(RaycastHit hit, Fsample fsample, OffsetData offset) {
                 string objName = RelativeHitLocFinder.getChainedName(hit.transform.gameObject);
                 Vector3 hitLoc = hit.point;
                 RayCastWriteData toWrite = new RayCastWriteDataBuilder()
@@ -97,6 +154,8 @@ namespace VirtualMaze.Assets.Scripts.Raycasting {
                     .WithHitObjLocation(hitLoc)
                     .WithObjName(objName)
                     .WithType(fsample.dataType)
+                    .WithAngularOffset(offset.AngularOffset)
+                    .WithPixelOffset(offset.PixelOffset)
                     .Build();
 
                 writeManager.Write(toWrite);
@@ -112,6 +171,8 @@ namespace VirtualMaze.Assets.Scripts.Raycasting {
                     .WithHitObjLocation(hitLoc)
                     .WithObjName(objName)
                     .WithType(DataTypes.SAMPLENODATA)
+                    .WithAngularOffset(NULL_OFFSET.AngularOffset)
+                    .WithPixelOffset(NULL_OFFSET.PixelOffset)
                     .Build();
 
                 writeManager.Write(toWrite);
@@ -129,6 +190,8 @@ namespace VirtualMaze.Assets.Scripts.Raycasting {
                     .WithHitObjLocation(hitLoc)
                     .WithObjName(objName)
                     .WithType(DataTypes.SAMPLENODATA)
+                    .WithAngularOffset(NULL_OFFSET.AngularOffset)
+                    .WithPixelOffset(NULL_OFFSET.PixelOffset)
                     .Build();
 
                 writeManager.Write(toWrite);
@@ -139,14 +202,17 @@ namespace VirtualMaze.Assets.Scripts.Raycasting {
             for (int i = 0; i < results.Length; i++) {
                 RaycastHit hit = results[i];
                 Fsample fsample = raycastSamples[i];
+                OffsetData offset = offsets[i];
                 if (hit.transform == null) {
                     UnityEngine.Debug.Log($"null raycasthit");
                     NullWriteTask();
+                    continue;
                 }
-                WriteTask(hit, fsample);
+                WriteTask(hit, fsample, offset);
             }
 
             UnityEngine.Debug.Log($"Wrote {results.Length} many non-NaN results");
+
         }
 
 
@@ -154,7 +220,7 @@ namespace VirtualMaze.Assets.Scripts.Raycasting {
             // Pre-allocate the memory because we know the exact length of the output list
             List<Ray> outList = new List<Ray>(toConvert.Count);
             foreach (Fsample fsample in toConvert) {
-                if (ScreenSaver.IsInScreenBounds(fsample.RightGaze)) {
+                if (ScreenSaver.IsInScreenBounds(fsample.RightGaze) && fsample.dataType != DataTypes.SAMPLEINVALID) {
                     Vector2 viewportGaze = RangeCorrector.HD_TO_VIEWPORT.
                         correctVector(fsample.RightGaze);
                     outList.Add(viewport.ViewportPointToRay(viewportGaze));
@@ -164,56 +230,93 @@ namespace VirtualMaze.Assets.Scripts.Raycasting {
             }
             return outList;
         }
-        private List<Fsample> generateFromAngle(Fsample sample) {
-                float stepSize = 1.0f / this.angularDensity;
+        private Tuple<List<Fsample>,List<OffsetData>> generateFromAngle(Fsample sample) {
+                float stepSize = this.angularStepSize;
                 List<Fsample> outList = new List<Fsample>();
+                List<OffsetData> offsetList = new List<OffsetData>();
                 RangeCorrector pixelToCm = new RangeCorrector(pixelDims, screenDims);
                 RangeCorrector CmToPixel = new RangeCorrector(screenDims, pixelDims);
-                Vector2 CmOffset = pixelToCm.correctVector(sample.rawRightGaze);
-                float xRadianLoc = Mathf.Atan2(CmOffset.x,distToScreen);
-                float yRadianLoc = Mathf.Atan2(CmOffset.y,distToScreen);
-
-                // iterate through all possible angular offsets ...
-                for (float i = -angularRadius; i <= angularRadius; i += stepSize) {
-                    for (float j = -angularRadius; j <= angularRadius; j += stepSize) {
-                        if (i * i + j * j < angularRadius * angularRadius) {
-                            // but accept only those that fall within the radius
-
-                            // Generate new Fsample based on angular offset
-                            float xRadianNew = xRadianLoc + Mathf.Deg2Rad * i;
-                            float yRadianNew = yRadianLoc + Mathf.Deg2Rad * j;
-                            
-                            float xCmNew = Mathf.Tan(xRadianNew) * distToScreen;
-                            float yCmNew = Mathf.Tan(yRadianNew) * distToScreen;
-
-                            Vector2 vectorCmNew = new Vector2(xCmNew, yCmNew);
-                            // the new location of the gaze in cm coordinates
+                Vector2 CmOffset = pixelToCm.correctVector(sample.RightGaze);
+                Vector2 centerLoc = new Vector2 (screenDims.x / 2, screenDims.y / 2);
+                float xRadianLoc = Mathf.Atan2(CmOffset.x,distToScreen) - Mathf.Atan2(centerLoc.x, distToScreen);
+                float yRadianLoc = Mathf.Atan2(CmOffset.y,distToScreen) - Mathf.Atan2(centerLoc.y, distToScreen);
 
 
-                            // do bounds-checking & flagging here
-                            DataTypes datatype = default;
-                            if (!screenDims.Contains(vectorCmNew)) {
-                                datatype = DataTypes.SAMPLEINVALID;
-                                // flag if it is somehow invalid.
-                            } else {
-                                datatype = sample.dataType;
-                            }
+                if (angularRadius <= 0 || angularRadius <= stepSize) {
+                    outList.Add(sample);
+                    offsetList.Add(new OffsetData(new Vector2(0, 0), new Vector2(0, 0)));
+                    return Tuple.Create(outList,offsetList);
+                }
+                // create all possible offsets here
+                List<Vector2> angleOffsets = new List<Vector2>();
+                for (float i = 0 ; i <= angularRadius; i += stepSize) {
+                    for (float j = 0; j <= angularRadius; j += stepSize) {
+                        if (i * i + j * j > angularRadius * angularRadius) {
+                            continue;
+                        }
 
-                            // back-compute the correct pixel value here.
-                            Vector2 vectorPixelNew  = CmToPixel.correctVector(vectorCmNew);
-                            Vector2 vectorPixelRounded = roundToQuarterPixel(vectorPixelNew);
-
-                            Fsample temp = new Fsample(sample.time,
-                                vectorPixelRounded.x,
-                                vectorPixelRounded.y,
-                                datatype);
-                            outList.Add(temp);
-
-                            
+                        
+                        angleOffsets.Add(new Vector2(i, j));
+                        if (i != 0) {
+                            angleOffsets.Add(new Vector2(-i, j));
+                        }
+                        if (j != 0) {
+                            angleOffsets.Add(new Vector2(i, -j));
+                        }
+                        if (i != 0 && j != 0) {
+                            angleOffsets.Add(new Vector2(-i, -j));
                         }
                     }
                 }
-                return outList;
+
+                // iterate through all possible angular offsets ...
+                
+                foreach (Vector2 angularOffset in angleOffsets) {
+                        
+                       
+
+                        // Generate new Fsample based on angular offset
+                        float xRadianNew = xRadianLoc + Mathf.Deg2Rad * angularOffset.x;
+                        float yRadianNew = yRadianLoc + Mathf.Deg2Rad * angularOffset.y;
+                        
+                        float xCmNew = Mathf.Tan(xRadianNew) * distToScreen;
+                        float yCmNew = Mathf.Tan(yRadianNew) * distToScreen;
+
+                        Vector2 vectorCmNew = new Vector2(xCmNew, yCmNew);
+                        // the new location of the gaze in cm coordinates
+
+
+                        // do bounds-checking & flagging here
+                        DataTypes datatype = default;
+                        if (!screenDims.Contains(vectorCmNew)) {
+                            datatype = DataTypes.SAMPLEINVALID;
+                            // flag if it is somehow invalid.
+                        } else {
+                            datatype = sample.dataType;
+                        }
+
+                        // back-compute the correct pixel value here.
+                        Vector2 vectorPixelNew  = CmToPixel.correctVector(vectorCmNew);
+                        //Vector2 vectorPixelRounded = roundToQuarterPixel(vectorPixelNew);
+                        vectorPixelNew.y = pixelDims.height - vectorPixelNew.y;
+                        Vector2 pixelOffset = vectorPixelNew - sample.rawRightGaze;
+                        // use rawRightGaze here, as the constructor for Fsample assumes
+                        // it is raw, in the eyelink convention for x and y.
+                        // Conversion is handled elsewhere, don't need to worry.
+                        // Similar for why we need to take height - y in the computation above.
+                        Fsample temp = new Fsample(sample.time,
+                            vectorPixelNew.x,
+                            vectorPixelNew.y, 
+                            datatype);
+                        // take height - y, to obey convention of eyelink
+                        // Unity takes 
+                        outList.Add(temp);
+                        offsetList.Add(new OffsetData(angularOffset,pixelOffset));
+                        
+                    
+                }
+                
+                return Tuple.Create(outList,offsetList);
         }
         private Vector2 roundToQuarterPixel(Vector2 gazeXY) {
             float rawX = gazeXY.x;

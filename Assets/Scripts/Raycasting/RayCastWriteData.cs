@@ -87,6 +87,11 @@ namespace VirtualMaze.Assets.Scripts.Raycasting
         public Optional<Vector2> AngularOffset { get; private set; }
 
         /// <summary>
+        /// Pixel offset of the raycast data (optional).
+        /// </summary>
+        public Optional<Vector2> PixelOffset { get; private set; }
+
+        /// <summary>
         /// Constructor for creating an instance of RayCastWriteData.
         /// </summary>
         /// <param name="type">Type of the raycast data (optional).</param>
@@ -114,6 +119,7 @@ namespace VirtualMaze.Assets.Scripts.Raycasting
             Optional<float> subjectRotation = default,
             Optional<bool> isLastSampleInFrame = default,
             Optional<Vector2> angularOffset = default,
+            Optional<Vector2> pixelOffset = default,
             string delimiter = null)
         {
             Type = type;
@@ -126,6 +132,7 @@ namespace VirtualMaze.Assets.Scripts.Raycasting
             SubjectRotation = subjectRotation;
             IsLastSampleInFrame = isLastSampleInFrame;
             AngularOffset = angularOffset;
+            PixelOffset = pixelOffset;
             Delimiter = delimiter ?? DEFAULT_DELIMITER;
             // use default if null was supplied
         }
@@ -144,6 +151,7 @@ namespace VirtualMaze.Assets.Scripts.Raycasting
             AppendOptionalData(stringBuilder, SubjectRotation);
             AppendOptionalData(stringBuilder, IsLastSampleInFrame);
             AppendOptionalData(stringBuilder, AngularOffset);
+            AppendOptionalData(stringBuilder, PixelOffset);
 
             // Remove the last delimiter if the string is not empty
             if (stringBuilder.Length > 0)
