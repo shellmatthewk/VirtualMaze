@@ -150,7 +150,13 @@
      <Compile Include="Assets\Scripts\ParallelPort.cs" />
      <Compile Include="Assets\Scripts\Persist.cs" />
      <Compile Include="Assets\Scripts\ProgressCalibPoint.cs" />
+     <Compile Include="Assets\Scripts\Raycasting\AreaRaycastManager.cs" />
      <Compile Include="Assets\Scripts\Raycasting\RangeCorrector.cs" />
+     <Compile Include="Assets\Scripts\Raycasting\RaycastGazesJob.cs" />
+     <Compile Include="Assets\Scripts\Raycasting\RaycastSettings.cs" />
+     <Compile Include="Assets\Scripts\Raycasting\RayCastWriteData.cs" />
+     <Compile Include="Assets\Scripts\Raycasting\RayCastWriteDataBuilder.cs" />
+     <Compile Include="Assets\Scripts\Raycasting\RayCastWriteManager.cs" />
      <Compile Include="Assets\Scripts\Raycasting\RelativeHitLocFinder.cs" />
      <Compile Include="Assets\Scripts\RewardsController.cs" />
      <Compile Include="Assets\Scripts\RewardScripts\CheckPoster.cs" />
@@ -180,6 +186,10 @@
      <Compile Include="Assets\Scripts\SessionPrefabScript.cs" />
      <Compile Include="Assets\Scripts\SetCounter.cs" />
      <Compile Include="Assets\Scripts\SliderValue.cs" />
+     <Compile Include="Assets\Scripts\Utils\Interval.cs" />
+     <Compile Include="Assets\Scripts\Utils\Optional.cs" />
+     <Compile Include="Assets\Scripts\Utils\RayConstants.cs" />
+     <Compile Include="Assets\Scripts\Utils\TwoDArrayUtils.cs" />
      <Compile Include="Assets\Scripts\VersionInfo.cs" />
      <Compile Include="Assets\Scripts\Wrappers\EdfAccess\ALLF_DATA.cs" />
      <Compile Include="Assets\Scripts\Wrappers\EdfAccess\DataTypes.cs" />
