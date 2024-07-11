@@ -160,11 +160,11 @@ public class HiddenRewardMazeLogicMD2 : StandardMazeLogic
         }
 
         float distance = Vector3.Magnitude(direction);
-        Debug.Log($"dist:{distance} / {s_proximityDistance}");
-        Debug.Log($"angle:{angle} / {s_requiredViewAngle}");
+        // Debug.Log($"dist:{distance} / {s_proximityDistance}");
+        // Debug.Log($"angle:{angle} / {s_requiredViewAngle}");
         if (distance <= s_proximityDistance)
         {
-            Debug.Log("RewardProx");
+            // Debug.Log("RewardProx");
             reward.OnProximityEntered();
         }
 
@@ -172,7 +172,7 @@ public class HiddenRewardMazeLogicMD2 : StandardMazeLogic
         if (angle < s_requiredViewAngle * 0.5f || (distance < 1))
         {
             //checks if close enough
-            Debug.Log("In View!!!");
+            // Debug.Log("In View!!!");
             inView = true;
             if (Input.GetKeyDown("space"))
             {

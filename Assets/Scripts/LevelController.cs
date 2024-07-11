@@ -98,6 +98,8 @@ public class LevelController : MonoBehaviour {
     public int targetIndex;
     public bool success = false;
 
+    public int [] targetList;
+
     //Strings
     private const string Format_NoRewardAreaComponentFound = "{0} does not have a RewardAreaComponent";
 
@@ -342,7 +344,11 @@ public class LevelController : MonoBehaviour {
     private void PrepareNextTask(bool success) {
         // prepare next 
         if (success) {
-            targetIndex = logicProvider.GetNextTarget(targetIndex, rewards);
+            // targetIndex = logicProvider.GetNextTarget(targetIndex, rewards);
+            int startEndTarget = rand.Next(rewards.Length);
+            
+
+            targetIndex = targetList[trialCounter];
             cueController.SetTargetImage(logicProvider.GetTargetImage(rewards, targetIndex));
             startWaypoint = StartWaypoint.GetWaypoint(multipleWaypoints);
         }
