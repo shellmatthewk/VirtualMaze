@@ -1,4 +1,9 @@
+using Random = System.Random;
+using System;
+using System.IO;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -116,6 +121,7 @@ public class LevelController : MonoBehaviour {
         //Prepare Eyelink
         EyeLink.Initialize();
         onSessionTrigger.AddListener(EyeLink.OnSessionTrigger);
+
         //kw edit (commented out)
         //onSessionTrigger.AddListener(parallelPort.TryWriteTrigger);
     }
@@ -194,7 +200,11 @@ public class LevelController : MonoBehaviour {
         logicProvider = session.MazeLogic;
         RewardArea.CheckViewInProximity += logicProvider.CheckFieldOfView;
         numTrials = session.numTrials;
-
+        GetTargetList(numTrials);
+        Debug.Log("Contents of targetList:");
+        foreach (int value in targetList) {
+            Debug.Log(value);
+        }
         logicProvider.Setup(rewards);
 
         //disable robot movement
@@ -337,6 +347,37 @@ public class LevelController : MonoBehaviour {
 
     }
 
+    private void GetTargetList(int numTrials) {
+        int numBlocks = numTrials / 30;
+        Random rand = new Random();
+        int startingIndex = rand.Next(rewards.Length); // Assuming rewards.Length is defined somewhere
+        string filePath = "Assets/int_seeds.txt";
+        List<int> tempList = new List<int>();
+
+        string[] allLines = File.ReadAllLines(filePath);
+
+        for (int block = 0; block < numBlocks; block++) {
+            var filteredLines = allLines.Where(line => line.StartsWith($"{startingIndex},")).ToList();
+
+            if (filteredLines.Count == 0) {
+                throw new InvalidOperationException($"No line found");
+            }
+            string selectedLine = null;
+            do {
+                selectedLine = filteredLines[rand.Next(filteredLines.Count)];
+            } while (!selectedLine.StartsWith($"{startingIndex},"));
+
+            string[] entries = selectedLine.Split(',');
+
+            for (int i = 0; i <= 29; i++) {
+                int entryValue = int.Parse(entries[i]);
+                tempList.Add(entryValue);
+            }
+        }
+        tempList.Add(startingIndex);
+
+        targetList = tempList.ToArray();
+    }
 
     /// <summary>
     /// Method to decide the next target.
@@ -345,8 +386,6 @@ public class LevelController : MonoBehaviour {
         // prepare next 
         if (success) {
             // targetIndex = logicProvider.GetNextTarget(targetIndex, rewards);
-            int startEndTarget = rand.Next(rewards.Length);
-            
 
             targetIndex = targetList[trialCounter];
             cueController.SetTargetImage(logicProvider.GetTargetImage(rewards, targetIndex));
