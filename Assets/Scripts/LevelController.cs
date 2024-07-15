@@ -352,7 +352,7 @@ public class LevelController : MonoBehaviour {
     // adds the starting poster to the list, to complete the cycle 
     // numTrials required must be multiples of 30 + 1, so 31, 61, 91, 121, 151, etc. 
     private void GetTargetList(int numTrials) {
-        int numBlocks = numTrials / 30;∂
+        int numBlocks = numTrials / 30;
         Random rand = new Random();
         int startingIndex = rand.Next(rewards.Length); 
         string filePath = "Assets/int_seeds.txt";
